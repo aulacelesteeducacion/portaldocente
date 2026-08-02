@@ -646,14 +646,16 @@ function buildDemoAdmin(){
   }).sort((a,b)=>a.docId.localeCompare(b.docId));
 }
 
+let ADMIN_LIST=[];
 function renderAdmin(lista){
+  ADMIN_LIST=lista;
   const tPag=lista.reduce((x,d)=>x+d.pagado,0);
   const tPen=lista.reduce((x,d)=>x+d.pendiente,0);
   const tCon=lista.reduce((x,d)=>x+d.contratado,0);
   const rows=lista.map(d=>{
     const barColor=d.pct>=80?'var(--accent-green)':d.pct>=40?'var(--accent)':'var(--brand-mid)';
-    return`<tr>
-      <td><div class="at-nombre">${d.nombre}</div><div class="at-plan">${d.plan}</div></td>
+    return`<tr style="cursor:pointer" onclick="adminVer('${d.docId}')" title="Ver detalle de ${d.nombre}">
+      <td><div class="at-nombre">${d.nombre} <span style="color:var(--brand-mid);font-size:11px">👁️</span></div><div class="at-plan">${d.plan}</div></td>
       <td style="text-align:center">${d.entregadas}/${d.total}</td>
       <td><span class="at-bar"><div style="width:${d.pct}%;background:${barColor}"></div></span>${d.pct}%</td>
       <td style="text-align:center">${d.atrasadas>0?'<span style="color:var(--danger);font-weight:700">'+d.atrasadas+'</span>':'—'}</td>
@@ -676,6 +678,7 @@ function renderAdmin(lista){
     </div>
     <div class="card">
       <div class="sec-title">Detalle por Docente</div>
+      <p style="font-size:12px;color:var(--text-3);margin:-8px 0 14px">💡 Haz clic en cualquier docente para ver su progreso completo y sus pagos, tal como lo ve el profesor.</p>
       <div class="admin-scroll">
         <table class="admin-table">
           <thead><tr><th>Docente</th><th>Tareas</th><th>Avance</th><th>Atrasadas</th><th>Pagado</th><th>Pendiente</th></tr></thead>
@@ -686,6 +689,70 @@ function renderAdmin(lista){
   document.getElementById('scr-login').style.display='none';
   document.getElementById('scr-dash').style.display='none';
   document.getElementById('scr-admin').style.display='block';
+  window.scrollTo(0,0);
+}
+
+
+function mkToken(docId,nombre){
+  return btoa(unescape(encodeURIComponent(docId+'|'+nombre+'|'+Date.now())));
+}
+
+async function adminVer(docId){
+  const d=ADMIN_LIST.find(x=>x.docId===docId);
+  if(!d)return;
+  if(DEMO){
+    const tareas=DT.filter(t=>t.docId===docId);
+    const f=tareas[0];
+    const dp=DP[docId]||{cobros:[],cuotas:[]};
+    renderAdminDocente({nombre:f.nombre,tipo:f.tipo,asignatura:f.asignatura,plan:f.plan},tareas,dp);
+    return;
+  }
+  ov('Cargando detalle de '+d.nombre+'…');
+  try{
+    const tk=mkToken(d.docId,d.nombre);
+    const r1=await fetch(`${API_URL}?action=getTareas&token=${encodeURIComponent(tk)}`);
+    const j1=await r1.json();
+    if(!j1.ok){hov();alert(j1.error||'Error al cargar tareas');return;}
+    const r2=await fetch(`${API_URL}?action=getPagos&token=${encodeURIComponent(tk)}`);
+    const j2=await r2.json();
+    hov();
+    renderAdminDocente(j1.docente,j1.tareas,{cobros:j2.ok?j2.cobros:[],cuotas:j2.ok?j2.cuotas:[]});
+  }catch(e){hov();alert('No se pudo conectar.');}
+}
+
+function renderAdminDocente(docente,tareas,dp){
+  const total=tareas.length,entregadas=tareas.filter(t=>t.estado==='Entregado').length,enProceso=tareas.filter(t=>t.estado==='En proceso').length,atrasadas=tareas.filter(t=>isLate(t.fecha,t.estado)).length;
+  const pct=total?Math.round((entregadas/total)*100):0;
+  const R=44,C=2*Math.PI*R,offset=C-(pct/100)*C;
+  const cc=pct>=80?'#2ECC9A':pct>=40?'#F5A623':'#1E6FBF';
+  const mods=['Módulo 1','Módulo 2','Módulo 3'];
+  const ms=mods.map(m=>{const mt=tareas.filter(t=>t.modulo===m);const me=mt.filter(t=>t.estado==='Entregado').length;return{modulo:m,total:mt.length,pct:mt.length?Math.round(me/mt.length*100):null};}).filter(m=>m.total>0);
+  const mbH=ms.map(m=>`<div class="mod-row"><span class="mod-lbl">${m.modulo}</span><div class="mod-bar-w"><div class="mod-bar" style="width:${m.pct}%;background:${mc(m.modulo)}"></div></div><span class="mod-pct" style="color:${mc(m.modulo)}">${m.pct}%</span></div>`).join('');
+  const tH=tareas.map(t=>{const re=isLate(t.fecha,t.estado)?'Atrasado':t.estado;return`<div class="tarea-item"><div class="s-dot dot-${sc(re)}"></div><div class="t-info"><span class="mod-badge ${mb(t.modulo)}">${t.modulo}</span><div class="t-nombre">${t.tarea}</div><div class="t-fecha ${re==='Atrasado'?'late':''}">📅 Entrega: ${t.fecha}</div>${t.obs?`<div class="obs-box">💬 ${t.obs}</div>`:''}</div><span class="s-pill pill-${sc(re)}">${re}</span></div>`;}).join('');
+  const contratado=dp.cobros.reduce((x,c)=>x+c.monto,0);
+  const pagado=dp.cuotas.filter(c=>c.estado==='Pagada').reduce((x,c)=>x+c.montoCuota,0)+dp.cobros.filter(c=>c.estado==='Pagado').reduce((x,c)=>x+c.monto,0);
+  const pendiente=dp.cuotas.filter(c=>c.estado==='Pendiente').reduce((x,c)=>x+c.montoCuota,0);
+  const cuotasH=dp.cuotas.length===0?`<p style="color:var(--text-3);font-size:13px;text-align:center;padding:14px">Sin cuotas registradas.</p>`
+    :dp.cuotas.map(c=>`<div class="cuota-item"><div class="cuota-num ${c.estado==='Pagada'?'cn-pagada':'cn-pendiente'}">${c.nEstaCuota}</div><div class="cuota-info"><div class="cuota-label">${c.servicio} — Cuota ${c.label}</div><div class="cuota-meta">${c.notas||''}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0"><div class="cuota-monto">${fmt$(c.montoCuota)}</div><span class="cuota-estado ${c.estado==='Pagada'?'ce-pagada':'ce-pendiente'}">${c.estado==='Pagada'?'✅ Pagada':'⏳ Pendiente'}</span></div></div>`).join('');
+
+  document.getElementById('admin-content').innerHTML=`
+    <button class="logout-btn" onclick="renderAdmin(ADMIN_LIST)" style="margin-bottom:14px">← Volver al panel</button>
+    <div class="profile-header">
+      <div class="profile-top"><div class="p-ava">${ini(docente.nombre)}</div><div><div class="p-name">${docente.nombre}</div><div class="p-tags"><span class="tag">${docente.asignatura}</span><span class="tag">${docente.tipo}</span></div></div></div>
+      <div class="stats-row"><div class="stat-box"><div class="val">${total}</div><div class="lbl">Módulos</div></div><div class="stat-box"><div class="val">${entregadas}</div><div class="lbl">Entregados</div></div><div class="stat-box"><div class="val">${enProceso}</div><div class="lbl">En Proceso</div></div><div class="stat-box"><div class="val">${atrasadas||'—'}</div><div class="lbl">Atrasados</div></div></div>
+    </div>
+    <div class="card"><div class="sec-title">Avance General</div>
+      <div class="prog-big"><div class="prog-circle"><svg width="100" height="100" viewBox="0 0 100 100"><circle class="c-bg" cx="50" cy="50" r="${R}"/><circle class="c-fg" cx="50" cy="50" r="${R}" stroke="${cc}" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"/></svg><div class="c-label">${pct}%<span>logrado</span></div></div>
+      <div class="prog-desc"><h3>${docente.plan}</h3><p>${entregadas} de ${total} tareas completadas.</p></div></div>
+      ${ms.length>1?`<div class="mod-grid">${mbH}</div>`:''}
+    </div>
+    <div class="card"><div class="sec-title">Detalle de Tareas</div>${tH}</div>
+    <div class="admin-totales">
+      <div class="pago-stat"><div class="ps-val">${fmt$(contratado)}</div><div class="ps-lbl">Contratado</div></div>
+      <div class="pago-stat"><div class="ps-val ps-green">${fmt$(pagado)}</div><div class="ps-lbl">Pagado</div></div>
+      <div class="pago-stat"><div class="ps-val ${pendiente>0?'ps-danger':'ps-green'}">${fmt$(pendiente)}</div><div class="ps-lbl">Pendiente</div></div>
+    </div>
+    <div class="card"><div class="sec-title">Plan de Cuotas</div>${cuotasH}</div>`;
   window.scrollTo(0,0);
 }
 
