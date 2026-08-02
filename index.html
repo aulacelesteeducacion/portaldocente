@@ -157,11 +157,6 @@ footer img{width:22px;vertical-align:middle;margin-right:5px;opacity:.6}
       <div class="section-label" style="margin-top:0">💰 Resumen financiero</div>
       <div id="fin-resumen"></div>
       <div class="section-label">👥 Docentes</div>
-      <div class="admin-filter">
-        <button class="filter-btn active" onclick="filtrar('todos',this)">Todos</button>
-        <button class="filter-btn" onclick="filtrar('Ed. Diferencial',this)">Ed. Diferencial</button>
-        <button class="filter-btn" onclick="filtrar('Plan Común',this)">Plan Común</button>
-      </div>
       <div id="admin-lista"></div>
     </div>
   </div>
@@ -349,14 +344,31 @@ async function loginSup() {
 }
 
 function renderResumen(r) {
-  const res = r.resumen || r.financiero || {};
-  const g = (k, alt) => res[k] ?? res[alt] ?? 0;
+  const docs = r.docentes || [];
+  const contratado = docs.reduce((s,d)=>s+(+d.contratado||0),0);
+  const pagado     = docs.reduce((s,d)=>s+(+d.pagado||0),0);
+  const pendiente  = docs.reduce((s,d)=>s+(+d.pendiente||0),0);
+  const totalTareas= docs.reduce((s,d)=>s+(+d.total||0),0);
+  const entregadas = docs.reduce((s,d)=>s+(+d.entregadas||0),0);
+  const pct = totalTareas ? Math.round(entregadas/totalTareas*100) : 0;
+
   document.getElementById('fin-resumen').innerHTML = `
     <div class="fin-grid">
-      <div class="fin-stat blue"><div class="fin-num">${fmt(g('totalContratado','contratado'))}</div><div class="fin-label">Contratado</div></div>
-      <div class="fin-stat green"><div class="fin-num">${fmt(g('totalRecibido','recibido'))}</div><div class="fin-label">Recibido</div></div>
-      <div class="fin-stat yellow"><div class="fin-num">${fmt(g('totalPendiente','pendiente'))}</div><div class="fin-label">Por cobrar</div></div>
-      <div class="fin-stat green"><div class="fin-num">${fmt(g('utilidadNeta','utilidad'))}</div><div class="fin-label">Utilidad neta</div></div>
+      <div class="fin-stat blue"><div class="fin-num">${fmt(contratado)}</div><div class="fin-label">Contratado</div></div>
+      <div class="fin-stat green"><div class="fin-num">${fmt(pagado)}</div><div class="fin-label">Recibido</div></div>
+      <div class="fin-stat yellow"><div class="fin-num">${fmt(pendiente)}</div><div class="fin-label">Por cobrar</div></div>
+      <div class="fin-stat green"><div class="fin-num">${pct}%</div><div class="fin-label">Avance global</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
+      <div style="flex:1;min-width:110px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">
+        <div style="font-size:14px;font-weight:700;">${docs.length}</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Docentes activos</div></div>
+      <div style="flex:1;min-width:110px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">
+        <div style="font-size:14px;font-weight:700;">${entregadas}/${totalTareas}</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Módulos entregados</div></div>
+      <div style="flex:1;min-width:110px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;">
+        <div style="font-size:14px;font-weight:700;">${docs.filter(d=>+d.pendiente===0).length}</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Pagos al día</div></div>
     </div>`;
 }
 
@@ -369,79 +381,120 @@ function filtrar(f, el) {
 
 function renderAdmin() {
   if (!datosAdmin) return;
-  const docs = (datosAdmin.docentes || datosAdmin.data || []);
-  const lista = docs.filter(d => filtroAdmin === 'todos' || (d.tipo||d.tipoPortafolio) === filtroAdmin)
-                    .sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||''));
+  const docs = datosAdmin.docentes || [];
+  const lista = docs.slice().sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||''));
 
   document.getElementById('admin-lista').innerHTML = lista.length ? lista.map(d => {
-    const total = d.totalTareas ?? d.modulos?.length ?? 0;
-    const entregadas = d.entregadas ?? 0;
-    const cuotasPag = d.cuotasPagadas ?? 0;
-    const cuotasTot = d.cuotasTotales ?? 0;
-    const cls = (cuotasTot > 0 && cuotasPag === cuotasTot) ? 'tag-pagado' : 'tag-pendiente';
-    return `<div class="docente-row" onclick='abrirDetalle(${JSON.stringify(JSON.stringify(d))})'>
-      <div><div class="docente-name">${d.nombre||''}</div>
-      <div class="docente-sub">${d.id||d.docId||''} · ${d.plan||''} · ${entregadas}/${total} módulos</div></div>
-      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-        ${cuotasTot ? `<span class="pago-tag ${cls}">${cuotasPag}/${cuotasTot} cuotas</span>` : ''}
-        <span class="chevron">›</span>
-      </div></div>`;
+    const total = +d.total || 0;
+    const entregadas = +d.entregadas || 0;
+    const enProceso = +d.enProceso || 0;
+    const pagado = +d.pagado || 0;
+    const pendiente = +d.pendiente || 0;
+    const contratado = +d.contratado || 0;
+    const pctPago = contratado ? Math.round(pagado/contratado*100) : 0;
+    const clsPago = pendiente === 0 ? 'tag-pagado' : 'tag-pendiente';
+    return `<div class="docente-row" onclick="abrirDetalle('${d.docId}')">
+      <div style="flex:1;min-width:0;">
+        <div class="docente-name">${d.nombre||''}</div>
+        <div class="docente-sub">${d.docId||''} · ${d.plan||''}</div>
+        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+          <span class="estado-badge e-Entregado" style="font-size:10px;">${entregadas}/${total} entregados</span>
+          ${enProceso ? `<span class="estado-badge e-En-proceso" style="font-size:10px;">${enProceso} en proceso</span>` : ''}
+          <span class="pago-tag ${clsPago}" style="font-size:10px;">${fmt(pagado)} de ${fmt(contratado)}</span>
+        </div>
+      </div>
+      <span class="chevron">›</span>
+    </div>`;
   }).join('') : '<p style="font-size:13px;color:var(--text-muted)">Sin docentes registrados.</p>';
 }
 
-function abrirDetalle(dStr) {
-  const d = typeof dStr === 'string' ? JSON.parse(dStr) : dStr;
+async function abrirDetalle(docId) {
+  const d = (datosAdmin.docentes||[]).find(x=>x.docId===docId);
+  if (!d) return;
   document.getElementById('modal-d-nombre').textContent = d.nombre || '';
-  let html = `<p style="font-size:12px;color:var(--text-secondary);margin-bottom:1rem;">${d.id||d.docId||''} · ${d.tipo||''} · ${d.plan||''}</p>`;
+  document.getElementById('modal-d-body').innerHTML = '<div class="loading"><div class="spinner"></div><div>Cargando detalle...</div></div>';
+  document.getElementById('modal-detalle').classList.remove('hidden');
 
-  const mods = d.modulos || d.tareas || [];
-  if (mods.length) {
-    html += `<div class="section-label" style="margin-top:0">📊 Módulos</div>`;
-    html += mods.map(m => {
-      const est = m.estado || 'Pendiente';
-      const cls = 'e-'+est.replace(' ','-');
-      return `<div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:8px;background:var(--surface2);">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:13px;font-weight:700;">${m.modulo||m.mod||''}</div>
-            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;line-height:1.4;">${m.tarea||m.entregable||''}</div>
-            ${m.fecha?`<div style="font-size:10px;color:var(--text-muted);margin-top:3px;">📅 Fecha sugerida: ${m.fecha}</div>`:''}
-          </div>
-          <span class="estado-badge ${cls}">${est}</span>
-        </div></div>`;
-    }).join('');
-  }
+  const contratado = +d.contratado||0, pagado = +d.pagado||0, pendiente = +d.pendiente||0;
+  let html = `<p style="font-size:12px;color:var(--text-secondary);margin-bottom:1rem;">${d.docId} · ${d.plan||''}</p>`;
 
-  const pagos = d.pagos || d.cuotas || [];
-  if (pagos.length) {
-    const tot = pagos.reduce((s,p)=>s+(parseFloat(p.monto)||0),0);
-    const pag = pagos.filter(p=>(p.estado||'').toLowerCase().includes('pagad')).reduce((s,p)=>s+(parseFloat(p.monto)||0),0);
-    html += `<div class="section-label">💳 Pagos</div>
-      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-        <div style="flex:1;min-width:100px;background:var(--success-bg);border:1px solid #bbf7d0;border-radius:var(--radius);padding:10px;text-align:center;"><div style="font-size:14px;font-weight:700;">${fmt(pag)}</div><div style="font-size:11px;color:var(--success-text)">Pagado</div></div>
-        <div style="flex:1;min-width:100px;background:var(--yellow-bg);border:1px solid #fde68a;border-radius:var(--radius);padding:10px;text-align:center;"><div style="font-size:14px;font-weight:700;">${fmt(tot-pag)}</div><div style="font-size:11px;color:#b45309">Pendiente</div></div>
-        <div style="flex:1;min-width:100px;background:var(--accent-bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;"><div style="font-size:14px;font-weight:700;">${fmt(tot)}</div><div style="font-size:11px;color:var(--accent-text)">Total</div></div>
-      </div>`;
-    html += pagos.map(p => {
-      const est = p.estado || 'Pendiente';
-      const pagado = est.toLowerCase().includes('pagad');
-      return `<div class="pago-row">
-        <div><div class="pago-label">${p.cuota||p.label||'Cuota'}</div>
-        <div class="pago-fecha">Fecha: ${p.fecha||p.vencimiento||'Por definir'} · ${fmt(p.monto)}</div></div>
-        <span class="${pagado?'tag-pagado':'tag-pendiente'}">${est}</span>
-      </div>`;
-    }).join('');
-  }
+  html += `<div class="section-label" style="margin-top:0">💳 Estado financiero</div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
+      <div style="flex:1;min-width:100px;background:var(--success-bg);border:1px solid #bbf7d0;border-radius:var(--radius);padding:12px;text-align:center;">
+        <div style="font-size:15px;font-weight:700;">${fmt(pagado)}</div><div style="font-size:11px;color:var(--success-text)">Pagado</div></div>
+      <div style="flex:1;min-width:100px;background:var(--yellow-bg);border:1px solid #fde68a;border-radius:var(--radius);padding:12px;text-align:center;">
+        <div style="font-size:15px;font-weight:700;">${fmt(pendiente)}</div><div style="font-size:11px;color:#b45309">Pendiente</div></div>
+      <div style="flex:1;min-width:100px;background:var(--accent-bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;">
+        <div style="font-size:15px;font-weight:700;">${fmt(contratado)}</div><div style="font-size:11px;color:var(--accent-text)">Total plan</div></div>
+    </div>`;
 
-  if (d.drive || d.driveUrl) {
-    const u = d.drive || d.driveUrl;
-    html += `<div class="section-label">📁 Drive</div>
-      <a href="${u}" target="_blank" class="drive-link"><span style="font-size:24px;">📂</span>
-      <div><div class="drive-text">Ver carpeta Drive</div><div class="drive-sub">${d.nombre||''}</div></div></a>`;
-  }
+  html += `<div class="section-label">📊 Resumen de módulos</div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
+      <div style="flex:1;min-width:80px;background:var(--success-bg);border-radius:var(--radius);padding:10px;text-align:center;">
+        <div style="font-size:16px;font-weight:700;">${d.entregadas||0}</div><div style="font-size:10px;color:var(--success-text)">Entregados</div></div>
+      <div style="flex:1;min-width:80px;background:var(--accent-bg);border-radius:var(--radius);padding:10px;text-align:center;">
+        <div style="font-size:16px;font-weight:700;">${d.enProceso||0}</div><div style="font-size:10px;color:var(--accent-text)">En proceso</div></div>
+      <div style="flex:1;min-width:80px;background:var(--danger-bg);border-radius:var(--radius);padding:10px;text-align:center;">
+        <div style="font-size:16px;font-weight:700;">${d.atrasadas||0}</div><div style="font-size:10px;color:var(--danger-text)">Atrasados</div></div>
+      <div style="flex:1;min-width:80px;background:var(--yellow-bg);border-radius:var(--radius);padding:10px;text-align:center;">
+        <div style="font-size:16px;font-weight:700;">${(+d.total||0)-(+d.entregadas||0)-(+d.enProceso||0)-(+d.atrasadas||0)}</div><div style="font-size:10px;color:#b45309">Pendientes</div></div>
+    </div>`;
 
   document.getElementById('modal-d-body').innerHTML = html;
-  document.getElementById('modal-detalle').classList.remove('hidden');
+
+  // Detalle de módulos y cuotas desde el Apps Script
+  try {
+    const [tareas, pagos, drive] = await Promise.all([
+      api('getTareas', { token: docId }),
+      api('getPagos',  { token: docId }),
+      api('getDrive',  { token: docId }),
+    ]);
+
+    const mods = tareas.tareas || tareas.data || [];
+    if (mods.length) {
+      html += `<div class="section-label">📋 Detalle de módulos</div>`;
+      html += mods.map(m => {
+        const est = m.estado || 'Pendiente';
+        const cls = 'e-'+est.replace(' ','-');
+        return `<div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:8px;background:var(--surface2);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:700;">${m.modulo||m.mod||''}</div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;line-height:1.4;">${m.tarea||m.entregable||''}</div>
+              ${m.fecha?`<div style="font-size:10px;color:var(--text-muted);margin-top:3px;">📅 Fecha sugerida: ${m.fecha}</div>`:''}
+            </div>
+            <span class="estado-badge ${cls}">${est}</span>
+          </div></div>`;
+      }).join('');
+    }
+
+    const cuotas = pagos.pagos || pagos.cuotas || pagos.data || [];
+    if (cuotas.length) {
+      html += `<div class="section-label">🧾 Detalle de cuotas</div>`;
+      html += cuotas.map(p => {
+        const est = p.estado || 'Pendiente';
+        const ok = est.toLowerCase().includes('pagad');
+        return `<div class="pago-row">
+          <div><div class="pago-label">${p.cuota||p.label||'Cuota'}</div>
+          <div class="pago-fecha">${p.fecha||p.vencimiento||'Sin fecha'}</div></div>
+          <div class="pago-right"><span class="pago-monto">${fmt(p.monto)}</span>
+          <span class="${ok?'tag-pagado':'tag-pendiente'}">${est}</span></div>
+        </div>`;
+      }).join('');
+    }
+
+    const u = drive.url || drive.link || drive.carpeta;
+    if (u) {
+      html += `<div class="section-label">📁 Drive</div>
+        <a href="${u}" target="_blank" class="drive-link"><span style="font-size:24px;">📂</span>
+        <div><div class="drive-text">Ver carpeta Drive</div><div class="drive-sub">${d.nombre||''}</div></div></a>`;
+    }
+
+    document.getElementById('modal-d-body').innerHTML = html;
+  } catch(e) {
+    document.getElementById('modal-d-body').innerHTML = html +
+      '<p style="font-size:12px;color:var(--text-muted);margin-top:1rem;">No se pudo cargar el detalle ampliado.</p>';
+  }
 }
 
 function cerrarDetalle(){ document.getElementById('modal-detalle').classList.add('hidden'); }
