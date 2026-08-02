@@ -187,6 +187,23 @@ main{max-width:780px;margin:0 auto;padding:36px 20px 60px}
 .pago-aviso{background:#FEF3C7;border:1px solid #FDE68A;border-radius:var(--r);padding:16px 20px;margin-bottom:16px;font-size:13px;color:#92400E;display:flex;gap:12px;align-items:flex-start}
 
 
+
+/* OBSERVACIONES SUPERVISOR */
+.obs-admin-box{background:#F8FAFB;border:1px solid var(--border);border-radius:var(--rs);padding:12px;margin-top:8px}
+.obs-admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.obs-admin-label{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px}
+.obs-admin-date{font-size:10px;color:var(--text-3)}
+.obs-admin-text{font-size:13px;color:var(--text-2);line-height:1.5;font-style:italic;margin-bottom:8px}
+.obs-admin-empty{font-size:12px;color:var(--text-3);font-style:italic}
+.obs-edit-area{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);resize:vertical;min-height:70px;outline:none;transition:border-color .2s}
+.obs-edit-area:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(26,58,107,.08)}
+.obs-actions{display:flex;gap:8px;margin-top:6px;justify-content:flex-end}
+.btn-obs-save{padding:6px 14px;background:var(--brand);color:#fff;border:none;border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.btn-obs-save:hover{background:#1448A0}
+.btn-obs-cancel{padding:6px 12px;background:none;border:1px solid var(--border);border-radius:var(--rs);font-size:12px;color:var(--text-2);cursor:pointer;font-family:'DM Sans',sans-serif}
+.btn-obs-edit{padding:4px 10px;background:none;border:1px solid var(--border);border-radius:var(--rs);font-size:11px;color:var(--brand);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-obs-edit:hover{background:var(--brand-light)}
+.obs-saved-ok{color:var(--accent-green);font-size:11px;font-weight:600;display:none}
 /* SUPERVISAR */
 .super-link{margin-top:22px;text-align:center}
 .super-link button{background:none;border:none;color:var(--text-3);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:underline}
@@ -389,7 +406,7 @@ const DP = {
 // ══ UTILS ════════════════════════════════════════════════════
 const ini=n=>n.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
 const pd=s=>{const[d,m,y]=s.split('/');return new Date(+y,+m-1,+d)};
-const isLate=(f,e)=>e!=='Entregado'&&pd(f)<new Date('2026-08-02');
+const isLate=(f,e)=>false; // Sin fechas límite
 const sc=e=>({Entregado:'entregado','En proceso':'proceso',Atrasado:'atrasado',Pendiente:'pendiente'}[e]||'pendiente');
 const mc=m=>({'Módulo 1':'#3B82F6','Módulo 2':'#8B5CF6','Módulo 3':'#10B981'}[m]||'#999');
 const mb=m=>({'Módulo 1':'bm1','Módulo 2':'bm2','Módulo 3':'bm3'}[m]||'bm1');
@@ -489,16 +506,14 @@ function renderProg(){
   const cc=pct>=80?'#2ECC9A':pct>=40?'#F5A623':'#3B82F6';
   const mods=['Módulo 1','Módulo 2','Módulo 3'];
   const ms=mods.map(m=>{const mt=tareas.filter(t=>t.modulo===m);const me=mt.filter(t=>t.estado==='Entregado').length;return{modulo:m,total:mt.length,entregadas:me,pct:mt.length?Math.round((me/mt.length)*100):null};}).filter(m=>m.total>0);
-  const prox=tareas.filter(t=>t.estado!=='Entregado').sort((a,b)=>pd(a.fecha)-pd(b.fecha));
   let alertH='';
-  if(prox.length){const p=prox[0];const diff=Math.ceil((pd(p.fecha)-today)/86400000);if(diff<=7&&diff>=0)alertH=`<div class="alert-box"><span class="alert-icon">⏰</span><div class="alert-text"><h4>Próxima entrega ${diff===0?'hoy':diff===1?'mañana':'en '+diff+' días'}</h4><p>${p.tarea} — ${p.fecha}</p></div></div>`;}
   const mbH=ms.map(m=>`<div class="mod-row"><span class="mod-lbl">${m.modulo}</span><div class="mod-bar-w"><div class="mod-bar" style="width:${m.pct}%;background:${mc(m.modulo)}"></div></div><span class="mod-pct" style="color:${mc(m.modulo)}">${m.pct}%</span></div>`).join('');
-  const tH=tareas.map(t=>{const re=isLate(t.fecha,t.estado)?'Atrasado':t.estado;return`<div class="tarea-item"><div class="s-dot dot-${sc(re)}"></div><div class="t-info"><span class="mod-badge ${mb(t.modulo)}">${t.modulo}</span><div class="t-nombre">${t.tarea}</div><div class="t-fecha ${re==='Atrasado'?'late':''}">📅 Entrega: ${t.fecha}</div>${t.obs?`<div class="obs-box">💬 ${t.obs}</div>`:''}</div><span class="s-pill pill-${sc(re)}">${re}</span></div>`;}).join('');
+  const tH=tareas.map(t=>{const re=t.estado;return`<div class="tarea-item"><div class="s-dot dot-${sc(re)}"></div><div class="t-info"><span class="mod-badge ${mb(t.modulo)}">${t.modulo}</span><div class="t-nombre">${t.tarea}</div>${t.obs?`<div class="obs-box">💬 ${t.obs}</div>`:''}</div><span class="s-pill pill-${sc(re)}">${re}</span></div>`;}).join('');
   const mo=pct===100?{icon:'🏆',h:'¡Portafolio completado!',p:'Entregaste todos tus módulos. Excelente trabajo.'}:pct>=60?{icon:'🚀',h:'¡Vas muy bien!',p:'Más de la mitad completado. ¡Sigue así!'}:pct>0?{icon:'💪',h:'¡En camino!',p:'Cada módulo entregado te acerca al éxito.'}:{icon:'🌱',h:'¡Listo para comenzar!',p:'Aula Celeste está aquí para acompañarte en cada paso.'};
   document.getElementById('tc-prog').innerHTML=`
     <div class="profile-header">
       <div class="profile-top"><div class="p-ava">${ini(docente.nombre)}</div><div><div class="p-name">${docente.nombre}</div><div class="p-tags"><span class="tag">${docente.asignatura}</span><span class="tag">${docente.tipo}</span></div></div></div>
-      <div class="stats-row"><div class="stat-box"><div class="val">${total}</div><div class="lbl">Módulos</div></div><div class="stat-box"><div class="val">${entregadas}</div><div class="lbl">Entregados</div></div><div class="stat-box"><div class="val">${enProceso}</div><div class="lbl">En Proceso</div></div><div class="stat-box"><div class="val">${atrasadas||'—'}</div><div class="lbl">Atrasados</div></div></div>
+      <div class="stats-row"><div class="stat-box"><div class="val">${total}</div><div class="lbl">Módulos</div></div><div class="stat-box"><div class="val">${entregadas}</div><div class="lbl">Entregados</div></div><div class="stat-box"><div class="val">${enProceso}</div><div class="lbl">En Proceso</div></div><div class="stat-box"><div class="val">${total-entregadas}</div><div class="lbl">Pendientes</div></div></div>
     </div>
     ${alertH}
     <div class="card"><div class="sec-title">Avance General</div>
@@ -642,7 +657,7 @@ function buildDemoAdmin(){
     const ts=DT.filter(t=>t.docId===id);
     const ent=ts.filter(t=>t.estado==='Entregado').length;
     const ep=ts.filter(t=>t.estado==='En proceso').length;
-    const atr=ts.filter(t=>isLate(t.fecha,t.estado)).length;
+    const atr=0; // Sin fechas obligatorias
     const dp=DP[id]||{cobros:[],cuotas:[]};
     const contratado=dp.cobros.reduce((x,c)=>x+c.monto,0);
     const pagado=dp.cuotas.filter(c=>c.estado==='Pagada').reduce((x,c)=>x+c.montoCuota,0)+dp.cobros.filter(c=>c.estado==='Pagado'&&!c.excluirAdmin).reduce((x,c)=>x+c.monto,0);
@@ -663,9 +678,10 @@ function renderAdmin(lista){
       <td><div class="at-nombre">${d.nombre} <span style="color:var(--brand-mid);font-size:11px">👁️</span></div><div class="at-plan">${d.plan}</div></td>
       <td style="text-align:center">${d.entregadas}/${d.total}</td>
       <td><span class="at-bar"><div style="width:${d.pct}%;background:${barColor}"></div></span>${d.pct}%</td>
-      <td style="text-align:center">${d.atrasadas>0?'<span style="color:var(--danger);font-weight:700">'+d.atrasadas+'</span>':'—'}</td>
+
       <td class="at-money verde">${fmt$(d.pagado)}</td>
       <td class="at-money ${d.pendiente>0?'rojo':''}">${d.pendiente>0?fmt$(d.pendiente):'—'}</td>
+      <td style="font-size:11px;color:var(--text-2);max-width:160px;font-style:italic">${(()=>{try{const o=JSON.parse(localStorage.getItem('ac_obs_v1')||'{}');const t=o[d.docId]?.texto;return t?'"'+t.slice(0,55)+(t.length>55?'...':'')+'"':'<span style="color:var(--text-3)">—</span>';}catch(e){return '—';}})()}</td>
     </tr>`;
   }).join('');
 
@@ -686,7 +702,7 @@ function renderAdmin(lista){
       <p style="font-size:12px;color:var(--text-3);margin:-8px 0 14px">💡 Haz clic en cualquier docente para ver su progreso completo y sus pagos, tal como lo ve el profesor.</p>
       <div class="admin-scroll">
         <table class="admin-table">
-          <thead><tr><th>Docente</th><th>Tareas</th><th>Avance</th><th>Atrasadas</th><th>Pagado</th><th>Pendiente</th></tr></thead>
+          <thead><tr><th>Docente</th><th>Tareas</th><th>Avance</th><th>Pagado</th><th>Pendiente</th><th>Observación</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
@@ -709,7 +725,7 @@ async function adminVer(docId){
     const tareas=DT.filter(t=>t.docId===docId);
     const f=tareas[0];
     const dp=DP[docId]||{cobros:[],cuotas:[]};
-    renderAdminDocente({nombre:f.nombre,tipo:f.tipo,asignatura:f.asignatura,plan:f.plan},tareas,dp);
+    renderAdminDocente({nombre:f.nombre,tipo:f.tipo,asignatura:f.asignatura,plan:f.plan},tareas,dp,docId);
     return;
   }
   ov('Cargando detalle de '+d.nombre+'…');
@@ -721,11 +737,11 @@ async function adminVer(docId){
     const r2=await fetch(`${API_URL}?action=getPagos&token=${encodeURIComponent(tk)}`);
     const j2=await r2.json();
     hov();
-    renderAdminDocente(j1.docente,j1.tareas,{cobros:j2.ok?j2.cobros:[],cuotas:j2.ok?j2.cuotas:[]});
+    renderAdminDocente(j1.docente,j1.tareas,{cobros:j2.ok?j2.cobros:[],cuotas:j2.ok?j2.cuotas:[]},d.docId);
   }catch(e){hov();alert('No se pudo conectar.');}
 }
 
-function renderAdminDocente(docente,tareas,dp){
+function renderAdminDocente(docente,tareas,dp,docente_docId){
   const total=tareas.length,entregadas=tareas.filter(t=>t.estado==='Entregado').length,enProceso=tareas.filter(t=>t.estado==='En proceso').length,atrasadas=tareas.filter(t=>isLate(t.fecha,t.estado)).length;
   const pct=total?Math.round((entregadas/total)*100):0;
   const R=44,C=2*Math.PI*R,offset=C-(pct/100)*C;
@@ -733,18 +749,19 @@ function renderAdminDocente(docente,tareas,dp){
   const mods=['Módulo 1','Módulo 2','Módulo 3'];
   const ms=mods.map(m=>{const mt=tareas.filter(t=>t.modulo===m);const me=mt.filter(t=>t.estado==='Entregado').length;return{modulo:m,total:mt.length,pct:mt.length?Math.round(me/mt.length*100):null};}).filter(m=>m.total>0);
   const mbH=ms.map(m=>`<div class="mod-row"><span class="mod-lbl">${m.modulo}</span><div class="mod-bar-w"><div class="mod-bar" style="width:${m.pct}%;background:${mc(m.modulo)}"></div></div><span class="mod-pct" style="color:${mc(m.modulo)}">${m.pct}%</span></div>`).join('');
-  const tH=tareas.map(t=>{const re=isLate(t.fecha,t.estado)?'Atrasado':t.estado;return`<div class="tarea-item"><div class="s-dot dot-${sc(re)}"></div><div class="t-info"><span class="mod-badge ${mb(t.modulo)}">${t.modulo}</span><div class="t-nombre">${t.tarea}</div><div class="t-fecha ${re==='Atrasado'?'late':''}">📅 Entrega: ${t.fecha}</div>${t.obs?`<div class="obs-box">💬 ${t.obs}</div>`:''}</div><span class="s-pill pill-${sc(re)}">${re}</span></div>`;}).join('');
+  const tH=tareas.map(t=>{const re=t.estado;return`<div class="tarea-item"><div class="s-dot dot-${sc(re)}"></div><div class="t-info"><span class="mod-badge ${mb(t.modulo)}">${t.modulo}</span><div class="t-nombre">${t.tarea}</div>${t.obs?`<div class="obs-box">💬 ${t.obs}</div>`:''}</div><span class="s-pill pill-${sc(re)}">${re}</span></div>`;}).join('');
   const contratado=dp.cobros.reduce((x,c)=>x+c.monto,0);
   const pagado=dp.cuotas.filter(c=>c.estado==='Pagada').reduce((x,c)=>x+c.montoCuota,0)+dp.cobros.filter(c=>c.estado==='Pagado'&&!c.excluirAdmin).reduce((x,c)=>x+c.monto,0);
   const pendiente=dp.cuotas.filter(c=>c.estado==='Pendiente').reduce((x,c)=>x+c.montoCuota,0);
   const cuotasH=dp.cuotas.length===0?`<p style="color:var(--text-3);font-size:13px;text-align:center;padding:14px">Sin cuotas registradas.</p>`
     :dp.cuotas.map(c=>`<div class="cuota-item"><div class="cuota-num ${c.estado==='Pagada'?'cn-pagada':'cn-pendiente'}">${c.nEstaCuota}</div><div class="cuota-info"><div class="cuota-label">${c.servicio} — Cuota ${c.label}</div><div class="cuota-meta">${c.notas||''}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0"><div class="cuota-monto">${fmt$(c.montoCuota)}</div><span class="cuota-estado ${c.estado==='Pagada'?'ce-pagada':'ce-pendiente'}">${c.estado==='Pagada'?'✅ Pagada':'⏳ Pendiente'}</span></div></div>`).join('');
 
+  const obsContId = 'obs-cont-'+docente_docId;
   document.getElementById('admin-content').innerHTML=`
     <button class="logout-btn" onclick="renderAdmin(ADMIN_LIST)" style="margin-bottom:14px">← Volver al panel</button>
     <div class="profile-header">
       <div class="profile-top"><div class="p-ava">${ini(docente.nombre)}</div><div><div class="p-name">${docente.nombre}</div><div class="p-tags"><span class="tag">${docente.asignatura}</span><span class="tag">${docente.tipo}</span></div></div></div>
-      <div class="stats-row"><div class="stat-box"><div class="val">${total}</div><div class="lbl">Módulos</div></div><div class="stat-box"><div class="val">${entregadas}</div><div class="lbl">Entregados</div></div><div class="stat-box"><div class="val">${enProceso}</div><div class="lbl">En Proceso</div></div><div class="stat-box"><div class="val">${atrasadas||'—'}</div><div class="lbl">Atrasados</div></div></div>
+      <div class="stats-row"><div class="stat-box"><div class="val">${total}</div><div class="lbl">Módulos</div></div><div class="stat-box"><div class="val">${entregadas}</div><div class="lbl">Entregados</div></div><div class="stat-box"><div class="val">${enProceso}</div><div class="lbl">En Proceso</div></div><div class="stat-box"><div class="val">${total-entregadas}</div><div class="lbl">Pendientes</div></div></div>
     </div>
     <div class="card"><div class="sec-title">Avance General</div>
       <div class="prog-big"><div class="prog-circle"><svg width="100" height="100" viewBox="0 0 100 100"><circle class="c-bg" cx="50" cy="50" r="${R}"/><circle class="c-fg" cx="50" cy="50" r="${R}" stroke="${cc}" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"/></svg><div class="c-label">${pct}%<span>logrado</span></div></div>
@@ -757,8 +774,95 @@ function renderAdminDocente(docente,tareas,dp){
       <div class="pago-stat"><div class="ps-val ps-green">${fmt$(pagado)}</div><div class="ps-lbl">Pagado</div></div>
       <div class="pago-stat"><div class="ps-val ${pendiente>0?'ps-danger':'ps-green'}">${fmt$(pendiente)}</div><div class="ps-lbl">Pendiente</div></div>
     </div>
-    <div class="card"><div class="sec-title">Plan de Cuotas</div>${cuotasH}</div>`;
+    <div class="card"><div class="sec-title">Plan de Cuotas</div>${cuotasH}</div>
+    <div id="obs-wrap-${docente_docId}"></div>`;
+  renderObsBox(docente_docId, 'obs-wrap-'+docente_docId);
   window.scrollTo(0,0);
+}
+
+
+// ══ OBSERVACIONES DEL SUPERVISOR ══════════════════════════
+const OBS_KEY = 'ac_obs_v1';
+
+function getObs(docId){
+  try{
+    const all = JSON.parse(localStorage.getItem(OBS_KEY)||'{}');
+    return all[docId]||{texto:'',fecha:''};
+  }catch(e){return{texto:'',fecha:''};}
+}
+
+function saveObs(docId, texto){
+  try{
+    const all = JSON.parse(localStorage.getItem(OBS_KEY)||'{}');
+    const fecha = new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    all[docId] = {texto, fecha};
+    localStorage.setItem(OBS_KEY, JSON.stringify(all));
+    // Intentar guardar en Apps Script si está configurado
+    if(!DEMO){
+      fetch(`${API_URL}?action=saveObs&token=${encodeURIComponent(S?.token||'')}&docId=${encodeURIComponent(docId)}&obs=${encodeURIComponent(texto)}`).catch(()=>{});
+    }
+    return fecha;
+  }catch(e){return '';}
+}
+
+function renderObsBox(docId, containerId){
+  const obs = getObs(docId);
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML = `
+    <div class="obs-admin-box" id="obs-box-${docId}">
+      <div class="obs-admin-header">
+        <span class="obs-admin-label">📝 Observación del supervisor</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="obs-admin-date" id="obs-date-${docId}">${obs.fecha?'Última edición: '+obs.fecha:''}</span>
+          <button class="btn-obs-edit" onclick="editObs('${docId}')">✏️ Editar</button>
+        </div>
+      </div>
+      <div id="obs-display-${docId}">
+        ${obs.texto
+          ? `<div class="obs-admin-text">"${obs.texto}"</div>`
+          : `<div class="obs-admin-empty">Sin observaciones aún. Haz clic en "Editar" para agregar una nota sobre el avance real de este docente.</div>`
+        }
+      </div>
+      <div id="obs-edit-${docId}" style="display:none">
+        <textarea class="obs-edit-area" id="obs-ta-${docId}" placeholder="Escribe aquí tu observación sobre el avance real del docente...">${obs.texto}</textarea>
+        <div class="obs-actions">
+          <span class="obs-saved-ok" id="obs-ok-${docId}">✅ Guardado</span>
+          <button class="btn-obs-cancel" onclick="cancelObs('${docId}')">Cancelar</button>
+          <button class="btn-obs-save" onclick="confirmSaveObs('${docId}')">💾 Guardar</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function editObs(docId){
+  document.getElementById('obs-display-'+docId).style.display='none';
+  document.getElementById('obs-edit-'+docId).style.display='block';
+  document.getElementById('obs-ta-'+docId).focus();
+}
+
+function cancelObs(docId){
+  const obs = getObs(docId);
+  document.getElementById('obs-ta-'+docId).value = obs.texto;
+  document.getElementById('obs-edit-'+docId).style.display='none';
+  document.getElementById('obs-display-'+docId).style.display='block';
+}
+
+function confirmSaveObs(docId){
+  const texto = document.getElementById('obs-ta-'+docId).value.trim();
+  const fecha = saveObs(docId, texto);
+  // Actualizar display
+  const displayEl = document.getElementById('obs-display-'+docId);
+  displayEl.innerHTML = texto
+    ? `<div class="obs-admin-text">"${texto}"</div>`
+    : `<div class="obs-admin-empty">Sin observaciones aún. Haz clic en "Editar" para agregar una nota.</div>`;
+  document.getElementById('obs-date-'+docId).textContent = fecha?'Última edición: '+fecha:'';
+  document.getElementById('obs-edit-'+docId).style.display='none';
+  displayEl.style.display='block';
+  // Flash de confirmación
+  const ok = document.getElementById('obs-ok-'+docId);
+  ok.style.display='inline';
+  setTimeout(()=>ok.style.display='none', 2500);
 }
 
 function adminLogout(){
