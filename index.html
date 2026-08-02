@@ -186,6 +186,26 @@ main{max-width:780px;margin:0 auto;padding:36px 20px 60px}
 .pago-load{text-align:center;padding:28px;color:var(--text-3);font-size:14px}
 .pago-aviso{background:#FEF3C7;border:1px solid #FDE68A;border-radius:var(--r);padding:16px 20px;margin-bottom:16px;font-size:13px;color:#92400E;display:flex;gap:12px;align-items:flex-start}
 
+
+/* SUPERVISAR */
+.super-link{margin-top:22px;text-align:center}
+.super-link button{background:none;border:none;color:var(--text-3);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:underline}
+.super-link button:hover{color:var(--brand)}
+#scr-admin{display:none}
+.admin-table{width:100%;border-collapse:collapse;font-size:12px}
+.admin-table th{text-align:left;padding:9px 8px;background:var(--brand-light);color:var(--brand);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.admin-table td{padding:9px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.admin-table tr:last-child td{border-bottom:none}
+.at-nombre{font-weight:600;white-space:nowrap}
+.at-plan{font-size:11px;color:var(--text-3);max-width:150px}
+.at-bar{width:70px;height:7px;background:var(--border);border-radius:99px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:6px}
+.at-bar>div{height:100%;border-radius:99px}
+.at-money{white-space:nowrap;font-weight:600}
+.at-money.rojo{color:var(--danger)}
+.at-money.verde{color:var(--accent-green)}
+.admin-totales{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.admin-scroll{overflow-x:auto}
+@media(max-width:600px){.admin-totales{grid-template-columns:1fr}}
 /* LOADING */
 #ov{display:none;position:fixed;inset:0;background:rgba(240,244,248,.88);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:14px}
 .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}
@@ -237,7 +257,14 @@ main{max-width:780px;margin:0 auto;padding:36px 20px 60px}
     <div class="err-msg" id="err-msg"></div>
     <div class="load-msg" id="load-msg">⏳ Verificando…</div>
     <div class="hint-box">🔒 <b>Acceso privado:</b> Solo tú puedes ver tu información, materiales y estado de pagos.</div>
+    <div class="super-link"><button onclick="askAdmin()">🔑 Supervisar (Aula Celeste)</button></div>
   </div>
+</div>
+
+<!-- SUPERVISAR -->
+<div id="scr-admin">
+  <button class="logout-btn" onclick="adminLogout()">← Cerrar panel</button>
+  <div id="admin-content"></div>
 </div>
 
 <!-- DASHBOARD -->
@@ -256,7 +283,7 @@ main{max-width:780px;margin:0 auto;padding:36px 20px 60px}
 
 <script>
 // ══ CONFIG ══════════════════════════════════════════════════
-const API_URL = "https://script.google.com/macros/s/AKfycbxqdidZPLXrzwdEAO8mQPLrrJtvjzKFwvJPjk90g5J6pUQTd9O8H0GV37Uz0d2iVxfsIg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwlgmoQXRkByqLmjzxY_N1MuBUfd7cTn6hWhuaAIR8Sb2v8QzafyT5a3vq20Qgw2QDtGA/exec";
 const DEMO    = API_URL === "TU_URL_DE_APPS_SCRIPT_AQUI";
 
 // ══ STATE ════════════════════════════════════════════════════
@@ -371,6 +398,7 @@ const hov=()=>document.getElementById('ov').style.display='none';
 
 // ══ INIT ═════════════════════════════════════════════════════
 window.addEventListener('load',()=>{
+  if(!DEMO){const b=document.getElementById('demo-banner');if(b)b.style.display='none';}
   const sv=sessionStorage.getItem('ac_s');
   if(sv){try{S=JSON.parse(sv);renderAll();}catch(e){sessionStorage.removeItem('ac_s');}}
   document.getElementById('inp-p').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
@@ -388,11 +416,11 @@ async function doLogin(){
   document.getElementById('btn-login').disabled=true;
   document.getElementById('load-msg').style.display='block';
   try{
-    const r=await fetch(`${API_URL}?action=login&nombre=${encodeURIComponent(nombre)}&password=${encodeURIComponent(pass)}`,{method:'GET',mode:'cors'});
+    const r=await fetch(`${API_URL}?action=login&nombre=${encodeURIComponent(nombre)}&password=${encodeURIComponent(pass)}`);
     const j=await r.json();
     if(!j.ok){showErr(j.error||'Credenciales incorrectas.');return;}
     document.getElementById('load-msg').textContent='✅ Cargando tu portal…';
-    const r2=await fetch(`${API_URL}?action=getTareas&token=${encodeURIComponent(j.token)}`,{method:'GET',mode:'cors'});
+    const r2=await fetch(`${API_URL}?action=getTareas&token=${encodeURIComponent(j.token)}`);
     const j2=await r2.json();
     if(!j2.ok){showErr(j2.error||'Error al cargar datos.');return;}
     S={token:j.token,docente:j2.docente,tareas:j2.tareas,drive:j2.drive};
@@ -496,7 +524,7 @@ async function openMod(key,label){
   if(driveCache[key]){renderFilePanel(key,label,driveCache[key]);return;}
   if(DEMO){driveCache[key]=[];modCounts[key]=0;renderFilePanel(key,label,[]);return;}
   try{
-    const r=await fetch(`${API_URL}?action=getDrive&token=${encodeURIComponent(S.token)}&modulo=${key}`,{method:'GET',mode:'cors'});
+    const r=await fetch(`${API_URL}?action=getDrive&token=${encodeURIComponent(S.token)}&modulo=${key}`);
     const j=await r.json();
     if(!j.ok){document.getElementById('drive-panel').innerHTML=`<div class="card"><div class="empty-drive"><div class="ei">⚠️</div><p>${j.error}</p></div></div>`;return;}
     driveCache[key]=j.archivos;modCounts[key]=j.archivos.length;
@@ -518,7 +546,7 @@ async function uploadFiles(e,key,label){
     const f=files[i];prog.textContent=`⬆️ Subiendo ${i+1}/${files.length}: ${f.name}…`;
     try{
       const b64=await toB64(f);
-      const res=await fetch(API_URL,{method:'POST',mode:'cors',body:JSON.stringify({action:'uploadFile',token:S.token,modulo:key,fileName:f.name,mimeType:f.type||'application/octet-stream',data:b64})});
+      const res=await fetch(API_URL,{method:'POST',body:JSON.stringify({action:'uploadFile',token:S.token,modulo:key,fileName:f.name,mimeType:f.type||'application/octet-stream',data:b64})});
       const j=await res.json();
       if(j.ok){if(!driveCache[key])driveCache[key]=[];driveCache[key].unshift({id:j.fileId,nombre:j.nombre,tipo:f.type,tamaño:f.size,modificado:'Ahora',url:`https://drive.google.com/file/d/${j.fileId}/view`,descargaUrl:`https://drive.google.com/uc?export=download&id=${j.fileId}`});modCounts[key]=(modCounts[key]||0)+1;}
     }catch(err){prog.textContent=`⚠️ Error subiendo ${f.name}`;}
@@ -537,7 +565,7 @@ async function loadPagos(){
     renderPagos();return;
   }
   try{
-    const r=await fetch(`${API_URL}?action=getPagos&token=${encodeURIComponent(S.token)}`,{method:'GET',mode:'cors'});
+    const r=await fetch(`${API_URL}?action=getPagos&token=${encodeURIComponent(S.token)}`);
     const j=await r.json();
     if(!j.ok){document.getElementById('tc-pagos').innerHTML=`<div class="card"><p style="color:var(--danger)">⚠️ ${j.error}</p></div>`;return;}
     pagosData=j;renderPagos();
@@ -577,6 +605,93 @@ function renderPagos(){
       ${cuotasH}
     </div>
     <div class="hint-box" style="margin-top:0">💬 ¿Tienes dudas sobre tu estado de pago? Contacta a Aula Celeste directamente. Los pagos se actualizan al instante cuando quedan registrados en el sistema.</div>`;
+}
+
+// ══ SUPERVISAR (ADMIN) ═══════════════════════════════════════
+function askAdmin(){
+  const p=prompt('Contraseña de administradora:');
+  if(p===null)return;
+  if(!p.trim()){alert('Ingresa la contraseña.');return;}
+  loadAdmin(p.trim());
+}
+
+async function loadAdmin(pass){
+  if(DEMO){
+    if(pass!=='Romina12'){alert('Contraseña incorrecta.');return;}
+    renderAdmin(buildDemoAdmin());
+    return;
+  }
+  ov('Cargando panel de supervisión…');
+  try{
+    const r=await fetch(`${API_URL}?action=admin&password=${encodeURIComponent(pass)}`);
+    const j=await r.json();
+    hov();
+    if(!j.ok){alert(j.error||'Contraseña incorrecta.');return;}
+    renderAdmin(j.docentes);
+  }catch(e){hov();alert('No se pudo conectar.');}
+}
+
+function buildDemoAdmin(){
+  const ids=[...new Set(DT.map(t=>t.docId))];
+  return ids.map(id=>{
+    const ts=DT.filter(t=>t.docId===id);
+    const ent=ts.filter(t=>t.estado==='Entregado').length;
+    const ep=ts.filter(t=>t.estado==='En proceso').length;
+    const atr=ts.filter(t=>isLate(t.fecha,t.estado)).length;
+    const dp=DP[id]||{cobros:[],cuotas:[]};
+    const contratado=dp.cobros.reduce((x,c)=>x+c.monto,0);
+    const pagado=dp.cuotas.filter(c=>c.estado==='Pagada').reduce((x,c)=>x+c.montoCuota,0)+dp.cobros.filter(c=>c.estado==='Pagado').reduce((x,c)=>x+c.monto,0);
+    const pendiente=dp.cuotas.filter(c=>c.estado==='Pendiente').reduce((x,c)=>x+c.montoCuota,0);
+    return{docId:id,nombre:ts[0].nombre,plan:ts[0].plan,total:ts.length,entregadas:ent,enProceso:ep,atrasadas:atr,pct:ts.length?Math.round(ent/ts.length*100):0,contratado,pagado,pendiente};
+  }).sort((a,b)=>a.docId.localeCompare(b.docId));
+}
+
+function renderAdmin(lista){
+  const tPag=lista.reduce((x,d)=>x+d.pagado,0);
+  const tPen=lista.reduce((x,d)=>x+d.pendiente,0);
+  const tCon=lista.reduce((x,d)=>x+d.contratado,0);
+  const rows=lista.map(d=>{
+    const barColor=d.pct>=80?'var(--accent-green)':d.pct>=40?'var(--accent)':'var(--brand-mid)';
+    return`<tr>
+      <td><div class="at-nombre">${d.nombre}</div><div class="at-plan">${d.plan}</div></td>
+      <td style="text-align:center">${d.entregadas}/${d.total}</td>
+      <td><span class="at-bar"><div style="width:${d.pct}%;background:${barColor}"></div></span>${d.pct}%</td>
+      <td style="text-align:center">${d.atrasadas>0?'<span style="color:var(--danger);font-weight:700">'+d.atrasadas+'</span>':'—'}</td>
+      <td class="at-money verde">${fmt$(d.pagado)}</td>
+      <td class="at-money ${d.pendiente>0?'rojo':''}">${d.pendiente>0?fmt$(d.pendiente):'—'}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('admin-content').innerHTML=`
+    <div class="profile-header">
+      <div class="profile-top">
+        <div class="p-ava">👑</div>
+        <div><div class="p-name">Panel de Supervisión</div><div class="p-tags"><span class="tag">Aula Celeste</span><span class="tag">${lista.length} docentes activos</span></div></div>
+      </div>
+    </div>
+    <div class="admin-totales">
+      <div class="pago-stat"><div class="ps-val">${fmt$(tCon)}</div><div class="ps-lbl">Total Contratado</div></div>
+      <div class="pago-stat"><div class="ps-val ps-green">${fmt$(tPag)}</div><div class="ps-lbl">Total Recibido</div></div>
+      <div class="pago-stat"><div class="ps-val ${tPen>0?'ps-danger':'ps-green'}">${fmt$(tPen)}</div><div class="ps-lbl">Por Cobrar</div></div>
+    </div>
+    <div class="card">
+      <div class="sec-title">Detalle por Docente</div>
+      <div class="admin-scroll">
+        <table class="admin-table">
+          <thead><tr><th>Docente</th><th>Tareas</th><th>Avance</th><th>Atrasadas</th><th>Pagado</th><th>Pendiente</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+  document.getElementById('scr-login').style.display='none';
+  document.getElementById('scr-dash').style.display='none';
+  document.getElementById('scr-admin').style.display='block';
+  window.scrollTo(0,0);
+}
+
+function adminLogout(){
+  document.getElementById('scr-admin').style.display='none';
+  document.getElementById('scr-login').style.display='flex';
 }
 </script>
 </body>
