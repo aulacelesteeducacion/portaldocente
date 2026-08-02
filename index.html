@@ -18,24 +18,21 @@
       --accent-hover: #0d47a1;
       --accent-bg: #e3f0ff;
       --accent-text: #1565c0;
-      --yellow: #f9a825;
       --yellow-bg: #fffde7;
       --green: #2e7d32;
       --green-bg: #e8f5e9;
-      --orange-bg: #fff3e0;
-      --orange: #e65100;
       --success-bg: #e8f5e9;
       --success-text: #2e7d32;
       --danger-bg: #fef2f2;
       --danger-text: #991b1b;
       --radius: 10px;
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 0 3rem; }
 
     /* ── Header ── */
     .site-header {
       background: linear-gradient(135deg, #1565c0 0%, #1e88e5 50%, #42a5f5 100%);
-      padding: 1.25rem 1rem 2rem;
+      padding: 1.5rem 1rem 2.5rem;
       text-align: center;
       position: relative;
     }
@@ -43,96 +40,119 @@
       content: '';
       position: absolute;
       bottom: -1px; left: 0; right: 0;
-      height: 28px;
+      height: 32px;
       background: var(--bg);
       border-radius: 50% 50% 0 0 / 100% 100% 0 0;
     }
-    .header-inner { display: flex; align-items: center; justify-content: center; gap: 12px; }
-    .header-logo { width: 52px; height: 52px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2)); }
-    .header-text h1 { font-size: 20px; font-weight: 800; color: #fff; }
-    .header-text p { font-size: 12px; color: rgba(255,255,255,0.8); }
+    .header-inner { display: flex; align-items: center; justify-content: center; gap: 14px; }
+    .header-logo { width: 72px; height: 72px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2)); }
+    .header-text h1 { font-size: 24px; font-weight: 800; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .header-text p { font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 2px; }
+
+    /* Botón supervisor flotante en header */
+    .supervisor-btn {
+      position: absolute;
+      top: 14px; right: 14px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: all 0.15s;
+      z-index: 10;
+    }
+    .supervisor-btn:hover { background: rgba(255,255,255,0.35); }
 
     /* ── Contenedor ── */
-    .container { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    .container { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 0; }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 12px rgba(21,101,192,0.07); }
 
     /* ── Login ── */
     .login-wrap { text-align: center; }
-    .login-logo { width: 72px; height: 72px; object-fit: contain; margin-bottom: 1rem; }
-    .login-wrap h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .login-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 1rem; }
+    .login-wrap h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
     .login-wrap p { font-size: 13px; color: var(--text-secondary); margin-bottom: 1.5rem; }
     .field-wrap { margin-bottom: 1rem; text-align: left; }
     .field-wrap label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
-    .field-wrap input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 15px; color: var(--text); outline: none; transition: border-color 0.15s; }
+    .field-wrap input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 15px; color: var(--text); outline: none; transition: border-color 0.15s; background: var(--surface); }
     .field-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(21,101,192,0.1); }
     .btn-primary { width: 100%; padding: 13px; background: linear-gradient(135deg, #1565c0, #1e88e5); color: #fff; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 12px rgba(21,101,192,0.3); }
     .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
     .msg { padding: 12px 16px; border-radius: var(--radius); font-size: 14px; margin-bottom: 1rem; font-weight: 500; }
     .msg.error { background: var(--danger-bg); color: var(--danger-text); border: 1px solid #fecaca; }
-    .msg.success { background: var(--success-bg); color: var(--success-text); border: 1px solid #bbf7d0; }
 
     /* ── Portal docente ── */
     .portal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 8px; }
-    .portal-greeting { font-size: 18px; font-weight: 700; }
+    .portal-greeting { font-size: 18px; font-weight: 700; color: var(--text); }
     .portal-greeting span { color: var(--accent); }
-    .logout-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 14px; font-size: 13px; color: var(--text-secondary); cursor: pointer; }
-    .logout-btn:hover { border-color: var(--danger-text); color: var(--danger-text); }
+    .btn-outline { background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 14px; font-size: 13px; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+    .btn-outline:hover { border-color: var(--danger-text); color: var(--danger-text); }
 
-    .section-title { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+    .section-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; margin-top: 1.25rem; }
+    .section-label:first-child { margin-top: 0; }
 
     /* Módulos */
-    .modulos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-bottom: 1rem; }
-    .modulo-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; background: var(--surface2); }
+    .modulos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+    .modulo-card { border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px; background: var(--surface2); transition: box-shadow 0.15s; }
     .modulo-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
     .modulo-tarea { font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4; }
+    .modulo-fecha { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; }
     .estado-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; display: inline-block; }
-    .estado-Pendiente { background: var(--yellow-bg); color: #b45309; border: 1px solid #fde68a; }
-    .estado-En-proceso { background: var(--accent-bg); color: var(--accent-text); border: 1px solid #bfdbfe; }
-    .estado-Entregado { background: var(--success-bg); color: var(--success-text); border: 1px solid #bbf7d0; }
-    .estado-Atrasado { background: var(--danger-bg); color: var(--danger-text); border: 1px solid #fecaca; }
+    .e-Pendiente  { background: var(--yellow-bg); color: #b45309; border: 1px solid #fde68a; }
+    .e-En-proceso { background: var(--accent-bg); color: var(--accent-text); border: 1px solid #bfdbfe; }
+    .e-Entregado  { background: var(--success-bg); color: var(--success-text); border: 1px solid #bbf7d0; }
+    .e-Atrasado   { background: var(--danger-bg); color: var(--danger-text); border: 1px solid #fecaca; }
 
     /* Drive */
-    .drive-link { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface2); text-decoration: none; color: var(--text); transition: all 0.15s; }
-    .drive-link:hover { border-color: var(--accent); background: var(--accent-bg); }
-    .drive-icon { font-size: 24px; }
+    .drive-link { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--surface2); text-decoration: none; color: var(--text); transition: all 0.15s; }
+    .drive-link:hover { border-color: var(--accent); background: var(--accent-bg); transform: translateY(-1px); }
     .drive-text { font-size: 14px; font-weight: 600; }
     .drive-sub { font-size: 12px; color: var(--text-secondary); }
 
     /* Pagos */
-    .pago-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface2); margin-bottom: 8px; }
-    .pago-info { display: flex; flex-direction: column; gap: 2px; }
+    .pago-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface2); margin-bottom: 8px; gap: 12px; }
     .pago-label { font-size: 13px; font-weight: 600; color: var(--text); }
-    .pago-fecha { font-size: 11px; color: var(--text-secondary); }
+    .pago-fecha { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+    .pago-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
     .pago-monto { font-size: 14px; font-weight: 700; color: var(--text); }
-    .pago-estado { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
-    .pago-pagado { background: var(--success-bg); color: var(--success-text); }
-    .pago-pendiente { background: var(--yellow-bg); color: #b45309; }
+    .tag-pagado    { background: var(--success-bg); color: var(--success-text); font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+    .tag-pendiente { background: var(--yellow-bg); color: #b45309; font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
 
     /* Admin */
-    .admin-tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
-    .atab { padding: 7px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; background: var(--surface2); color: var(--text-secondary); transition: all 0.15s; }
-    .atab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .admin-docente-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); margin-bottom: 8px; cursor: pointer; transition: all 0.15s; }
-    .admin-docente-row:hover { border-color: var(--accent); background: var(--accent-bg); }
-    .admin-docente-name { font-size: 14px; font-weight: 700; color: var(--text); }
-    .admin-docente-plan { font-size: 12px; color: var(--text-secondary); }
-    .chevron { font-size: 16px; color: var(--text-muted); }
+    .admin-filter { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .filter-btn { padding: 7px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: var(--surface2); color: var(--text-secondary); transition: all 0.15s; }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .docente-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); margin-bottom: 8px; cursor: pointer; transition: all 0.15s; }
+    .docente-row:hover { border-color: var(--accent); background: var(--accent-bg); box-shadow: 0 2px 8px rgba(21,101,192,0.1); }
+    .docente-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .docente-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .chevron { font-size: 18px; color: var(--text-muted); }
 
-    /* Modal detalle admin */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-    .modal-box { background: var(--surface); border-radius: 14px; padding: 1.5rem; max-width: 560px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
-    .modal-title { font-size: 17px; font-weight: 700; }
-    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary); }
+    /* Modal */
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-box { background: var(--surface); border-radius: 14px; padding: 1.5rem; max-width: 560px; width: 100%; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+    .modal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+    .modal-title { font-size: 17px; font-weight: 700; color: var(--text); }
+    .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-secondary); line-height: 1; }
     .select-estado { padding: 5px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; color: var(--text); background: var(--surface2); cursor: pointer; }
 
-    .hidden { display: none; }
-    footer { text-align: center; font-size: 12px; color: var(--text-muted); padding: 1rem; }
+    /* Login supervisor */
+    .sup-login { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.3); border-radius: 12px; padding: 1.5rem; max-width: 360px; margin: 0 auto; }
+
+    .hidden { display: none !important; }
+    footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 2rem; padding: 0 1rem 1rem; }
+    footer img { width: 24px; vertical-align: middle; margin-right: 6px; opacity: 0.6; }
   </style>
 </head>
 <body>
 
+<!-- HEADER con botón supervisor -->
 <div class="site-header">
+  <button class="supervisor-btn" onclick="abrirLoginSupervisor()">🔑 Supervisar</button>
   <div class="header-inner">
     <img src="logo.png" alt="Aula Celeste" class="header-logo" onerror="this.style.display='none'" />
     <div class="header-text">
@@ -144,20 +164,20 @@
 
 <div class="container">
 
-  <!-- LOGIN -->
+  <!-- LOGIN DOCENTE -->
   <div id="view-login" class="card">
     <div class="login-wrap">
       <img src="logo.png" alt="Logo" class="login-logo" onerror="this.style.display='none'" />
       <h2>Bienvenido/a</h2>
-      <p>Ingresa con tu nombre completo y tu clave personal</p>
+      <p>Ingresa con tu nombre completo y tu clave personal asignada por Aula Celeste</p>
       <div id="msg-login" class="msg error hidden"></div>
       <div class="field-wrap">
         <label>Nombre completo</label>
-        <input type="text" id="inp-nombre" placeholder="Ej: María González" autocomplete="name" onkeydown="if(event.key==='Enter') login()" />
+        <input type="text" id="inp-nombre" placeholder="Ej: María González" autocomplete="name" onkeydown="if(event.key==='Enter')login()" />
       </div>
       <div class="field-wrap">
         <label>Contraseña</label>
-        <input type="password" id="inp-clave" placeholder="Tu clave personal" onkeydown="if(event.key==='Enter') login()" />
+        <input type="password" id="inp-clave" placeholder="Tu clave personal" onkeydown="if(event.key==='Enter')login()" />
       </div>
       <button class="btn-primary" onclick="login()">Ingresar →</button>
     </div>
@@ -171,224 +191,176 @@
           <div class="portal-greeting">Hola, <span id="portal-nombre"></span> 👋</div>
           <div style="font-size:13px;color:var(--text-secondary);margin-top:2px;">Portafolio Docente 2026</div>
         </div>
-        <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+        <button class="btn-outline" onclick="logout()">Cerrar sesión</button>
       </div>
 
-      <!-- Progreso módulos -->
-      <div class="section-title" style="margin-top:0">📊 Mi progreso</div>
+      <div class="section-label">📊 Mi progreso</div>
       <div id="portal-modulos" class="modulos-grid"></div>
 
-      <!-- Carpeta Drive -->
-      <div class="section-title" style="margin-top:1.25rem">📁 Mis materiales</div>
-      <a id="portal-drive" href="#" target="_blank" class="drive-link">
-        <span class="drive-icon">📂</span>
-        <div>
-          <div class="drive-text">Abrir mi carpeta de Drive</div>
-          <div class="drive-sub">Módulos 1, 2 y 3</div>
-        </div>
-      </a>
+      <div class="section-label">📁 Mis materiales en Drive</div>
+      <div id="portal-drive-wrap"></div>
 
-      <!-- Pagos -->
-      <div class="section-title" style="margin-top:1.25rem">💳 Mis pagos</div>
+      <div class="section-label">💳 Mis pagos</div>
       <div id="portal-pagos"></div>
     </div>
   </div>
 
-  <!-- PANEL ADMIN -->
+  <!-- PANEL SUPERVISOR -->
   <div id="view-admin" class="hidden">
     <div class="card">
       <div class="portal-header">
         <div>
-          <div class="portal-greeting">Panel de <span>supervisión</span></div>
+          <div class="portal-greeting">Panel de <span>supervisión</span> 📋</div>
           <div style="font-size:13px;color:var(--text-secondary);margin-top:2px;">Aula Celeste 2026</div>
         </div>
-        <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+        <button class="btn-outline" onclick="logout()">Cerrar sesión</button>
       </div>
-
-      <div class="admin-tabs">
-        <button class="atab active" onclick="filtrarAdmin('todos',this)">Todos</button>
-        <button class="atab" onclick="filtrarAdmin('Ed. Diferencial',this)">Ed. Diferencial</button>
-        <button class="atab" onclick="filtrarAdmin('Plan Común',this)">Plan Común</button>
+      <div class="admin-filter">
+        <button class="filter-btn active" id="fb-todos" onclick="filtrar('todos',this)">Todos</button>
+        <button class="filter-btn" id="fb-dif" onclick="filtrar('Ed. Diferencial',this)">Ed. Diferencial</button>
+        <button class="filter-btn" id="fb-com" onclick="filtrar('Plan Común',this)">Plan Común</button>
       </div>
       <div id="admin-lista"></div>
     </div>
   </div>
 
-  <!-- MODAL DETALLE ADMIN -->
-  <div id="modal-overlay" class="modal-overlay hidden" onclick="cerrarModal(event)">
-    <div class="modal-box">
-      <div class="modal-header">
-        <span class="modal-title" id="modal-nombre-titulo"></span>
-        <button class="modal-close" onclick="cerrarModalBtn()">✕</button>
-      </div>
-      <div id="modal-body"></div>
-    </div>
-  </div>
-
 </div>
-<footer>Aula Celeste · Portal Docente 2026</footer>
+
+<!-- MODAL LOGIN SUPERVISOR -->
+<div id="modal-sup-login" class="modal-bg hidden">
+  <div class="modal-box" style="max-width:380px;">
+    <div class="modal-top">
+      <span class="modal-title">🔑 Acceso supervisora</span>
+      <button class="modal-close" onclick="cerrarModalSup()">✕</button>
+    </div>
+    <div id="msg-sup" class="msg error hidden"></div>
+    <div class="field-wrap">
+      <label>Contraseña de supervisión</label>
+      <input type="password" id="inp-sup" placeholder="Contraseña" onkeydown="if(event.key==='Enter')loginSup()" />
+    </div>
+    <button class="btn-primary" onclick="loginSup()">Ingresar al panel →</button>
+  </div>
+</div>
+
+<!-- MODAL DETALLE DOCENTE (admin) -->
+<div id="modal-detalle" class="modal-bg hidden" onclick="cerrarDetalleClick(event)">
+  <div class="modal-box">
+    <div class="modal-top">
+      <span class="modal-title" id="modal-d-nombre"></span>
+      <button class="modal-close" onclick="cerrarDetalle()">✕</button>
+    </div>
+    <div id="modal-d-body"></div>
+  </div>
+</div>
+
+<footer>
+  <img src="logo.png" alt="Logo" onerror="this.style.display='none'" />
+  Aula Celeste · Tu apoyo en educación
+</footer>
 
 <script>
 // ═══════════════════════════════════════════════════════
-//  BASE DE DATOS
+//  DATOS
 // ═══════════════════════════════════════════════════════
 const ADMIN_PWD = "Romina12";
 
 const DOCENTES = {
-  "Veronica Silva":      { id:"D-006", clave:"AC2026VS", tipo:"Ed. Diferencial", plan:"Acompañamiento Módulo 1", drive:"https://drive.google.com/drive/folders/1dpwZ_sNRowVJYFPOpywzbtQQZsOh0ljp" },
-  "Silvana Reyes":       { id:"D-007", clave:"AC2026SR", tipo:"Ed. Diferencial", plan:"Módulo 3: Trabajo Colaborativo", drive:"" },
-  "Nicole Lopez Palma":  { id:"D-008", clave:"AC2026NL", tipo:"Ed. Diferencial", plan:"Plan Experto (Módulos 1+2+3)", drive:"" },
-  "Carolina Mallia":     { id:"D-009", clave:"AC2026CM", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)", drive:"" },
-  "Macarena Valderrama": { id:"D-010", clave:"AC2026MV", tipo:"Ed. Diferencial", plan:"Plan Experto (Módulos 1+2+3)", drive:"" },
-  "Ignacio Hermosilla":  { id:"D-011", clave:"AC2026IH", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)", drive:"" },
-  "Carolina Espinoza":   { id:"D-013", clave:"AC2026CE", tipo:"Ed. Diferencial", plan:"Plan Experto (Módulos 1+2+3)", drive:"" },
-  "Carla Aparicio":      { id:"D-014", clave:"AC2026CA", tipo:"Plan Común",      plan:"Plan Experto de Corrección (3 Módulos)", drive:"" },
-  "Josimar Velasquez":   { id:"D-015", clave:"AC2026JV", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)", drive:"" },
-  "Eliana Sanhueza":     { id:"D-016", clave:"AC2026ES", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)", drive:"" },
+  "Veronica Silva":      { id:"D-006", clave:"AC2026VS", tipo:"Ed. Diferencial", plan:"Acompañamiento Módulo 1",              drive:"https://drive.google.com/drive/folders/1dpwZ_sNRowVJYFPOpywzbtQQZsOh0ljp" },
+  "Silvana Reyes":       { id:"D-007", clave:"AC2026SR", tipo:"Ed. Diferencial", plan:"Módulo 3: Trabajo Colaborativo",       drive:"" },
+  "Nicole Lopez Palma":  { id:"D-008", clave:"AC2026NL", tipo:"Ed. Diferencial", plan:"Plan Experto (Módulos 1+2+3)",         drive:"" },
+  "Carolina Mallia":     { id:"D-009", clave:"AC2026CM", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)",         drive:"" },
+  "Macarena Valderrama": { id:"D-010", clave:"AC2026MV", tipo:"Ed. Diferencial", plan:"Plan Experto (Módulos 1+2+3)",         drive:"" },
+  "Ignacio Hermosilla":  { id:"D-011", clave:"AC2026IH", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)",         drive:"" },
+  "Carolina Espinoza":   { id:"D-013", clave:"AC2026CE", tipo:"Ed. Diferencial", plan:"Plan Experto (Módulos 1+2+3)",         drive:"" },
+  "Carla Aparicio":      { id:"D-014", clave:"AC2026CA", tipo:"Plan Común",      plan:"Plan Experto de Corrección (3 Módulos)",drive:"" },
+  "Josimar Velasquez":   { id:"D-015", clave:"AC2026JV", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)",         drive:"" },
+  "Eliana Sanhueza":     { id:"D-016", clave:"AC2026ES", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)",         drive:"" },
   "Cristina Soto":       { id:"D-017", clave:"AC2026CS", tipo:"Plan Común",      plan:"Plan Experto de Confección (Módulos 1+2+3)", drive:"" },
   "Gianina Moroni":      { id:"D-019", clave:"AC2026GM", tipo:"Plan Común",      plan:"Confección de Portafolio (Módulos 1 y 2)", drive:"https://drive.google.com/drive/folders/1MF6sQOLfsdAH8I-aTGPgjMvkR2FrQ20x" },
   "Karina Zapata":       { id:"D-020", clave:"AC2026KZ", tipo:"Plan Común",      plan:"Plan Experto de Confección (Módulos 1+2+3)", drive:"https://drive.google.com/drive/folders/1ET1Uk7wkVMejSYyE1Ao9LyjvOyk6_7GE" },
-  "Nicole Navarro":      { id:"D-022", clave:"AC2026NN", tipo:"Ed. Diferencial", plan:"Plan Experto (Módulos 1+2+3)", drive:"https://drive.google.com/drive/folders/1wjnFB1fjn1I_ITKm8o3SkmyUxsfH5keL" },
-  "Jessica Muñoz":       { id:"D-024", clave:"AC2026JM", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)", drive:"" },
-  "Karla Rivas":         { id:"D-023", clave:"AC2026KR", tipo:"Ed. Diferencial", plan:"Plan Experto (Módulos 1+2+3)", drive:"https://drive.google.com/drive/folders/1YDsAYuMTp_snxw6yTyIHvXS3Er6eTvbR" },
-  "Cristina Ulloa":      { id:"D-025", clave:"AC2026CU", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)", drive:"https://drive.google.com/drive/folders/1XACrXGCqwcqp9hMGveDTCxWfJOaBbz6b" },
+  "Nicole Navarro":      { id:"D-022", clave:"AC2026NN", tipo:"Ed. Diferencial", plan:"Plan Experto (Módulos 1+2+3)",         drive:"https://drive.google.com/drive/folders/1wjnFB1fjn1I_ITKm8o3SkmyUxsfH5keL" },
+  "Karla Rivas":         { id:"D-023", clave:"AC2026KR", tipo:"Ed. Diferencial", plan:"Plan Experto (Módulos 1+2+3)",         drive:"https://drive.google.com/drive/folders/1YDsAYuMTp_snxw6yTyIHvXS3Er6eTvbR" },
+  "Jessica Muñoz":       { id:"D-024", clave:"AC2026JM", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)",         drive:"" },
+  "Cristina Ulloa":      { id:"D-025", clave:"AC2026CU", tipo:"Plan Común",      plan:"Plan Experto (Módulos 1+2+3)",         drive:"https://drive.google.com/drive/folders/1XACrXGCqwcqp9hMGveDTCxWfJOaBbz6b" },
 };
 
-const MODULOS = {
-  "D-006": [{ mod:"Módulo 1", tarea:"Construcción de planificación con alineación curricular PIE", estado:"Pendiente", fecha:"01/08/2026" }],
-  "D-007": [{ mod:"Módulo 3", tarea:"Diseño de experiencia de trabajo colaborativo con pares PIE", estado:"En proceso", fecha:"05/08/2026" }],
-  "D-008": [
-    { mod:"Módulo 1", tarea:"Alineación curricular y planificaciones de Lenguaje", estado:"Pendiente", fecha:"08/08/2026" },
-    { mod:"Módulo 2", tarea:"Grabación y análisis pedagógico de clase grabada", estado:"Pendiente", fecha:"15/08/2026" },
-    { mod:"Módulo 3", tarea:"Diseño de trabajo colaborativo con pares", estado:"Pendiente", fecha:"22/08/2026" },
-  ],
-  "D-009": [
-    { mod:"Módulo 1", tarea:"Planificaciones e indicadores de logro - Inglés", estado:"Pendiente", fecha:"08/08/2026" },
-    { mod:"Módulo 2", tarea:"Clase grabada y retroalimentación pedagógica - Inglés", estado:"Pendiente", fecha:"15/08/2026" },
-    { mod:"Módulo 3", tarea:"Experiencia trabajo colaborativo - Inglés", estado:"Pendiente", fecha:"22/08/2026" },
-  ],
-  "D-010": [
-    { mod:"Módulo 1", tarea:"Alineación curricular con adecuaciones PIE (TEA/TDAH)", estado:"Pendiente", fecha:"10/08/2026" },
-    { mod:"Módulo 2", tarea:"Clase grabada con enfoque inclusivo PIE", estado:"Pendiente", fecha:"17/08/2026" },
-    { mod:"Módulo 3", tarea:"Trabajo colaborativo con equipo PIE", estado:"Pendiente", fecha:"24/08/2026" },
-  ],
-  "D-011": [
-    { mod:"Módulo 1", tarea:"Planificaciones e indicadores de logro - Inglés", estado:"Pendiente", fecha:"08/08/2026" },
-    { mod:"Módulo 2", tarea:"Análisis clase grabada - Inglés", estado:"Pendiente", fecha:"15/08/2026" },
-    { mod:"Módulo 3", tarea:"Trabajo colaborativo con pares - Inglés", estado:"Pendiente", fecha:"22/08/2026" },
-  ],
-  "D-013": [
-    { mod:"Módulo 1", tarea:"Planificación con adecuaciones curriculares significativas", estado:"Pendiente", fecha:"12/08/2026" },
-    { mod:"Módulo 2", tarea:"Clase grabada con estrategias inclusivas DI/DEA", estado:"Pendiente", fecha:"19/08/2026" },
-    { mod:"Módulo 3", tarea:"Experiencia trabajo colaborativo PIE", estado:"Pendiente", fecha:"26/08/2026" },
-  ],
-  "D-014": [
-    { mod:"Módulo 1", tarea:"Revisión y corrección planificaciones - Inglés", estado:"Pendiente", fecha:"10/08/2026" },
-    { mod:"Módulo 2", tarea:"Corrección análisis clase grabada - Inglés", estado:"Pendiente", fecha:"17/08/2026" },
-    { mod:"Módulo 3", tarea:"Corrección trabajo colaborativo - Inglés", estado:"Pendiente", fecha:"24/08/2026" },
-  ],
-  "D-015": [
-    { mod:"Módulo 1", tarea:"Planificaciones Matemáticas alineadas al currículum", estado:"Pendiente", fecha:"10/08/2026" },
-    { mod:"Módulo 2", tarea:"Clase grabada Matemáticas + retroalimentación", estado:"Pendiente", fecha:"17/08/2026" },
-    { mod:"Módulo 3", tarea:"Trabajo colaborativo Matemáticas", estado:"Pendiente", fecha:"24/08/2026" },
-  ],
-  "D-016": [
-    { mod:"Módulo 1", tarea:"Planificaciones y evidencias pedagógicas Matemáticas", estado:"Pendiente", fecha:"10/08/2026" },
-    { mod:"Módulo 2", tarea:"Clase grabada Matemáticas", estado:"Pendiente", fecha:"17/08/2026" },
-    { mod:"Módulo 3", tarea:"Trabajo colaborativo Matemáticas", estado:"Pendiente", fecha:"24/08/2026" },
-  ],
-  "D-017": [
-    { mod:"Módulo 1", tarea:"Confección de planificaciones Historia", estado:"Pendiente", fecha:"08/08/2026" },
-    { mod:"Módulo 2", tarea:"Confección guion pedagógico clase grabada Historia", estado:"Pendiente", fecha:"15/08/2026" },
-    { mod:"Módulo 3", tarea:"Confección trabajo colaborativo Historia", estado:"Pendiente", fecha:"22/08/2026" },
-  ],
-  "D-019": [
-    { mod:"Módulo 1", tarea:"Confección planificaciones Artes Visuales", estado:"Pendiente", fecha:"12/08/2026" },
-    { mod:"Módulo 2", tarea:"Confección guion clase grabada Artes Visuales", estado:"Pendiente", fecha:"20/08/2026" },
-  ],
-  "D-020": [
-    { mod:"Módulo 1", tarea:"Confección planificaciones Ciencias Naturales", estado:"Pendiente", fecha:"12/08/2026" },
-    { mod:"Módulo 2", tarea:"Confección guion clase grabada Ciencias", estado:"Pendiente", fecha:"20/08/2026" },
-    { mod:"Módulo 3", tarea:"Confección trabajo colaborativo Ciencias", estado:"Pendiente", fecha:"27/08/2026" },
-  ],
-  "D-022": [
-    { mod:"Módulo 1", tarea:"Alineación curricular con adecuaciones PIE (TEA/TDAH/FIL)", estado:"Pendiente", fecha:"10/08/2026" },
-    { mod:"Módulo 2", tarea:"Clase grabada con enfoque inclusivo PIE", estado:"Pendiente", fecha:"17/08/2026" },
-    { mod:"Módulo 3", tarea:"Trabajo colaborativo con equipo PIE", estado:"Pendiente", fecha:"24/08/2026" },
-  ],
-  "D-023": [
-    { mod:"Módulo 1", tarea:"Alineación curricular con adecuaciones curriculares PIE", estado:"Pendiente", fecha:"" },
-    { mod:"Módulo 2", tarea:"Clase grabada con estrategias pedagógicas inclusivas", estado:"Pendiente", fecha:"" },
-    { mod:"Módulo 3", tarea:"Diseño de trabajo colaborativo con equipo PIE", estado:"Pendiente", fecha:"" },
-  ],
-  "D-024": [
-    { mod:"Módulo 1", tarea:"Planificaciones Lenguaje y Comunicación", estado:"Pendiente", fecha:"10/08/2026" },
-    { mod:"Módulo 2", tarea:"Clase grabada Lenguaje", estado:"Pendiente", fecha:"17/08/2026" },
-    { mod:"Módulo 3", tarea:"Trabajo colaborativo Lenguaje", estado:"Pendiente", fecha:"24/08/2026" },
-  ],
-  "D-025": [
-    { mod:"Módulo 1", tarea:"Planificaciones y alineación curricular multigrado", estado:"Pendiente", fecha:"15/08/2026" },
-    { mod:"Módulo 2", tarea:"Clase grabada y análisis pedagógico multigrado", estado:"Pendiente", fecha:"22/08/2026" },
-    { mod:"Módulo 3", tarea:"Trabajo colaborativo con pares", estado:"Pendiente", fecha:"29/08/2026" },
+const MODULOS_BASE = {
+  "D-006":[{mod:"Módulo 1",tarea:"Construcción de planificación con alineación curricular PIE",fecha:"01/08/2026"}],
+  "D-007":[{mod:"Módulo 3",tarea:"Diseño de experiencia de trabajo colaborativo con pares PIE",fecha:"05/08/2026"}],
+  "D-008":[{mod:"Módulo 1",tarea:"Alineación curricular y planificaciones de Lenguaje",fecha:"08/08/2026"},{mod:"Módulo 2",tarea:"Grabación y análisis pedagógico de clase grabada",fecha:"15/08/2026"},{mod:"Módulo 3",tarea:"Diseño de trabajo colaborativo con pares",fecha:"22/08/2026"}],
+  "D-009":[{mod:"Módulo 1",tarea:"Planificaciones e indicadores de logro - Inglés",fecha:"08/08/2026"},{mod:"Módulo 2",tarea:"Clase grabada y retroalimentación pedagógica - Inglés",fecha:"15/08/2026"},{mod:"Módulo 3",tarea:"Experiencia trabajo colaborativo - Inglés",fecha:"22/08/2026"}],
+  "D-010":[{mod:"Módulo 1",tarea:"Alineación curricular con adecuaciones PIE (TEA/TDAH)",fecha:"10/08/2026"},{mod:"Módulo 2",tarea:"Clase grabada con enfoque inclusivo PIE",fecha:"17/08/2026"},{mod:"Módulo 3",tarea:"Trabajo colaborativo con equipo PIE",fecha:"24/08/2026"}],
+  "D-011":[{mod:"Módulo 1",tarea:"Planificaciones e indicadores de logro - Inglés",fecha:"08/08/2026"},{mod:"Módulo 2",tarea:"Análisis clase grabada - Inglés",fecha:"15/08/2026"},{mod:"Módulo 3",tarea:"Trabajo colaborativo con pares - Inglés",fecha:"22/08/2026"}],
+  "D-013":[{mod:"Módulo 1",tarea:"Planificación con adecuaciones curriculares significativas",fecha:"12/08/2026"},{mod:"Módulo 2",tarea:"Clase grabada con estrategias inclusivas DI/DEA",fecha:"19/08/2026"},{mod:"Módulo 3",tarea:"Experiencia trabajo colaborativo PIE",fecha:"26/08/2026"}],
+  "D-014":[{mod:"Módulo 1",tarea:"Revisión y corrección planificaciones - Inglés",fecha:"10/08/2026"},{mod:"Módulo 2",tarea:"Corrección análisis clase grabada - Inglés",fecha:"17/08/2026"},{mod:"Módulo 3",tarea:"Corrección trabajo colaborativo - Inglés",fecha:"24/08/2026"}],
+  "D-015":[{mod:"Módulo 1",tarea:"Planificaciones Matemáticas alineadas al currículum",fecha:"10/08/2026"},{mod:"Módulo 2",tarea:"Clase grabada Matemáticas + retroalimentación",fecha:"17/08/2026"},{mod:"Módulo 3",tarea:"Trabajo colaborativo Matemáticas",fecha:"24/08/2026"}],
+  "D-016":[{mod:"Módulo 1",tarea:"Planificaciones y evidencias pedagógicas Matemáticas",fecha:"10/08/2026"},{mod:"Módulo 2",tarea:"Clase grabada Matemáticas",fecha:"17/08/2026"},{mod:"Módulo 3",tarea:"Trabajo colaborativo Matemáticas",fecha:"24/08/2026"}],
+  "D-017":[{mod:"Módulo 1",tarea:"Confección de planificaciones Historia",fecha:"08/08/2026"},{mod:"Módulo 2",tarea:"Confección guion pedagógico clase grabada Historia",fecha:"15/08/2026"},{mod:"Módulo 3",tarea:"Confección trabajo colaborativo Historia",fecha:"22/08/2026"}],
+  "D-019":[{mod:"Módulo 1",tarea:"Confección planificaciones Artes Visuales",fecha:"12/08/2026"},{mod:"Módulo 2",tarea:"Confección guion clase grabada Artes Visuales",fecha:"20/08/2026"}],
+  "D-020":[{mod:"Módulo 1",tarea:"Confección planificaciones Ciencias Naturales",fecha:"12/08/2026"},{mod:"Módulo 2",tarea:"Confección guion clase grabada Ciencias",fecha:"20/08/2026"},{mod:"Módulo 3",tarea:"Confección trabajo colaborativo Ciencias",fecha:"27/08/2026"}],
+  "D-022":[{mod:"Módulo 1",tarea:"Alineación curricular con adecuaciones PIE (TEA/TDAH/FIL)",fecha:"10/08/2026"},{mod:"Módulo 2",tarea:"Clase grabada con enfoque inclusivo PIE",fecha:"17/08/2026"},{mod:"Módulo 3",tarea:"Trabajo colaborativo con equipo PIE",fecha:"24/08/2026"}],
+  "D-023":[{mod:"Módulo 1",tarea:"Alineación curricular con adecuaciones curriculares PIE",fecha:""},{mod:"Módulo 2",tarea:"Clase grabada con estrategias pedagógicas inclusivas",fecha:""},{mod:"Módulo 3",tarea:"Diseño de trabajo colaborativo con equipo PIE",fecha:""}],
+  "D-024":[{mod:"Módulo 1",tarea:"Planificaciones Lenguaje y Comunicación",fecha:"10/08/2026"},{mod:"Módulo 2",tarea:"Clase grabada Lenguaje",fecha:"17/08/2026"},{mod:"Módulo 3",tarea:"Trabajo colaborativo Lenguaje",fecha:"24/08/2026"}],
+  "D-025":[{mod:"Módulo 1",tarea:"Planificaciones y alineación curricular multigrado",fecha:"15/08/2026"},{mod:"Módulo 2",tarea:"Clase grabada y análisis pedagógico multigrado",fecha:"22/08/2026"},{mod:"Módulo 3",tarea:"Trabajo colaborativo con pares",fecha:"29/08/2026"}],
+};
+
+const PAGOS_BASE = {
+  "D-010":[
+    {label:"Cuota 1",fecha:"30/08/2026",monto:"Por definir",estado:"Pendiente"},
+    {label:"Cuota 2",fecha:"30/09/2026",monto:"Por definir",estado:"Pendiente"},
   ],
 };
 
-const PAGOS = {
-  "D-010": [
-    { label:"Cuota 1", fecha:"30/08/2026", monto:"$XX.000", estado:"Pendiente" },
-    { label:"Cuota 2", fecha:"30/09/2026", monto:"$XX.000", estado:"Pendiente" },
-  ],
-};
+// Estado persistente
+let estadosModulos = JSON.parse(localStorage.getItem('ac_estados') || '{}');
+let estadosPagos   = JSON.parse(localStorage.getItem('ac_pagos')   || '{}');
 
-// ═══════════════════════════════════════════════════════
-//  ESTADO
-// ═══════════════════════════════════════════════════════
-let usuarioActual = null;
-let esAdmin = false;
-let modulosState = JSON.parse(localStorage.getItem('ac_modulos') || '{}');
+function getModulos(id) {
+  const base = (MODULOS_BASE[id] || []).map(m => ({ ...m, estado: 'Pendiente' }));
+  if (!estadosModulos[id]) return base;
+  return base.map((m, i) => ({ ...m, estado: estadosModulos[id][i] || 'Pendiente' }));
+}
 
-function guardarModulos() {
-  localStorage.setItem('ac_modulos', JSON.stringify(modulosState));
+function getPagos(id) {
+  const base = JSON.parse(JSON.stringify(PAGOS_BASE[id] || []));
+  if (!estadosPagos[id]) return base;
+  return base.map((p, i) => ({ ...p, estado: estadosPagos[id][i] || 'Pendiente' }));
+}
+
+function guardar() {
+  localStorage.setItem('ac_estados', JSON.stringify(estadosModulos));
+  localStorage.setItem('ac_pagos',   JSON.stringify(estadosPagos));
 }
 
 // ═══════════════════════════════════════════════════════
 //  LOGIN
 // ═══════════════════════════════════════════════════════
+let usuarioActual = null;
+
 function login() {
   const nombre = document.getElementById('inp-nombre').value.trim();
-  const clave = document.getElementById('inp-clave').value.trim();
-  const msg = document.getElementById('msg-login');
+  const clave  = document.getElementById('inp-clave').value.trim();
+  const msg    = document.getElementById('msg-login');
 
-  // Admin
-  if (clave === ADMIN_PWD) {
-    esAdmin = true;
-    show('view-admin');
-    renderAdmin('todos');
-    return;
-  }
-
-  // Buscar docente (flexible: ignora mayúsculas/minúsculas y espacios extra)
   const key = Object.keys(DOCENTES).find(k =>
     k.toLowerCase() === nombre.toLowerCase() && DOCENTES[k].clave === clave
   );
 
   if (!key) {
-    msg.textContent = 'Nombre o contraseña incorrectos. Intenta de nuevo.';
+    msg.textContent = 'Nombre o contraseña incorrectos. Verifica tu clave e intenta de nuevo.';
     msg.classList.remove('hidden');
     return;
   }
-
+  msg.classList.add('hidden');
   usuarioActual = key;
-  esAdmin = false;
   show('view-portal');
   renderPortal(key);
 }
 
 function logout() {
   usuarioActual = null;
-  esAdmin = false;
   document.getElementById('inp-nombre').value = '';
-  document.getElementById('inp-clave').value = '';
+  document.getElementById('inp-clave').value  = '';
   document.getElementById('msg-login').classList.add('hidden');
   show('view-login');
 }
@@ -401,151 +373,175 @@ function renderPortal(nombre) {
   document.getElementById('portal-nombre').textContent = nombre.split(' ')[0];
 
   // Módulos
-  const mods = modulosState[d.id] || MODULOS[d.id] || [];
-  const grid = document.getElementById('portal-modulos');
-  grid.innerHTML = mods.map(m => {
-    const cls = 'estado-' + m.estado.replace(' ', '-');
-    return `<div class="modulo-card">
-      <div class="modulo-name">${m.mod}</div>
-      <div class="modulo-tarea">${m.tarea}</div>
-      ${m.fecha ? `<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">Fecha comprometida: ${m.fecha}</div>` : ''}
-      <span class="estado-badge ${cls}">${m.estado}</span>
-    </div>`;
-  }).join('') || '<p style="color:var(--text-muted);font-size:13px;">Sin módulos registrados aún.</p>';
+  const mods = getModulos(d.id);
+  document.getElementById('portal-modulos').innerHTML = mods.length
+    ? mods.map(m => {
+        const cls = 'e-' + m.estado.replace(' ','-');
+        return `<div class="modulo-card">
+          <div class="modulo-name">${m.mod}</div>
+          <div class="modulo-tarea">${m.tarea}</div>
+          ${m.fecha ? `<div class="modulo-fecha">📅 Fecha comprometida: ${m.fecha}</div>` : ''}
+          <span class="estado-badge ${cls}">${m.estado}</span>
+        </div>`;
+      }).join('')
+    : '<p style="font-size:13px;color:var(--text-muted)">Sin módulos registrados aún.</p>';
 
   // Drive
-  const driveEl = document.getElementById('portal-drive');
-  if (d.drive) {
-    driveEl.href = d.drive;
-    driveEl.style.display = 'flex';
-  } else {
-    driveEl.style.display = 'none';
-  }
+  const driveWrap = document.getElementById('portal-drive-wrap');
+  driveWrap.innerHTML = d.drive
+    ? `<a href="${d.drive}" target="_blank" class="drive-link">
+        <span style="font-size:28px;">📂</span>
+        <div><div class="drive-text">Abrir mi carpeta de Drive</div><div class="drive-sub">Módulos M1, M2 y M3</div></div>
+       </a>`
+    : `<p style="font-size:13px;color:var(--text-muted)">Tu carpeta de Drive será habilitada pronto.</p>`;
 
   // Pagos
-  const pagos = PAGOS[d.id] || [];
-  const pagosEl = document.getElementById('portal-pagos');
-  if (pagos.length === 0) {
-    pagosEl.innerHTML = '<p style="font-size:13px;color:var(--text-muted);">Sin registros de pago aún.</p>';
-  } else {
-    pagosEl.innerHTML = pagos.map(p => `
-      <div class="pago-row">
-        <div class="pago-info">
-          <span class="pago-label">${p.label}</span>
-          <span class="pago-fecha">Fecha: ${p.fecha}</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span class="pago-monto">${p.monto}</span>
-          <span class="pago-estado ${p.estado === 'Pagado' ? 'pago-pagado' : 'pago-pendiente'}">${p.estado}</span>
-        </div>
-      </div>`).join('');
-  }
+  const pagos = getPagos(d.id);
+  document.getElementById('portal-pagos').innerHTML = pagos.length
+    ? pagos.map(p => `
+        <div class="pago-row">
+          <div>
+            <div class="pago-label">${p.label}</div>
+            <div class="pago-fecha">Fecha: ${p.fecha}</div>
+          </div>
+          <div class="pago-right">
+            <span class="pago-monto">${p.monto}</span>
+            <span class="${p.estado === 'Pagado' ? 'tag-pagado' : 'tag-pendiente'}">${p.estado}</span>
+          </div>
+        </div>`).join('')
+    : `<p style="font-size:13px;color:var(--text-muted)">Sin registros de pago aún.</p>`;
 }
 
 // ═══════════════════════════════════════════════════════
 //  PANEL ADMIN
 // ═══════════════════════════════════════════════════════
-function renderAdmin(filtro) {
-  const lista = document.getElementById('admin-lista');
-  const docentes = Object.entries(DOCENTES).filter(([,d]) =>
-    filtro === 'todos' || d.tipo === filtro
-  ).sort((a,b) => a[0].localeCompare(b[0]));
+let filtroAdmin = 'todos';
 
-  lista.innerHTML = docentes.map(([nombre, d]) => `
-    <div class="admin-docente-row" onclick="abrirDetalle('${nombre}')">
-      <div>
-        <div class="admin-docente-name">${nombre}</div>
-        <div class="admin-docente-plan">${d.id} · ${d.tipo} · ${d.plan}</div>
-      </div>
-      <span class="chevron">›</span>
-    </div>`).join('');
+function filtrar(f, el) {
+  filtroAdmin = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAdmin();
 }
 
-function filtrarAdmin(filtro, el) {
-  document.querySelectorAll('.atab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  renderAdmin(filtro);
+function renderAdmin() {
+  const entries = Object.entries(DOCENTES)
+    .filter(([,d]) => filtroAdmin === 'todos' || d.tipo === filtroAdmin)
+    .sort((a,b) => a[0].localeCompare(b[0]));
+
+  document.getElementById('admin-lista').innerHTML = entries.map(([nombre, d]) => {
+    const mods = getModulos(d.id);
+    const entregados = mods.filter(m => m.estado === 'Entregado').length;
+    return `<div class="docente-row" onclick="abrirDetalle('${nombre}')">
+      <div>
+        <div class="docente-name">${nombre}</div>
+        <div class="docente-sub">${d.id} · ${d.tipo} · ${entregados}/${mods.length} entregados</div>
+      </div>
+      <span class="chevron">›</span>
+    </div>`;
+  }).join('');
 }
 
 function abrirDetalle(nombre) {
   const d = DOCENTES[nombre];
-  const mods = modulosState[d.id] ? modulosState[d.id] : (MODULOS[d.id] || []);
-  const pagos = PAGOS[d.id] || [];
-
-  document.getElementById('modal-nombre-titulo').textContent = nombre;
-
+  const mods = getModulos(d.id);
+  const pagos = getPagos(d.id);
   const estados = ['Pendiente','En proceso','Entregado','Atrasado'];
+
+  document.getElementById('modal-d-nombre').textContent = nombre;
 
   let html = `<p style="font-size:12px;color:var(--text-secondary);margin-bottom:1rem;">${d.id} · ${d.tipo} · ${d.plan}</p>`;
 
-  html += `<div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Módulos</div>`;
-  html += mods.map((m, i) => {
-    const cls = 'estado-' + m.estado.replace(' ','-');
-    return `<div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:8px;background:var(--surface2);">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-        <div>
+  html += `<div class="section-label" style="margin-top:0">📊 Módulos</div>`;
+  html += mods.map((m, i) => `
+    <div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:8px;background:var(--surface2);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:0;">
           <div style="font-size:13px;font-weight:700;">${m.mod}</div>
-          <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">${m.tarea}</div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;line-height:1.4;">${m.tarea}</div>
+          ${m.fecha ? `<div style="font-size:10px;color:var(--text-muted);margin-top:3px;">📅 ${m.fecha}</div>` : ''}
         </div>
-        <select class="select-estado" onchange="cambiarEstado('${d.id}',${i},this.value)">
+        <select class="select-estado" onchange="setEstado('${d.id}',${i},this.value,'${nombre}')">
           ${estados.map(e => `<option value="${e}" ${e===m.estado?'selected':''}>${e}</option>`).join('')}
         </select>
       </div>
-    </div>`;
-  }).join('') || '<p style="font-size:13px;color:var(--text-muted);">Sin módulos.</p>';
+    </div>`).join('');
 
-  if (pagos.length > 0) {
-    html += `<div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin:1rem 0 8px;">Pagos</div>`;
-    html += pagos.map((p,i) => `
+  if (pagos.length) {
+    html += `<div class="section-label">💳 Pagos</div>`;
+    html += pagos.map((p, i) => `
       <div class="pago-row">
-        <div class="pago-info">
-          <span class="pago-label">${p.label}</span>
-          <span class="pago-fecha">Fecha: ${p.fecha} · ${p.monto}</span>
+        <div>
+          <div class="pago-label">${p.label} — ${p.monto}</div>
+          <div class="pago-fecha">Fecha: ${p.fecha}</div>
         </div>
-        <select class="select-estado" onchange="cambiarPago('${d.id}',${i},this.value)">
+        <select class="select-estado" onchange="setPago('${d.id}',${i},this.value,'${nombre}')">
           <option value="Pendiente" ${p.estado==='Pendiente'?'selected':''}>Pendiente</option>
-          <option value="Pagado" ${p.estado==='Pagado'?'selected':''}>Pagado</option>
+          <option value="Pagado"    ${p.estado==='Pagado'   ?'selected':''}>Pagado</option>
         </select>
       </div>`).join('');
   }
 
   if (d.drive) {
-    html += `<a href="${d.drive}" target="_blank" class="drive-link" style="margin-top:1rem;">
-      <span class="drive-icon">📂</span>
-      <div><div class="drive-text">Ver carpeta Drive</div><div class="drive-sub">${nombre}</div></div>
-    </a>`;
+    html += `<div class="section-label">📁 Drive</div>
+      <a href="${d.drive}" target="_blank" class="drive-link">
+        <span style="font-size:24px;">📂</span>
+        <div><div class="drive-text">Ver carpeta Drive</div><div class="drive-sub">${nombre}</div></div>
+      </a>`;
   }
 
-  document.getElementById('modal-body').innerHTML = html;
-  document.getElementById('modal-overlay').classList.remove('hidden');
+  document.getElementById('modal-d-body').innerHTML = html;
+  document.getElementById('modal-detalle').classList.remove('hidden');
 }
 
-function cambiarEstado(docId, idx, nuevoEstado) {
-  if (!modulosState[docId]) {
-    modulosState[docId] = JSON.parse(JSON.stringify(MODULOS[docId] || []));
+function setEstado(docId, idx, val, nombre) {
+  if (!estadosModulos[docId]) estadosModulos[docId] = getModulos(docId).map(m => m.estado);
+  estadosModulos[docId][idx] = val;
+  guardar();
+  renderAdmin();
+}
+
+function setPago(docId, idx, val) {
+  if (!estadosPagos[docId]) estadosPagos[docId] = getPagos(docId).map(p => p.estado);
+  estadosPagos[docId][idx] = val;
+  guardar();
+}
+
+function cerrarDetalle() { document.getElementById('modal-detalle').classList.add('hidden'); }
+function cerrarDetalleClick(e) { if(e.target===document.getElementById('modal-detalle')) cerrarDetalle(); }
+
+// ═══════════════════════════════════════════════════════
+//  LOGIN SUPERVISOR
+// ═══════════════════════════════════════════════════════
+function abrirLoginSupervisor() {
+  document.getElementById('inp-sup').value = '';
+  document.getElementById('msg-sup').classList.add('hidden');
+  document.getElementById('modal-sup-login').classList.remove('hidden');
+  setTimeout(() => document.getElementById('inp-sup').focus(), 100);
+}
+
+function cerrarModalSup() { document.getElementById('modal-sup-login').classList.add('hidden'); }
+
+function loginSup() {
+  const val = document.getElementById('inp-sup').value.trim();
+  if (val === ADMIN_PWD) {
+    cerrarModalSup();
+    show('view-admin');
+    renderAdmin();
+  } else {
+    const m = document.getElementById('msg-sup');
+    m.textContent = 'Contraseña incorrecta.';
+    m.classList.remove('hidden');
   }
-  modulosState[docId][idx].estado = nuevoEstado;
-  guardarModulos();
-}
-
-function cambiarPago(docId, idx, nuevoEstado) {
-  if (PAGOS[docId]) PAGOS[docId][idx].estado = nuevoEstado;
-}
-
-function cerrarModal(e) {
-  if (e.target === document.getElementById('modal-overlay')) cerrarModalBtn();
-}
-function cerrarModalBtn() {
-  document.getElementById('modal-overlay').classList.add('hidden');
 }
 
 // ═══════════════════════════════════════════════════════
 //  UTILS
 // ═══════════════════════════════════════════════════════
-function show(viewId) {
-  ['view-login','view-portal','view-admin'].forEach(id => {
-    document.getElementById(id).classList.toggle('hidden', id !== viewId);
-  });
+function show(id) {
+  ['view-login','view-portal','view-admin'].forEach(v =>
+    document.getElementById(v).classList.toggle('hidden', v !== id)
+  );
 }
 </script>
 </body>
