@@ -501,11 +501,146 @@ async function abrirDetalle(docId) {
         <div><div class="drive-text">Ver carpeta Drive</div><div class="drive-sub">${d.nombre||''}</div></div></a>`;
     }
 
+    // Bitácora
+    html += `
+      <div class="section-label" style="margin-top:1.25rem;display:flex;align-items:center;justify-content:space-between;">
+        <span>📓 Bitácora de sesiones</span>
+        <button class="btn-resumen" onclick="verResumen('${docId}')">📄 Ver resumen</button>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;">
+        <div style="font-size:14px;font-weight:700;margin-bottom:1rem;">➕ Registrar sesión</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div><label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">Fecha</label>
+            <input type="date" id="bita-fecha" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;"></div>
+          <div><label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">Estado sesión</label>
+            <select id="bita-estado" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;">
+              <option>Realizada</option><option>Pendiente de tarea</option>
+              <option>Reagendada</option><option>Inasistencia</option>
+            </select></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+          <div><label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">Módulo trabajado</label>
+            <select id="bita-modulo" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;">
+              <option>Módulo 1</option><option>Módulo 2</option>
+              <option>Módulo 3</option><option>General</option>
+            </select></div>
+          <div><label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">Avance del módulo</label>
+            <select id="bita-avance" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;">
+              <option>Pendiente</option><option>En proceso</option>
+              <option>Entregado</option><option>Atrasado</option>
+            </select></div>
+        </div>
+        <div style="margin-top:10px;">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">✅ ¿Qué se trabajó?</label>
+          <textarea id="bita-trabajado" placeholder="Describe lo realizado en la sesión..." style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;font-family:inherit;resize:vertical;min-height:70px;"></textarea>
+        </div>
+        <div style="margin-top:8px;">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">⏳ ¿Qué quedó pendiente?</label>
+          <textarea id="bita-pendiente" placeholder="Tareas o temas pendientes..." style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;font-family:inherit;resize:vertical;min-height:70px;"></textarea>
+        </div>
+        <div style="margin-top:8px;">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">📋 ¿Qué debe traer a la próxima sesión?</label>
+          <textarea id="bita-proxima" placeholder="Compromisos del docente para la siguiente sesión..." style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;font-family:inherit;resize:vertical;min-height:70px;"></textarea>
+        </div>
+        <button class="btn-primary" style="margin-top:12px;" onclick="guardarSesion('${docId}','${(d.nombre||'').replace(/'/g,"\\'")}')">💾 Guardar sesión</button>
+      </div>
+      <div id="bita-lista-${docId}"><div class="loading"><div class="spinner"></div><div>Cargando sesiones...</div></div></div>`;
+
     document.getElementById('modal-d-body').innerHTML = html;
+    cargarBitacora('${docId}');
   } catch(e) {
     document.getElementById('modal-d-body').innerHTML = html +
       '<p style="font-size:12px;color:var(--text-muted);margin-top:1rem;">No se pudo cargar el detalle ampliado.</p>';
   }
+}
+
+async function cargarBitacora(docId) {
+  try {
+    const r = await api('getBitacora', { password: adminPwd, docId });
+    const cont = document.getElementById('bita-lista-' + docId);
+    if (!cont) return;
+    const sesiones = r.sesiones || [];
+    if (!sesiones.length) { cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);padding:8px 0;">Sin sesiones registradas aún.</p>'; return; }
+    cont.innerHTML = sesiones.map(s => `
+      <div style="border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);margin-bottom:8px;overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;gap:8px;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+          <div>
+            <div style="font-size:14px;font-weight:700;">📅 ${s.fecha} · ${s.modulo}</div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">
+              <span style="background:${s.estadoSesion==='Realizada'?'var(--success-bg)':'var(--yellow-bg)'};color:${s.estadoSesion==='Realizada'?'var(--success-text)':'#b45309'};font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;">${s.estadoSesion}</span>
+              · Avance: ${s.avance}
+            </div>
+          </div>
+          <button onclick="event.stopPropagation();eliminarSesion('${docId}','${s.id}')" style="background:none;border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:11px;color:var(--text-muted);cursor:pointer;">✕</button>
+        </div>
+        <div style="display:none;padding:0 16px 14px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+            <div><div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:3px;">✅ LO TRABAJADO</div><div style="font-size:13px;line-height:1.5;">${s.trabajado||'—'}</div></div>
+            <div><div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:3px;">⏳ PENDIENTE</div><div style="font-size:13px;line-height:1.5;">${s.pendiente||'—'}</div></div>
+          </div>
+          <div><div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:3px;">📋 TAREA PRÓXIMA SESIÓN</div><div style="font-size:13px;line-height:1.5;">${s.tareaProxima||'—'}</div></div>
+        </div>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+async function guardarSesion(docId, nombre) {
+  const fecha = document.getElementById('bita-fecha').value;
+  if (!fecha) { toast('Selecciona la fecha de la sesión', true); return; }
+  const body = {
+    action:'saveSesion', password: adminPwd,
+    docId, nombre, fecha,
+    modulo: document.getElementById('bita-modulo').value,
+    avance: document.getElementById('bita-avance').value,
+    trabajado: document.getElementById('bita-trabajado').value,
+    pendiente: document.getElementById('bita-pendiente').value,
+    tareaProxima: document.getElementById('bita-proxima').value,
+    estadoSesion: document.getElementById('bita-estado').value
+  };
+  try {
+    const r = await fetch(API, { method:'POST', body: JSON.stringify(body) });
+    const data = await r.json();
+    if (data.ok) {
+      toast('✓ Sesión guardada en la bitácora');
+      ['bita-trabajado','bita-pendiente','bita-proxima'].forEach(id => document.getElementById(id).value='');
+      cargarBitacora(docId);
+    } else toast('Error: '+(data.error||''), true);
+  } catch(e) { toast('Error de conexión', true); }
+}
+
+async function eliminarSesion(docId, sesionId) {
+  if (!confirm('¿Eliminar esta sesión de la bitácora?')) return;
+  try {
+    const r = await api('deleteSesion', { password: adminPwd, id: sesionId });
+    if (r.ok) { toast('Sesión eliminada'); cargarBitacora(docId); }
+    else toast('Error al eliminar', true);
+  } catch(e) { toast('Error de conexión', true); }
+}
+
+async function verResumen(docId) {
+  const d = (datosAdmin.docentes||[]).find(x=>x.docId===docId);
+  const nombre = d ? d.nombre : docId;
+  try {
+    const r = await api('getBitacora', { password: adminPwd, docId });
+    const sesiones = r.sesiones || [];
+    if (!sesiones.length) { toast('Sin sesiones registradas aún', true); return; }
+    let html = `<div style="font-size:17px;font-weight:700;margin-bottom:6px;">📄 ${nombre}</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:1.25rem;">${sesiones.length} sesión(es) registrada(s)</div>`;
+    sesiones.forEach((s,i) => {
+      html += `<div style="border-left:3px solid var(--accent);padding-left:12px;margin-bottom:1rem;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+          <span style="font-size:13px;font-weight:700;">Sesión ${sesiones.length-i} · ${s.fecha}</span>
+          <span style="background:${s.estadoSesion==='Realizada'?'var(--success-bg)':'var(--yellow-bg)'};color:${s.estadoSesion==='Realizada'?'var(--success-text)':'#b45309'};font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;">${s.estadoSesion}</span>
+          <span style="font-size:11px;color:var(--text-muted);">${s.modulo} · ${s.avance}</span>
+        </div>
+        ${s.trabajado?`<div style="margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--text-muted);">LO TRABAJADO</div><div style="font-size:13px;margin-top:2px;line-height:1.5;">${s.trabajado}</div></div>`:''}
+        ${s.pendiente?`<div style="margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--text-muted);">PENDIENTE</div><div style="font-size:13px;margin-top:2px;line-height:1.5;">${s.pendiente}</div></div>`:''}
+        ${s.tareaProxima?`<div><div style="font-size:11px;font-weight:700;color:var(--text-muted);">TAREA PRÓXIMA SESIÓN</div><div style="font-size:13px;margin-top:2px;line-height:1.5;">${s.tareaProxima}</div></div>`:''}
+      </div>`;
+    });
+    document.getElementById('modal-d-nombre').textContent = nombre + ' — Bitácora completa';
+    document.getElementById('modal-d-body').innerHTML = html;
+  } catch(e) { toast('Error al cargar resumen', true); }
 }
 
 async function guardarTarea(sel, docId) {
