@@ -780,33 +780,53 @@ async function abrirDetalle(docId) {
 }
 
 async function cargarBitacora(docId) {
+  const cont = document.getElementById('bita-lista-' + docId);
+  if (!cont) return;
+  cont.innerHTML = '<div class="loading"><div class="spinner"></div><div>Cargando sesiones...</div></div>';
   try {
     const r = await api('getBitacora', { password: adminPwd, docId });
-    const cont = document.getElementById('bita-lista-' + docId);
-    if (!cont) return;
     const sesiones = r.sesiones || [];
-    if (!sesiones.length) { cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);padding:8px 0;">Sin sesiones registradas aún.</p>'; return; }
-    cont.innerHTML = sesiones.map(s => `
-      <div style="border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);margin-bottom:8px;overflow:hidden;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;gap:8px;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+    if (!sesiones.length) {
+      cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);padding:8px 0;">Sin sesiones registradas aún.</p>';
+      return;
+    }
+    cont.innerHTML = sesiones.map((s, idx) => `
+      <div style="border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);margin-bottom:8px;overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;gap:8px;background:var(--surface2);"
+             onclick="var b=document.getElementById('bita-body-${docId}-${idx}');b.style.display=b.style.display==='block'?'none':'block'">
           <div>
-            <div style="font-size:14px;font-weight:700;">📅 ${s.fecha} · ${s.modulo}</div>
-            <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">
-              <span style="background:${s.estadoSesion==='Realizada'?'var(--success-bg)':'var(--yellow-bg)'};color:${s.estadoSesion==='Realizada'?'var(--success-text)':'#b45309'};font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;">${s.estadoSesion}</span>
-              · Avance: ${s.avance}
+            <div style="font-size:14px;font-weight:800;">📅 ${s.fecha} · ${s.modulo}</div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;display:flex;align-items:center;gap:6px;">
+              <span style="background:${s.estadoSesion==='Realizada'?'var(--success-bg)':'var(--yellow-bg)'};color:${s.estadoSesion==='Realizada'?'var(--success-text)':'#b45309'};font-size:10px;padding:3px 10px;border-radius:20px;font-weight:800;border:1px solid ${s.estadoSesion==='Realizada'?'var(--green-border)':'var(--yellow-border)'};">${s.estadoSesion}</span>
+              Avance: <strong>${s.avance}</strong>
             </div>
           </div>
-          <button onclick="event.stopPropagation();eliminarSesion('${docId}','${s.id}')" style="background:none;border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:11px;color:var(--text-muted);cursor:pointer;">✕</button>
-        </div>
-        <div style="display:none;padding:0 16px 14px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
-            <div><div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:3px;">✅ LO TRABAJADO</div><div style="font-size:13px;line-height:1.5;">${s.trabajado||'—'}</div></div>
-            <div><div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:3px;">⏳ PENDIENTE</div><div style="font-size:13px;line-height:1.5;">${s.pendiente||'—'}</div></div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:18px;color:var(--text-muted);">›</span>
+            <button onclick="event.stopPropagation();eliminarSesion('${docId}','${s.id}')"
+              style="background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 10px;font-size:11px;color:var(--text-muted);cursor:pointer;font-family:inherit;font-weight:700;">✕</button>
           </div>
-          <div><div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:3px;">📋 TAREA PRÓXIMA SESIÓN</div><div style="font-size:13px;line-height:1.5;">${s.tareaProxima||'—'}</div></div>
+        </div>
+        <div id="bita-body-${docId}-${idx}" style="display:none;padding:14px 16px;border-top:1px solid var(--border);">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+            <div>
+              <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">✅ Lo trabajado</div>
+              <div style="font-size:13px;line-height:1.6;color:var(--text);">${s.trabajado||'—'}</div>
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">⏳ Pendiente</div>
+              <div style="font-size:13px;line-height:1.6;color:var(--text);">${s.pendiente||'—'}</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">📋 Tarea próxima sesión</div>
+            <div style="font-size:13px;line-height:1.6;color:var(--text);">${s.tareaProxima||'—'}</div>
+          </div>
         </div>
       </div>`).join('');
-  } catch(e) {}
+  } catch(e) {
+    cont.innerHTML = '<p style="font-size:13px;color:var(--danger-text);">Error al cargar sesiones. Intenta cerrar y abrir el docente.</p>';
+  }
 }
 
 async function guardarSesion(docId, nombre) {
