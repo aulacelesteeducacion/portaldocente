@@ -357,7 +357,10 @@ footer img{width:24px;vertical-align:middle;margin-right:6px;opacity:.7}
       </div>
       <div class="section-label" style="margin-top:0">💰 Resumen financiero</div>
       <div id="fin-resumen"></div>
-      <div class="section-label">👥 Docentes</div>
+      <div class="section-label" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>👥 Docentes</span>
+        <button class="btn-resumen" onclick="abrirAlta()">➕ Nuevo docente</button>
+      </div>
       <div id="admin-lista"></div>
     </div>
   </div>
@@ -954,6 +957,80 @@ function toast(msg, error) {
   t.style.opacity = '1';
   clearTimeout(window._toastT);
   window._toastT = setTimeout(()=>{ t.style.opacity = '0'; }, 2600);
+}
+
+function abrirAlta() {
+  ['alta-nombre','alta-cuotas','alta-asignatura','alta-email','alta-telefono','alta-comuna']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('msg-alta').classList.add('hidden');
+  document.getElementById('alta-form').classList.remove('hidden');
+  document.getElementById('alta-resultado').classList.add('hidden');
+  document.getElementById('modal-alta').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('alta-nombre').focus(), 100);
+}
+
+function cerrarAlta(){ document.getElementById('modal-alta').classList.add('hidden'); }
+
+async function crearDocente() {
+  const nombre = document.getElementById('alta-nombre').value.trim();
+  const msg = document.getElementById('msg-alta');
+  const btn = document.getElementById('btn-alta');
+  if (!nombre) { msg.textContent='Ingresa el nombre completo.'; msg.classList.remove('hidden'); return; }
+
+  msg.classList.add('hidden');
+  btn.disabled = true; btn.textContent = 'Registrando...';
+
+  const body = {
+    action: 'altaDocente',
+    password: adminPwd,
+    nombre,
+    codigoServicio: document.getElementById('alta-plan').value,
+    nCuotas: document.getElementById('alta-cuotas').value || null,
+    tipo: document.getElementById('alta-tipo').value,
+    asignatura: document.getElementById('alta-asignatura').value.trim(),
+    email: document.getElementById('alta-email').value.trim(),
+    telefono: document.getElementById('alta-telefono').value.trim(),
+    comuna: document.getElementById('alta-comuna').value.trim()
+  };
+
+  try {
+    const r = await fetch(API, { method:'POST', body: JSON.stringify(body) });
+    const data = await r.json();
+    if (!data.ok) {
+      msg.textContent = 'Error: ' + (data.error || 'No se pudo registrar');
+      msg.classList.remove('hidden');
+      btn.disabled = false; btn.textContent = '✅ Registrar docente';
+      return;
+    }
+    document.getElementById('alta-form').classList.add('hidden');
+    document.getElementById('alta-resultado').classList.remove('hidden');
+    document.getElementById('alta-resultado').innerHTML = `
+      <div style="text-align:center;padding:1rem 0;">
+        <div style="font-size:44px;margin-bottom:8px;">🎉</div>
+        <div style="font-size:17px;font-weight:900;margin-bottom:6px;">${data.nombre} registrada</div>
+        <div style="font-size:13px;color:var(--text-secondary);font-weight:600;margin-bottom:1.25rem;">${data.plan}</div>
+      </div>
+      <div style="background:var(--surface2);border:2px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
+          <span style="color:var(--text-secondary);font-weight:700;">ID docente</span><strong>${data.docId}</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--border);">
+          <span style="color:var(--text-secondary);font-weight:700;">Clave de acceso</span><strong style="color:var(--accent);">${data.clave}</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--border);">
+          <span style="color:var(--text-secondary);font-weight:700;">Monto del plan</span><strong>${fmt(data.monto)}</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--border);">
+          <span style="color:var(--text-secondary);font-weight:700;">Cuotas creadas</span><strong>${(data.cuotas||[]).length}</strong></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--border);">
+          <span style="color:var(--text-secondary);font-weight:700;">Módulos creados</span><strong>${(data.tareas||[]).length}</strong></div>
+      </div>
+      ${data.carpeta && data.carpeta.indexOf('http')===0 ? `<a href="${data.carpeta}" target="_blank" class="drive-link" style="margin-bottom:10px;">
+        <span style="font-size:24px;">📂</span><div><div class="drive-text">Carpeta de Drive creada</div><div class="drive-sub">Con M1, M2 y M3</div></div></a>` : ''}
+      <button class="btn-primary" onclick="cerrarAlta();refrescarAdmin()">Listo</button>`;
+    toast('✓ Docente registrada correctamente');
+  } catch(e) {
+    msg.textContent = 'Error de conexión. Intenta de nuevo.';
+    msg.classList.remove('hidden');
+  }
+  btn.disabled = false; btn.textContent = '✅ Registrar docente';
 }
 
 function cerrarDetalle(){ document.getElementById('modal-detalle').classList.add('hidden'); }
