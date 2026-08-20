@@ -400,6 +400,16 @@ footer img{width:24px;vertical-align:middle;margin-right:6px;opacity:.7}
 // ═══════════════════════════════════════════════════════
 //  CONEXIÓN CON GOOGLE APPS SCRIPT
 // ═══════════════════════════════════════════════════════
+const CODIGO_NUEVO = {
+  "D-008":"A-001","D-009":"A-002","D-010":"A-003","D-011":"A-004",
+  "D-013":"A-005","D-015":"A-006","D-016":"A-007","D-023":"A-008",
+  "D-024":"A-009","D-027":"A-010","D-030":"A-011","D-021":"A-012",
+  "D-022":"A-013","D-007":"R-001","D-014":"R-002","D-018":"R-003",
+  "D-006":"C-001","D-017":"C-002","D-019":"C-003","D-020":"C-004",
+  "D-026":"C-005","D-028":"C-006","D-029":"C-007"
+};
+const TIPO_SERVICIO_LABEL = {"A":"Acompañamiento","R":"Revisión","C":"Confección"};
+
 const API = "https://script.google.com/macros/s/AKfycbzFznexW2eqD-Uj7UQxBi3hVyDFpRUsmYLknFnL_VjZWZF7gV0986r81yl9hdjiDi7a5w/exec";
 
 async function api(action, params = {}) {
@@ -443,6 +453,13 @@ async function login() {
     tokenActual = r.token || r.docId || nombre;
     show('view-portal');
     document.getElementById('portal-nombre').textContent = (r.nombre || nombre).split(' ')[0];
+  // Mostrar código nuevo y tipo de servicio
+  const codigoN = r.codigoNuevo || '';
+  const tipoN = r.tipoServicio || '';
+  if (codigoN) {
+    const subtitulo = document.querySelector('#view-portal .portal-header div div:last-child');
+    if (subtitulo) subtitulo.textContent = codigoN + ' · ' + tipoN + ' · Portafolio 2026';
+  }
     cargarPortal();
   } catch(e) {
     msg.textContent = 'Error de conexión. Verifica tu internet e intenta de nuevo.';
