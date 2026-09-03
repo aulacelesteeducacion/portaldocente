@@ -230,6 +230,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 .table-lite td:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}
 .gestion-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .search-input{max-width:330px;border:1.5px solid var(--line-strong);border-radius:999px;padding:9px 13px;font:800 12px 'Nunito',sans-serif;outline:none}
+.sequential-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--blue-soft);border:1.4px solid var(--blue-border);border-radius:15px;padding:10px 12px;margin:10px 0 12px;font-size:12px;font-weight:900}
 @media(max-width:900px){.gestion-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 @media(max-width:980px){
@@ -346,6 +347,24 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
         <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
           <div class="section-kicker" style="margin:0"><span>👥</span><span class="kicker-label">Docentes</span></div>
           <button class="btn btn-yellow btn-small" onclick="abrirAlta()">➕ Nuevo docente</button>
+        </div>
+        <div id="sequential-bar" class="sequential-bar hidden"></div>
+        <div class="gestion-toolbar" style="margin-top:12px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <select id="admin-clasificacion" class="search-input" style="max-width:190px" onchange="renderAdmin()">
+              <option value="">Todas las clasificaciones</option>
+              <option value="C">Confección (C)</option>
+              <option value="A">Acompañamiento (A)</option>
+              <option value="R">Revisión (R)</option>
+            </select>
+            <select id="admin-orden" class="search-input" style="max-width:210px" onchange="renderAdmin()">
+              <option value="codigo">Orden secuencial por código</option>
+              <option value="prioridad">Prioridad</option>
+              <option value="actividad">Actividad más reciente</option>
+              <option value="nombre">Nombre A–Z</option>
+            </select>
+          </div>
+          <button class="btn btn-outline btn-small" onclick="iniciarRevisionSecuencial()">▶ Revisión secuencial</button>
         </div>
         <div id="admin-lista" class="docente-list"></div>
       </div>
@@ -495,6 +514,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzFznexW2eqD-Uj7UQxBi3hVyDFpRUsmYLknFnL_VjZWZF7gV0986r81yl9hdjiDi7a5w/exec";
 let tokenActual=null, adminPwd=null, datosAdmin=null, datosGestion=null, detalleActual=null;
+let secuenciaRevision=[], indiceSecuencia=-1;
 
 const $=id=>document.getElementById(id);
 const money=n=>'$'+Number(n||0).toLocaleString('es-CL');
@@ -641,8 +661,32 @@ function renderAdmin(){
     statCard(String((datosAdmin.docentes||[]).filter(d=>Number(d.pendiente||0)<=0 && Number(d.contratado||0)>0).length),'Pagos al día','blue')
   ].join('');
 
-  $('admin-lista').innerHTML=(datosAdmin.docentes||[]).map(d=>{
+  let lista=(datosAdmin.docentes||[]).slice();
+  const clas=($('admin-clasificacion')||{}).value||'';
+  const orden=($('admin-orden')||{}).value||'codigo';
+  if(clas) lista=lista.filter(d=>String(d.docId||'').startsWith(clas+'-'));
+
+  const gmap={};
+  if(datosGestion) (datosGestion.docentes||[]).forEach(x=>gmap[x.docId]=x);
+  const numCodigo=s=>Number(String(s||'').split('-')[1]||9999);
+  lista.sort((a,b)=>{
+    if(orden==='nombre') return String(a.nombre||'').localeCompare(String(b.nombre||''));
+    if(orden==='actividad'){
+      const ga=gmap[a.docId]||{}, gb=gmap[b.docId]||{};
+      return String(gb.ultimaActividad||'').localeCompare(String(ga.ultimaActividad||''));
+    }
+    if(orden==='prioridad'){
+      const ga=gmap[a.docId]||{}, gb=gmap[b.docId]||{};
+      if(Number(gb.score||0)!==Number(ga.score||0)) return Number(gb.score||0)-Number(ga.score||0);
+    }
+    const pa=String(a.docId||'').charAt(0), pb=String(b.docId||'').charAt(0);
+    if(pa!==pb) return pa.localeCompare(pb);
+    return numCodigo(a.docId)-numCodigo(b.docId);
+  });
+
+  $('admin-lista').innerHTML=lista.map(d=>{
     const entregadas=Number(d.entregadas||0), total=Number(d.total||0), enProceso=Number(d.enProceso||0);
+    const g=gmap[d.docId]||{};
     return `
       <div class="doc-row" onclick="abrirDetalle('${esc(d.docId)}')">
         <div class="doc-main">
@@ -654,6 +698,7 @@ function renderAdmin(){
               <span class="chip green">${entregadas}/${total} entregados</span>
               <span class="chip blue">${enProceso} en proceso</span>
               <span class="chip yellow">${money(d.pagado)} de ${money(d.contratado)}</span>
+              ${g.actualizadoReciente?'<span class="chip green">Actualizado hoy</span>':''}
             </div>
           </div>
         </div>
@@ -662,6 +707,45 @@ function renderAdmin(){
     `;
   }).join('');
 }
+
+
+function listaAdminFiltrada(){
+  let lista=(datosAdmin&&datosAdmin.docentes||[]).slice();
+  const clas=($('admin-clasificacion')||{}).value||'';
+  if(clas) lista=lista.filter(d=>String(d.docId||'').startsWith(clas+'-'));
+  const num=s=>Number(String(s||'').split('-')[1]||9999);
+  lista.sort((a,b)=>{
+    const pa=String(a.docId||'').charAt(0), pb=String(b.docId||'').charAt(0);
+    if(pa!==pb) return pa.localeCompare(pb);
+    return num(a.docId)-num(b.docId);
+  });
+  return lista;
+}
+
+function iniciarRevisionSecuencial(){
+  secuenciaRevision=listaAdminFiltrada();
+  if(!secuenciaRevision.length){toast('No hay docentes en esta clasificación');return}
+  indiceSecuencia=0;
+  mostrarBarraSecuencia();
+  abrirDetalle(secuenciaRevision[0].docId);
+}
+
+function mostrarBarraSecuencia(){
+  const bar=$('sequential-bar');
+  if(!bar) return;
+  if(indiceSecuencia<0 || !secuenciaRevision.length){bar.classList.add('hidden');return}
+  const d=secuenciaRevision[indiceSecuencia];
+  bar.classList.remove('hidden');
+  bar.innerHTML=`<span>Revisión secuencial: <b>${indiceSecuencia+1}/${secuenciaRevision.length}</b> · ${esc(d.docId)} ${esc(d.nombre||'')}</span>
+    <span style="display:flex;gap:6px"><button class="btn btn-outline btn-small" onclick="moverSecuencia(-1)">← Anterior</button><button class="btn btn-primary btn-small" onclick="moverSecuencia(1)">Siguiente →</button><button class="btn btn-outline btn-small" onclick="cerrarSecuencia()">Finalizar</button></span>`;
+}
+
+function moverSecuencia(delta){
+  const n=indiceSecuencia+delta;
+  if(n<0 || n>=secuenciaRevision.length){toast(n<0?'Ya estás en la primera docente':'Llegaste al final de la clasificación');return}
+  indiceSecuencia=n;mostrarBarraSecuencia();abrirDetalle(secuenciaRevision[indiceSecuencia].docId);
+}
+function cerrarSecuencia(){indiceSecuencia=-1;secuenciaRevision=[];mostrarBarraSecuencia();}
 
 async function refrescarAdmin(){
   const r=await api('admin',{password:adminPwd});
@@ -695,7 +779,8 @@ async function abrirDetalle(docId){
         ${statCard(money(d.pagado||0),'Pagado','green')}
         ${statCard(money(d.pendiente||0),'Saldo','yellow')}
       </div>
-      <div style="display:flex;justify-content:flex-end;margin-top:12px">
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <div>${indiceSecuencia>=0?`<button class="btn btn-outline btn-small" onclick="moverSecuencia(-1)">← Anterior</button> <button class="btn btn-outline btn-small" onclick="moverSecuencia(1)">Siguiente →</button>`:''}</div>
         <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(docId)}')">📝 Registrar revisión</button>
       </div>
 
@@ -878,7 +963,7 @@ function renderPrioridades(){
         <div class="priority-meta">
           ${d.entregadas||0}/${d.total||0} entregados · ${d.enProceso||0} en proceso ·
           Drive: ${d.archivosDrive||0} archivos · Última subida: ${esc(d.ultimaSubida||'Sin archivos')}
-          · Última revisión: ${esc(d.ultimaRevision||'Sin registro')}
+          · Última revisión: ${esc(d.ultimaRevision||'Sin registro')} ${d.ultimaActividadPortal?`· Portal: ${esc(d.ultimaActividadPortal)}`:''}
         </div>
         <div class="priority-action">→ ${esc(d.accionSugerida||'Seguimiento normal')}</div>
         ${d.motivos&&d.motivos.length?`<div class="helper-text" style="margin-top:5px">${esc(d.motivos.join(' · '))}</div>`:''}
