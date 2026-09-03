@@ -321,9 +321,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="gestion-tabs">
       <button class="gestion-tab active" data-gtab="resumen" onclick="cambiarVistaGestion('resumen',this)">🏠 Resumen</button>
       <button class="gestion-tab" data-gtab="prioridades" onclick="cambiarVistaGestion('prioridades',this)">🚨 Prioridades</button>
-      <button class="gestion-tab" data-gtab="revisiones" onclick="cambiarVistaGestion('revisiones',this)">📝 Revisiones</button>
+      <button class="gestion-tab" data-gtab="historial" onclick="cambiarVistaGestion('historial',this)">🧾 Historial de gestión</button>
       <button class="gestion-tab" data-gtab="sinactividad" onclick="cambiarVistaGestion('sinactividad',this)">⏳ Sin actividad</button>
-      <button class="gestion-tab" data-gtab="bitacora" onclick="cambiarVistaGestion('bitacora',this)">🧾 Bitácora</button>
     </div>
 
     <div id="gestion-loading" class="loading hidden"><div class="spinner"></div>Analizando portafolios, revisiones y Drive...</div>
@@ -381,19 +380,24 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <div id="lista-prioridades" class="priority-list"></div>
     </div>
 
-    <div id="gestion-revisiones" class="gestion-view hidden">
+    <div id="gestion-historial" class="gestion-view hidden">
       <div class="gestion-toolbar">
         <div>
-          <div class="section-title small">📝 Cola de revisión</div>
-          <div class="helper-text">Docentes que tienen material nuevo, módulos en proceso o una revisión abierta.</div>
+          <div class="section-title small">🧾 Historial de gestión</div>
+          <div class="helper-text">Sesiones, revisiones y seguimientos en una sola línea de tiempo.</div>
         </div>
-        <button class="btn btn-primary btn-small" onclick="abrirRevision()">➕ Registrar revisión</button>
+        <button class="btn btn-primary btn-small" onclick="abrirRevision()">➕ Registrar gestión</button>
       </div>
-      <div id="cola-revision" class="priority-list"></div>
 
       <div class="section-block">
-        <div class="section-title small">🕒 Últimas revisiones realizadas</div>
-        <div id="ultimas-revisiones"></div>
+        <div class="section-title small">📝 Cola de revisión</div>
+        <div class="helper-text" style="margin-bottom:12px">Material nuevo o casos que requieren una acción de revisión.</div>
+        <div id="cola-revision" class="priority-list"></div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-title small">🕒 Historial reciente</div>
+        <div id="historial-gestion-list"></div>
       </div>
     </div>
 
@@ -401,11 +405,6 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="section-title small">⏳ Docentes sin actividad</div>
       <div class="helper-text" style="margin-bottom:12px">Sin archivos detectados en Drive y sin avance registrado en los módulos.</div>
       <div id="lista-sinactividad" class="priority-list"></div>
-    </div>
-
-    <div id="gestion-bitacora" class="gestion-view hidden">
-      <div class="section-title small">🧾 Últimas sesiones registradas</div>
-      <div id="gestion-bitacora-list"></div>
     </div>
   </section>
 </main>
@@ -478,13 +477,14 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 <div id="modal-revision" class="modal-bg hidden" onclick="if(event.target===this)cerrar('modal-revision')">
   <div class="modal-box" style="max-width:760px">
     <div class="modal-head">
-      <div class="modal-title" style="font-size:22px">📝 Registrar revisión</div>
+      <div class="modal-title" style="font-size:22px">🧾 Registrar gestión</div>
       <button class="modal-close" onclick="cerrar('modal-revision')">×</button>
     </div>
     <div class="modal-body">
       <div id="msg-revision" class="msg hidden"></div>
       <div class="grid2">
         <div class="field"><label>Docente</label><select id="rev-docente" onchange="autocompletarRevision()"></select></div>
+        <div class="field"><label>Tipo de registro</label><select id="rev-tipo"><option>Revisión</option><option>Sesión</option><option>Seguimiento</option><option>Contacto</option></select></div>
         <div class="field"><label>Módulo</label><select id="rev-modulo"><option>Módulo 1</option><option>Módulo 2</option><option>Módulo 3</option></select></div>
         <div class="field"><label>Fecha recepción del material</label><input id="rev-recepcion" type="date"></div>
         <div class="field"><label>Fecha de revisión</label><input id="rev-fecha" type="date"></div>
@@ -781,7 +781,7 @@ async function abrirDetalle(docId){
       </div>
       <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px">
         <div>${indiceSecuencia>=0?`<button class="btn btn-outline btn-small" onclick="moverSecuencia(-1)">← Anterior</button> <button class="btn btn-outline btn-small" onclick="moverSecuencia(1)">Siguiente →</button>`:''}</div>
-        <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(docId)}')">📝 Registrar revisión</button>
+        <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(docId)}')">🧾 Registrar gestión</button>
       </div>
 
       <div class="section-panel">
@@ -833,31 +833,34 @@ async function abrirDetalle(docId){
 
       <div class="section-panel">
         <div class="panel-head">
-          <div class="panel-title">🧾 Bitácora de sesiones</div>
+          <div class="panel-title">🧾 Historial de gestión</div>
         </div>
 
         <div class="detail-list" style="margin-bottom:14px">
           ${ses.length ? ses.map(s=>`
             <div class="detail-row">
               <div class="detail-info">
-                <b>${esc(s.fecha||'Sin fecha')} · ${esc(s.modulo||'')}</b>
+                <b>${esc(s.fecha||'Sin fecha')} · ${esc(s.tipoRegistro||'Gestión')} · ${esc(s.modulo||'')}</b>
                 <div class="detail-sub">${esc(s.trabajado||'')}</div>
+                <div class="detail-sub">${s.responsable?`Responsable: ${esc(s.responsable)} · `:''}${esc(s.estadoGestion||s.estadoSesion||'')}</div>
               </div>
               <button class="btn btn-outline btn-small" onclick="borrarSesion('${esc(s.id)}')">Eliminar</button>
             </div>
-          `).join('') : '<div class="helper-text">Sin sesiones registradas.</div>'}
+          `).join('') : '<div class="helper-text">Sin registros de gestión.</div>'}
         </div>
 
-        <div style="font-size:18px;font-weight:900;margin-bottom:12px">➕ Registrar sesión</div>
+        <div style="font-size:18px;font-weight:900;margin-bottom:12px">➕ Registrar seguimiento</div>
         <div class="grid2">
           <div class="field"><label>Fecha</label><input id="bit-fecha" type="date"></div>
-          <div class="field"><label>Estado sesión</label><select id="bit-estado"><option>Realizada</option><option>Reprogramada</option><option>Pendiente</option></select></div>
+          <div class="field"><label>Tipo de registro</label><select id="bit-tipo"><option>Sesión</option><option>Revisión</option><option>Seguimiento</option><option>Contacto</option></select></div>
+          <div class="field"><label>Responsable</label><input id="bit-responsable" placeholder="Ej: Ignacio"></div>
+          <div class="field"><label>Estado</label><select id="bit-estado"><option>Realizada</option><option>En revisión</option><option>Devuelto con observaciones</option><option>Esperando corrección docente</option><option>Finalizado</option><option>Pendiente</option></select></div>
           <div class="field"><label>Módulo trabajado</label><select id="bit-mod"><option>Módulo 1</option><option>Módulo 2</option><option>Módulo 3</option></select></div>
           <div class="field"><label>Avance del módulo</label><select id="bit-avance"><option>Pendiente</option><option>En proceso</option><option>Entregado</option></select></div>
         </div>
-        <div class="field"><label>✅ ¿Qué se trabajó?</label><textarea id="bit-trab" placeholder="Describe lo realizado en la sesión..."></textarea></div>
-        <div class="field"><label>⏳ ¿Qué quedó pendiente?</label><textarea id="bit-pend" placeholder="Tareas o temas pendientes..."></textarea></div>
-        <button class="btn btn-primary" onclick="guardarSesion('${esc(docId)}','${esc(d.nombre||'')}')">Guardar sesión</button>
+        <div class="field"><label>✅ ¿Qué se trabajó?</label><textarea id="bit-trab" placeholder="Describe lo realizado, revisado o acordado..."></textarea></div>
+        <div class="field"><label>⏳ ¿Qué quedó pendiente?</label><textarea id="bit-pend" placeholder="Pendientes y próxima acción..."></textarea></div>
+        <button class="btn btn-primary" onclick="guardarSesion('${esc(docId)}','${esc(d.nombre||'')}')">Guardar seguimiento</button>
       </div>
     `;
   }catch(e){
@@ -882,15 +885,19 @@ async function guardarSesion(docId,nombre){
     password:adminPwd,
     docId,nombre,
     fecha:$('bit-fecha').value,
+    tipoRegistro:$('bit-tipo').value,
+    responsable:$('bit-responsable').value,
     modulo:$('bit-mod').value,
     avance:$('bit-avance').value,
     trabajado:$('bit-trab').value,
     pendiente:$('bit-pend').value,
     tareaProxima:$('bit-pend').value,
-    estadoSesion:$('bit-estado').value
+    proximaAccion:$('bit-pend').value,
+    estadoSesion:$('bit-estado').value,
+    estadoGestion:$('bit-estado').value
   };
   const r=await apiPost(body);
-  if(r.ok){toast('Sesión guardada');await abrirDetalle(docId);}
+  if(r.ok){toast('Gestión guardada');await abrirDetalle(docId);}
   else toast(r.error||'Error al guardar');
 }
 
@@ -942,8 +949,7 @@ function renderGestion(){
   renderPrioridades();
   renderColaRevision();
   renderSinActividad();
-  renderUltimasRevisiones();
-  renderGestionBitacora();
+  renderHistorialGestion();
   poblarDocentesRevision();
 }
 
@@ -970,7 +976,7 @@ function renderPrioridades(){
       </div>
       <div class="priority-controls">
         <button class="btn btn-outline btn-small" onclick="abrirDetalle('${esc(d.docId)}')">Ver ficha</button>
-        <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(d.docId)}')">Registrar revisión</button>
+        <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(d.docId)}')">Registrar gestión</button>
       </div>
     </div>`;
   }).join(''):'<div class="empty-box">No hay docentes que coincidan con la búsqueda.</div>';
@@ -991,7 +997,7 @@ function renderColaRevision(){
         <div class="priority-action">→ ${esc(d.accion||'Revisar')}</div>
       </div>
       <div class="priority-controls">
-        <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(d.docId)}')">Revisar</button>
+        <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(d.docId)}')">Registrar</button>
       </div>
     </div>`;
   }).join(''):'<div class="empty-box">🎉 No hay docentes en cola de revisión.</div>';
@@ -1011,27 +1017,16 @@ function renderSinActividad(){
   `).join(''):'<div class="empty-box">No hay docentes completamente inactivos.</div>';
 }
 
-function renderUltimasRevisiones(){
-  const arr=(datosGestion&&datosGestion.ultimasRevisiones)||[];
-  $('ultimas-revisiones').innerHTML=arr.length?`<table class="table-lite"><tbody>${arr.map(r=>`
+function renderHistorialGestion(){
+  const arr=(datosGestion&&datosGestion.ultimosRegistros)||[];
+  $('historial-gestion-list').innerHTML=arr.length?`<table class="table-lite"><tbody>${arr.map(r=>`
     <tr>
       <td><b>${esc(r.fecha||'')}</b></td>
-      <td><b>${esc(r.nombre||r.docId)}</b><div class="helper-text">${esc(r.modulo||'')}</div></td>
+      <td><b>${esc(r.nombre||r.docId)}</b><div class="helper-text">${esc(r.tipoRegistro||'Gestión')} · ${esc(r.modulo||'')}</div></td>
       <td>${esc(r.responsable||'Sin responsable')}</td>
       <td>${esc(r.estado||'')}</td>
-      <td>${esc(r.proximaAccion||r.resultado||'')}</td>
-    </tr>`).join('')}</tbody></table>`:'<div class="empty-box">Todavía no hay revisiones registradas en el nuevo control.</div>';
-}
-
-function renderGestionBitacora(){
-  const arr=(datosGestion&&datosGestion.ultimasSesiones)||[];
-  $('gestion-bitacora-list').innerHTML=arr.length?`<table class="table-lite"><tbody>${arr.map(s=>`
-    <tr>
-      <td><b>${esc(s.fecha||'')}</b></td>
-      <td><b>${esc(s.nombre||s.docId)}</b><div class="helper-text">${esc(s.modulo||'')}</div></td>
-      <td>${esc(s.trabajado||'')}</td>
-      <td>${esc(s.pendiente||'')}</td>
-    </tr>`).join('')}</tbody></table>`:'<div class="empty-box">No hay sesiones registradas.</div>';
+      <td>${esc(r.proximaAccion||r.pendiente||r.trabajado||'')}</td>
+    </tr>`).join('')}</tbody></table>`:'<div class="empty-box">Todavía no hay registros en el historial de gestión.</div>';
 }
 
 function poblarDocentesRevision(){
@@ -1059,6 +1054,7 @@ function abrirRevision(docId=''){
   poblarDocentesRevision();
   $('msg-revision').className='msg hidden';
   ['rev-recepcion','rev-fecha','rev-limite','rev-responsable','rev-resultado','rev-accion'].forEach(id=>{if($(id))$(id).value=''});
+  $('rev-tipo').value='Revisión';
   $('rev-estado').value='Pendiente de revisión';
   $('rev-prioridad').value='';
   const hoy=new Date().toISOString().slice(0,10);
@@ -1077,6 +1073,7 @@ async function guardarRevision(){
     password:adminPwd,
     docId:docId,
     nombre:d?d.nombre:'',
+    tipoRegistro:$('rev-tipo').value,
     modulo:$('rev-modulo').value,
     fechaRecepcion:$('rev-recepcion').value,
     fechaRevision:$('rev-fecha').value,
@@ -1091,7 +1088,7 @@ async function guardarRevision(){
     const r=await apiPost(body);
     if(!r.ok) throw new Error(r.error||'No se pudo guardar');
     cerrar('modal-revision');
-    toast('Revisión registrada');
+    toast('Gestión registrada');
     await cargarGestion();
   }catch(e){
     m.textContent=e.message;m.className='msg error';
