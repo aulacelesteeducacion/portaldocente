@@ -1,1085 +1,264 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Portal Docente · Aula Celeste 2026</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f0f7ff;
-  --surface:#ffffff;
-  --surface2:#f4f9ff;
-  --border:#c8dff7;
-  --text:#1a2f5a;
-  --text-secondary:#4a6fa5;
-  --text-muted:#8aaad4;
-  --accent:#1565c0;
-  --accent-hover:#0d47a1;
-  --accent-bg:#e3f0ff;
-  --accent-text:#1565c0;
-  --yellow:#f9a825;
-  --yellow-bg:#fffde7;
-  --yellow-border:#fdd835;
-  --green:#2e7d32;
-  --green-bg:#e8f5e9;
-  --green-border:#81c784;
-  --success-bg:#e8f5e9;
-  --success-text:#2e7d32;
-  --danger-bg:#fef2f2;
-  --danger-text:#991b1b;
-  --radius:12px;
-  --radius-lg:18px;
-  --shadow:0 4px 20px rgba(21,101,192,.10);
-  --shadow-lg:0 8px 32px rgba(21,101,192,.15);
+  --bg:#f0f7ff;--surface:#fff;--surface2:#f4f9ff;--border:#c8dff7;
+  --text:#1a2f5a;--muted:#6d8eb9;--accent:#1565c0;--accent2:#29b6f6;
+  --green:#2e7d32;--greenbg:#e8f5e9;--yellow:#f9a825;--yellowbg:#fffde7;
+  --red:#b91c1c;--redbg:#fef2f2;--radius:14px;--shadow:0 6px 22px rgba(21,101,192,.12)
 }
-body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:3rem}
-
-/* ── HEADER ── */
-.site-header{
-  background:linear-gradient(135deg,#1565c0 0%,#1976d2 30%,#29b6f6 70%,#b3e5fc 100%);
-  padding:2rem 1rem 3rem;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-.site-header::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 20% 50%,rgba(249,168,37,.25) 0%,transparent 60%),
-             radial-gradient(ellipse at 80% 20%,rgba(255,255,255,.15) 0%,transparent 50%);
-}
-.site-header::after{
-  content:'';position:absolute;bottom:-2px;left:0;right:0;height:40px;
-  background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0;
-}
-.header-inner{display:flex;align-items:center;justify-content:center;gap:16px;position:relative;z-index:1}
-.header-logo{
-  width:80px;height:80px;object-fit:contain;
-  filter:drop-shadow(0 6px 16px rgba(0,0,0,.25));
-  animation:float 3s ease-in-out infinite;
-}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.header-text h1{
-  font-size:28px;font-weight:900;color:#fff;
-  text-shadow:0 2px 12px rgba(0,0,0,.2);
-  letter-spacing:-0.5px;
-}
-.header-text p{font-size:13px;color:rgba(255,255,255,.9);margin-top:3px;font-weight:600}
-.supervisor-btn{
-  position:absolute;top:16px;right:16px;
-  background:rgba(255,255,255,.25);
-  border:1.5px solid rgba(255,255,255,.5);
-  border-radius:24px;padding:7px 16px;
-  font-size:12px;font-weight:700;color:#fff;
-  cursor:pointer;backdrop-filter:blur(8px);
-  z-index:10;transition:all .2s;
-  font-family:'Nunito',sans-serif;
-}
-.supervisor-btn:hover{background:rgba(255,255,255,.4);transform:scale(1.05)}
-
-/* ── CONTENEDOR ── */
-.container{max-width:700px;margin:0 auto;padding:1.5rem 1rem 0}
-.card{
-  background:var(--surface);border:1.5px solid var(--border);
-  border-radius:var(--radius-lg);padding:1.75rem;
-  margin-bottom:1rem;box-shadow:var(--shadow);
-}
-
-/* ── LOGIN ── */
-.login-wrap{text-align:center}
-.login-logo{width:90px;height:90px;object-fit:contain;margin-bottom:1rem;animation:float 3s ease-in-out infinite}
-.login-wrap h2{font-size:22px;font-weight:900;margin-bottom:6px;color:var(--text)}
-.login-wrap p{font-size:13px;color:var(--text-secondary);margin-bottom:1.75rem;font-weight:600}
-.field-wrap{margin-bottom:1rem;text-align:left}
-.field-wrap label{display:block;font-size:13px;font-weight:700;color:var(--text-secondary);margin-bottom:6px}
-.field-wrap input{
-  width:100%;padding:12px 16px;
-  border:2px solid var(--border);border-radius:var(--radius);
-  font-size:15px;color:var(--text);outline:none;
-  background:var(--surface);transition:all .2s;
-  font-family:'Nunito',sans-serif;font-weight:600;
-}
-.field-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(21,101,192,.12)}
-.btn-primary{
-  width:100%;padding:14px;
-  background:linear-gradient(135deg,#1565c0,#1e88e5);
-  color:#fff;border:none;border-radius:var(--radius);
-  font-size:16px;font-weight:800;cursor:pointer;
-  box-shadow:0 6px 20px rgba(21,101,192,.35);
-  transition:all .2s;font-family:'Nunito',sans-serif;
-}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(21,101,192,.45)}
-.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.msg{padding:12px 16px;border-radius:var(--radius);font-size:14px;margin-bottom:1rem;font-weight:700}
-.msg.error{background:var(--danger-bg);color:var(--danger-text);border:2px solid #fecaca}
-
-/* ── PORTAL HEADER ── */
-.portal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px}
-.portal-greeting{font-size:20px;font-weight:900;color:var(--text)}
-.portal-greeting span{color:var(--accent)}
-.btn-outline{
-  background:none;border:2px solid var(--border);border-radius:var(--radius);
-  padding:7px 16px;font-size:13px;color:var(--text-secondary);cursor:pointer;
-  transition:all .2s;font-family:'Nunito',sans-serif;font-weight:700;
-}
-.btn-outline:hover{border-color:var(--danger-text);color:var(--danger-text)}
-
-/* ── SECTION LABEL ── */
-.section-label{
-  font-size:11px;font-weight:800;color:var(--text-secondary);
-  text-transform:uppercase;letter-spacing:.08em;
-  margin-bottom:10px;margin-top:1.5rem;
-  display:flex;align-items:center;gap:6px;
-}
-.section-label:first-child{margin-top:0}
-.section-label::before{
-  content:'';display:inline-block;width:4px;height:14px;
-  background:linear-gradient(180deg,var(--yellow),var(--accent));
-  border-radius:2px;flex-shrink:0;
-}
-
-/* ── MÓDULOS ── */
-.modulos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
-.modulo-card{
-  border:2px solid var(--border);border-radius:var(--radius);
-  padding:14px;background:var(--surface2);
-  transition:all .2s;
-}
-.modulo-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--accent)}
-.modulo-name{font-size:13px;font-weight:800;margin-bottom:4px;color:var(--text)}
-.modulo-tarea{font-size:11px;color:var(--text-secondary);margin-bottom:8px;line-height:1.5;font-weight:600}
-.modulo-fecha{font-size:10px;color:var(--text-muted);margin-bottom:6px;font-weight:600}
-.estado-badge{font-size:11px;padding:4px 12px;border-radius:24px;font-weight:800;display:inline-block}
-.e-Pendiente{background:var(--yellow-bg);color:#e65100;border:2px solid var(--yellow-border)}
-.e-En-proceso{background:var(--accent-bg);color:var(--accent-text);border:2px solid #90caf9}
-.e-Entregado{background:var(--success-bg);color:var(--success-text);border:2px solid var(--green-border)}
-.e-Atrasado{background:var(--danger-bg);color:var(--danger-text);border:2px solid #fca5a5}
-
-/* ── DRIVE ── */
-.drive-link{
-  display:flex;align-items:center;gap:14px;padding:16px 18px;
-  border:2px solid var(--border);border-radius:var(--radius);
-  background:linear-gradient(135deg,var(--surface2),#fff);
-  text-decoration:none;color:var(--text);transition:all .2s;
-}
-.drive-link:hover{border-color:var(--yellow);background:var(--yellow-bg);transform:translateY(-2px);box-shadow:var(--shadow)}
-.drive-text{font-size:14px;font-weight:800}
-.drive-sub{font-size:12px;color:var(--text-secondary);font-weight:600}
-
-/* ── PAGOS ── */
-.pago-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 16px;border:2px solid var(--border);
-  border-radius:var(--radius);background:var(--surface2);
-  margin-bottom:8px;gap:12px;transition:all .2s;
-}
-.pago-row:hover{border-color:var(--accent);background:var(--accent-bg)}
-.pago-label{font-size:13px;font-weight:800;color:var(--text)}
-.pago-fecha{font-size:11px;color:var(--text-secondary);margin-top:2px;font-weight:600}
-.pago-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.pago-monto{font-size:15px;font-weight:900;color:var(--text)}
-.tag-pagado{background:var(--success-bg);color:var(--success-text);font-size:11px;padding:4px 12px;border-radius:24px;font-weight:800;border:2px solid var(--green-border)}
-.tag-pendiente{background:var(--yellow-bg);color:#e65100;font-size:11px;padding:4px 12px;border-radius:24px;font-weight:800;border:2px solid var(--yellow-border)}
-
-/* ── RESUMEN FINANCIERO ── */
-.fin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:1rem}
-.fin-stat{border-radius:var(--radius);padding:16px;text-align:center;border:2px solid;transition:all .2s}
-.fin-stat:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
-.fin-stat.blue{background:linear-gradient(135deg,#e3f0ff,#f0f7ff);border-color:#90caf9}
-.fin-stat.green{background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border-color:var(--green-border)}
-.fin-stat.yellow{background:linear-gradient(135deg,#fffde7,#fff8e1);border-color:var(--yellow-border)}
-.fin-num{font-size:18px;font-weight:900;color:var(--text)}
-.fin-label{font-size:11px;color:var(--text-secondary);margin-top:4px;font-weight:700}
-
-/* ── ADMIN ── */
-.admin-filter{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
-.filter-btn{
-  padding:8px 18px;border:2px solid var(--border);border-radius:24px;
-  font-size:12px;font-weight:800;cursor:pointer;
-  background:var(--surface2);color:var(--text-secondary);
-  transition:all .2s;font-family:'Nunito',sans-serif;
-}
-.filter-btn.active{background:linear-gradient(135deg,#1565c0,#1e88e5);border-color:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(21,101,192,.3)}
-.docente-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px;border:2px solid var(--border);
-  border-radius:var(--radius);background:var(--surface);
-  margin-bottom:8px;cursor:pointer;transition:all .2s;
-}
-.docente-row:hover{border-color:var(--yellow);background:var(--yellow-bg);transform:translateX(4px)}
-.docente-name{font-size:15px;font-weight:800;color:var(--text)}
-.docente-sub{font-size:12px;color:var(--text-secondary);margin-top:3px;font-weight:600}
-.chevron{font-size:20px;color:var(--text-muted)}
-.pago-tag{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:800}
-
-/* ── SELECTORES ADMIN ── */
-.select-estado{
-  padding:6px 12px;border:2px solid var(--border);border-radius:var(--radius);
-  font-size:12px;color:var(--text);background:var(--surface2);cursor:pointer;
-  font-family:'Nunito',sans-serif;font-weight:700;
-}
-
-/* ── SYNC BADGE ── */
-.sync-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:11px;color:var(--green);
-  background:var(--success-bg);padding:4px 12px;
-  border-radius:24px;font-weight:800;
-  border:2px solid var(--green-border);margin-top:4px;
-}
-
-/* ── MODAL ── */
-.modal-bg{
-  position:fixed;inset:0;
-  background:rgba(26,47,90,.5);
-  backdrop-filter:blur(4px);
-  z-index:200;display:flex;
-  align-items:center;justify-content:center;padding:1rem;
-}
-.modal-box{
-  background:var(--surface);border-radius:var(--radius-lg);
-  padding:1.75rem;max-width:580px;width:100%;
-  max-height:90vh;overflow-y:auto;
-  box-shadow:0 24px 64px rgba(21,101,192,.25);
-  border:2px solid var(--border);
-}
-.modal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
-.modal-title{font-size:18px;font-weight:900;color:var(--text)}
-.modal-close{
-  background:var(--surface2);border:2px solid var(--border);
-  border-radius:50%;width:32px;height:32px;
-  font-size:16px;cursor:pointer;color:var(--text-secondary);
-  display:flex;align-items:center;justify-content:center;
-  transition:all .2s;
-}
-.modal-close:hover{background:var(--danger-bg);border-color:#fca5a5;color:var(--danger-text)}
-
-/* ── BTN RESUMEN ── */
-.btn-resumen{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 16px;
-  background:linear-gradient(135deg,var(--yellow-bg),#fff8e1);
-  border:2px solid var(--yellow-border);border-radius:24px;
-  font-size:12px;font-weight:800;color:#e65100;cursor:pointer;
-  transition:all .2s;font-family:'Nunito',sans-serif;
-}
-.btn-resumen:hover{background:var(--yellow);color:#fff;border-color:var(--yellow);box-shadow:0 4px 12px rgba(249,168,37,.4)}
-
-/* ── LOADING ── */
-.loading{text-align:center;padding:2.5rem 1rem;color:var(--text-muted);font-size:14px;font-weight:700}
-.spinner{
-  display:inline-block;width:28px;height:28px;
-  border:3px solid var(--border);border-top-color:var(--accent);
-  border-radius:50%;animation:spin .8s linear infinite;margin-bottom:10px;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ── TOAST ── */
-#toast{font-family:'Nunito',sans-serif;font-weight:800}
-
-/* ── FOOTER ── */
-footer{
-  text-align:center;font-size:12px;color:var(--text-muted);
-  margin-top:2rem;padding:0 1rem 1rem;font-weight:700;
-}
-footer img{width:24px;vertical-align:middle;margin-right:6px;opacity:.7}
-
+body{font-family:Nunito,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
 .hidden{display:none!important}
-
-/* ── RESPONSIVE ── */
-@media(max-width:480px){
-  .header-text h1{font-size:22px}
-  .fin-grid{grid-template-columns:1fr 1fr}
-  .modulos-grid{grid-template-columns:1fr}
-  .modal-box{padding:1.25rem}
-  .card{padding:1.25rem}
-}
+.site-header{background:linear-gradient(135deg,#1565c0,#1e88e5 45%,#29b6f6);padding:28px 16px 48px;text-align:center;position:relative}
+.site-header:after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:32px;background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0}
+.header-inner{display:flex;justify-content:center;align-items:center;gap:14px}
+.header-logo{width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 5px 12px rgba(0,0,0,.22))}
+.header-text h1{color:#fff;font-size:28px;font-weight:900}.header-text p{color:#eaf6ff;font-weight:700;font-size:13px}
+.supervisor-btn{position:absolute;right:16px;top:16px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.18);color:#fff;padding:8px 15px;border-radius:22px;font-weight:800;cursor:pointer}
+.container{max-width:760px;margin:0 auto;padding:22px 14px}
+.card{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:24px;box-shadow:var(--shadow);margin-bottom:14px}
+.login-wrap{text-align:center}.login-logo{width:84px;margin-bottom:10px}.login-wrap h2{font-size:22px;font-weight:900}.login-wrap p{color:var(--muted);font-size:13px;margin:5px 0 20px}
+.field{margin-bottom:12px;text-align:left}.field label{font-size:12px;font-weight:800;color:var(--muted);display:block;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;border:2px solid var(--border);border-radius:12px;padding:11px 13px;font:600 14px Nunito;color:var(--text);background:#fff;outline:none}
+.field textarea{min-height:88px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.btn{border:none;border-radius:12px;padding:11px 15px;font:800 14px Nunito;cursor:pointer}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#1e88e5);color:#fff;width:100%}
+.btn-outline{background:#fff;border:2px solid var(--border);color:var(--muted)}
+.btn-small{padding:7px 10px;font-size:12px}
+.portal-header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.portal-greeting{font-size:20px;font-weight:900}.portal-greeting span{color:var(--accent)}
+.section-label{font-size:12px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:18px 0 8px}
+.modulos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px}
+.modulo-card,.pago-row,.docente-row{border:2px solid var(--border);border-radius:13px;background:var(--surface2)}
+.modulo-card{padding:13px}.modulo-name{font-weight:900;font-size:13px}.modulo-tarea{font-size:11px;color:var(--muted);line-height:1.45;margin:4px 0 8px}
+.estado{display:inline-block;border-radius:18px;padding:4px 9px;font-size:10px;font-weight:900}
+.e-Pendiente{background:var(--yellowbg);color:#b45309}.e-En-proceso{background:#e3f0ff;color:var(--accent)}.e-Entregado{background:var(--greenbg);color:var(--green)}.e-Atrasado{background:var(--redbg);color:var(--red)}
+.drive-link{display:flex;gap:12px;align-items:center;border:2px solid var(--border);border-radius:13px;padding:14px;text-decoration:none;color:var(--text);background:var(--surface2)}
+.pago-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;margin-bottom:8px}.pago-label{font-size:13px;font-weight:900}.pago-fecha{font-size:10px;color:var(--muted)}.pago-monto{font-weight:900}
+.tag-pagado{color:var(--green);background:var(--greenbg)}.tag-pendiente{color:#b45309;background:var(--yellowbg)}
+.tag-pagado,.tag-pendiente{font-size:10px;font-weight:900;padding:4px 8px;border-radius:18px}
+.fin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px}.fin-stat{border:2px solid var(--border);border-radius:13px;padding:14px;text-align:center;background:var(--surface2)}.fin-num{font-size:18px;font-weight:900}.fin-label{font-size:10px;color:var(--muted);font-weight:800}
+.docente-row{padding:13px 14px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}.docente-name{font-weight:900;font-size:14px}.docente-sub{font-size:11px;color:var(--muted);margin-top:3px}.chevron{font-size:20px;color:#9ab4d3}
+.msg{padding:10px 12px;border-radius:10px;font-size:12px;font-weight:800;margin-bottom:10px}.error{background:var(--redbg);color:var(--red)}.ok{background:var(--greenbg);color:var(--green)}
+.loading{text-align:center;padding:24px;color:var(--muted);font-weight:800;font-size:13px}.spinner{width:25px;height:25px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin .8s linear infinite;margin:0 auto 8px}@keyframes spin{to{transform:rotate(360deg)}}
+.modal-bg{position:fixed;inset:0;background:rgba(14,35,70,.52);display:flex;align-items:center;justify-content:center;padding:14px;z-index:100}
+.modal-box{background:#fff;width:100%;max-width:650px;max-height:92vh;overflow:auto;border-radius:18px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
+.modal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.modal-title{font-size:18px;font-weight:900}.modal-close{border:0;border-radius:50%;width:32px;height:32px;font-size:17px;cursor:pointer}
+.detail-section{margin-top:16px}.detail-title{font-size:12px;text-transform:uppercase;color:var(--muted);font-weight:900;margin-bottom:7px}
+.detail-row{border:1px solid var(--border);border-radius:11px;padding:10px;margin-bottom:7px}
+.detail-flex{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.select-estado{border:2px solid var(--border);border-radius:9px;padding:6px 8px;font:700 11px Nunito;color:var(--text);background:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+footer{text-align:center;color:#91a9c7;font-size:11px;font-weight:800;margin-top:15px}
+#toast{position:fixed;right:16px;bottom:16px;background:#17345f;color:#fff;padding:10px 14px;border-radius:10px;font-size:12px;font-weight:800;z-index:300;box-shadow:var(--shadow)}
+@media(max-width:540px){.grid2,.grid3{grid-template-columns:1fr}.site-header{padding-top:55px}.supervisor-btn{right:10px;top:10px}.card{padding:18px}.header-text h1{font-size:23px}}
 </style>
 </head>
 <body>
 
-<div class="site-header">
+<header class="site-header">
   <button class="supervisor-btn" onclick="abrirLoginSup()">🔑 Supervisar</button>
   <div class="header-inner">
-    <img src="logo.png" alt="Aula Celeste" class="header-logo" onerror="this.style.display='none'" />
-    <div class="header-text">
-      <h1>Portal Docente</h1>
-      <p>Aula Celeste · Portafolio 2026</p>
-    </div>
+    <img src="logo.png" class="header-logo" alt="Aula Celeste" onerror="this.style.display='none'">
+    <div class="header-text"><h1>Portal Docente</h1><p>Aula Celeste · Portafolio 2026</p></div>
   </div>
-</div>
+</header>
 
-<div class="container">
-
-  <div id="view-login" class="card">
+<main class="container">
+  <section id="view-login" class="card">
     <div class="login-wrap">
-      <img src="logo.png" alt="" class="login-logo" onerror="this.style.display='none'" />
+      <img src="logo.png" class="login-logo" alt="" onerror="this.style.display='none'">
       <h2>Bienvenido/a</h2>
-      <p>Ingresa con tu nombre, apellido y la clave personal asignada por Aula Celeste</p>
+      <p>Ingresa con tu nombre y la clave personal asignada por Aula Celeste.</p>
       <div id="msg-login" class="msg error hidden"></div>
-      <div class="field-wrap"><label>Nombre y apellido</label>
-        <input type="text" id="inp-nombre" placeholder="Ej: María González" autocomplete="name" onkeydown="if(event.key==='Enter')login()" />
-      </div>
-      <div class="field-wrap"><label>Contraseña</label>
-        <input type="password" id="inp-clave" placeholder="Tu clave personal" onkeydown="if(event.key==='Enter')login()" />
-      </div>
-      <button class="btn-primary" id="btn-login" onclick="login()">Ingresar →</button>
+      <div class="field"><label>Nombre y apellido</label><input id="inp-nombre" autocomplete="name" onkeydown="if(event.key==='Enter')login()"></div>
+      <div class="field"><label>Contraseña</label><input id="inp-clave" type="password" onkeydown="if(event.key==='Enter')login()"></div>
+      <button id="btn-login" class="btn btn-primary" onclick="login()">Ingresar →</button>
     </div>
-  </div>
+  </section>
 
-  <div id="view-portal" class="hidden">
+  <section id="view-portal" class="hidden">
     <div class="card">
       <div class="portal-header">
-        <div>
-          <div class="portal-greeting">Hola, <span id="portal-nombre"></span> 👋</div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-top:2px;">Portafolio Docente 2026</div>
-        </div>
-        <button class="btn-outline" onclick="logout()">Cerrar sesión</button>
+        <div><div class="portal-greeting">Hola, <span id="portal-nombre"></span> 👋</div><div id="portal-sub" style="font-size:12px;color:var(--muted);font-weight:700"></div></div>
+        <button class="btn btn-outline btn-small" onclick="logout()">Cerrar sesión</button>
       </div>
-      <div class="section-label">📊 Mi progreso</div>
-      <div id="portal-modulos" class="modulos-grid"></div>
-      <div class="section-label">📁 Mis materiales en Drive</div>
-      <div id="portal-drive-wrap"></div>
-      <div class="section-label">💳 Mis pagos</div>
-      <div id="portal-pagos"></div>
+      <div class="section-label">📊 Mi progreso</div><div id="portal-modulos" class="modulos-grid"></div>
+      <div class="section-label">📁 Mis materiales en Drive</div><div id="portal-drive"></div>
+      <div class="section-label">💳 Mis pagos</div><div id="portal-pagos"></div>
     </div>
-  </div>
+  </section>
 
-  <div id="view-admin" class="hidden">
+  <section id="view-admin" class="hidden">
     <div class="card">
       <div class="portal-header">
-        <div>
-          <div class="portal-greeting">Panel de <span>supervisión</span> 📋</div>
-          <div class="sync-badge">🔄 Sincronizado con Google Sheets</div>
-        </div>
-        <button class="btn-outline" onclick="logout()">Cerrar sesión</button>
+        <div><div class="portal-greeting">Panel de <span>supervisión</span> 📋</div><div style="font-size:11px;color:var(--green);font-weight:900">● Sincronizado con Google Sheets</div></div>
+        <button class="btn btn-outline btn-small" onclick="logout()">Cerrar sesión</button>
       </div>
-      <div class="section-label" style="margin-top:0">💰 Resumen financiero</div>
-      <div id="fin-resumen"></div>
-      <div class="section-label" style="display:flex;align-items:center;justify-content:space-between;">
-        <span>👥 Docentes</span>
-        <button class="btn-resumen" onclick="abrirAlta()">➕ Nuevo docente</button>
-      </div>
-      <div id="admin-lista"></div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="btn btn-outline btn-small" onclick="abrirAlta()">➕ Nuevo docente</button></div>
+      <div class="section-label">💰 Resumen financiero</div><div id="fin-resumen"></div>
+      <div class="section-label">👥 Docentes</div><div id="admin-lista"></div>
     </div>
-  </div>
-
-</div>
+  </section>
+</main>
 
 <div id="modal-sup" class="modal-bg hidden">
-  <div class="modal-box" style="max-width:380px;">
-    <div class="modal-top">
-      <span class="modal-title">🔑 Acceso supervisora</span>
-      <button class="modal-close" onclick="cerrarModalSup()">✕</button>
-    </div>
+  <div class="modal-box" style="max-width:390px">
+    <div class="modal-top"><div class="modal-title">🔑 Acceso supervisión</div><button class="modal-close" onclick="cerrar('modal-sup')">×</button></div>
     <div id="msg-sup" class="msg error hidden"></div>
-    <div class="field-wrap"><label>Contraseña de supervisión</label>
-      <input type="password" id="inp-sup" placeholder="Contraseña" onkeydown="if(event.key==='Enter')loginSup()" />
-    </div>
-    <button class="btn-primary" id="btn-sup" onclick="loginSup()">Ingresar al panel →</button>
+    <div class="field"><label>Contraseña</label><input id="inp-sup" type="password" onkeydown="if(event.key==='Enter')loginSup()"></div>
+    <button class="btn btn-primary" onclick="loginSup()">Ingresar al panel →</button>
   </div>
 </div>
 
-<div id="modal-detalle" class="modal-bg hidden" onclick="cerrarDetalleClick(event)">
+<div id="modal-detalle" class="modal-bg hidden" onclick="if(event.target===this)cerrar('modal-detalle')">
   <div class="modal-box">
-    <div class="modal-top">
-      <span class="modal-title" id="modal-d-nombre"></span>
-      <button class="modal-close" onclick="cerrarDetalle()">✕</button>
-    </div>
+    <div class="modal-top"><div id="modal-d-nombre" class="modal-title"></div><button class="modal-close" onclick="cerrar('modal-detalle')">×</button></div>
     <div id="modal-d-body"></div>
   </div>
 </div>
 
-<footer>
-  <img src="logo.png" alt="" onerror="this.style.display='none'" />
-  Aula Celeste · Tu apoyo en educación
-</footer>
+<div id="modal-alta" class="modal-bg hidden">
+  <div class="modal-box">
+    <div class="modal-top"><div class="modal-title">➕ Nuevo docente</div><button class="modal-close" onclick="cerrar('modal-alta')">×</button></div>
+    <div id="msg-alta" class="msg hidden"></div>
+    <div class="grid2">
+      <div class="field"><label>Nombre completo</label><input id="alta-nombre"></div>
+      <div class="field"><label>Plan</label>
+        <select id="alta-plan">
+          <option value="A-01">Acompañamiento Módulo 1 — $45.000</option>
+          <option value="A-02">Acompañamiento Módulo 2 — $120.000</option>
+          <option value="A-03">Acompañamiento Módulo 3 — $55.000</option>
+          <option value="A-04">Plan Experto — $200.000</option>
+          <option value="A-05">Módulos 1+2 — $165.000</option>
+          <option value="R-05">Corrección 3 módulos — $100.000</option>
+          <option value="CF-04">Confección 3 módulos — $300.000</option>
+          <option value="CF-05">Confección M1+M2 — $230.000</option>
+          <option value="CF-06">Confección M1 — $90.000</option>
+          <option value="CF-07">Confección M1+M3 — $230.000</option>
+        </select>
+      </div>
+      <div class="field"><label>Tipo</label><select id="alta-tipo"><option>Plan Común</option><option>Ed. Diferencial</option></select></div>
+      <div class="field"><label>Asignatura</label><input id="alta-asignatura"></div>
+      <div class="field"><label>Email</label><input id="alta-email"></div>
+      <div class="field"><label>Teléfono</label><input id="alta-telefono"></div>
+      <div class="field"><label>Comuna</label><input id="alta-comuna"></div>
+      <div class="field"><label>Clave personalizada (opcional)</label><input id="alta-clave"></div>
+    </div>
+    <div class="field"><label>Observaciones</label><textarea id="alta-obs"></textarea></div>
+    <button class="btn btn-primary" onclick="crearDocente()">Crear docente</button>
+  </div>
+</div>
+
+<div id="toast" class="hidden"></div>
+
+<footer>Aula Celeste · Tu apoyo en educación</footer>
 
 <script>
-// ═══════════════════════════════════════════════════════
-//  CONEXIÓN CON GOOGLE APPS SCRIPT
-// ═══════════════════════════════════════════════════════
-const CODIGO_NUEVO = {
-  "D-006":"C-001","D-007":"R-001","D-008":"A-001","D-009":"A-002",
-  "D-010":"C-008","D-011":"A-004","D-013":"A-005","D-014":"R-002",
-  "D-015":"A-006","D-016":"A-007","D-017":"C-002","D-018":"R-003",
-  "D-019":"C-003","D-020":"C-004","D-021":"A-012","D-022":"A-013",
-  "D-023":"A-008","D-024":"A-009","D-026":"C-005","D-027":"A-010",
-  "D-028":"C-006","D-029":"C-007","D-030":"A-011","D-031":"R-004",
-  "D-032":"A-014","D-033":"C-009","D-034":"C-010","D-035":"C-011",
-  "D-037":"C-012","D-038":"C-013"
-};
-const TIPO_SERVICIO_LABEL = {"A":"Acompañamiento","R":"Revisión","C":"Confección"};
-
 const API = "https://script.google.com/macros/s/AKfycbzFznexW2eqD-Uj7UQxBi3hVyDFpRUsmYLknFnL_VjZWZF7gV0986r81yl9hdjiDi7a5w/exec";
+let tokenActual=null, adminPwd=null, datosAdmin=null, detalleActual=null;
 
-async function api(action, params = {}) {
-  const url = new URL(API);
-  url.searchParams.set('action', action);
-  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
-  const res = await fetch(url.toString());
-  return await res.json();
+const $=id=>document.getElementById(id);
+const money=n=>'$'+Number(n||0).toLocaleString('es-CL');
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+function show(id){['view-login','view-portal','view-admin'].forEach(x=>$(x).classList.add('hidden'));$(id).classList.remove('hidden')}
+function abrir(id){$(id).classList.remove('hidden')} function cerrar(id){$(id).classList.add('hidden')}
+function toast(t){$('toast').textContent=t;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),2500)}
+
+async function api(action,params={}){
+  const u=new URL(API);u.searchParams.set('action',action);
+  Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v??''));
+  const r=await fetch(u); const txt=await r.text();
+  try{return JSON.parse(txt)}catch(e){throw new Error('Respuesta inválida del servidor')}
+}
+async function apiPost(body){
+  const r=await fetch(API,{method:'POST',body:JSON.stringify(body)});
+  const txt=await r.text(); try{return JSON.parse(txt)}catch(e){throw new Error('Respuesta inválida del servidor')}
 }
 
-let tokenActual = null;
-let datosAdmin = null;
-let adminPwd = null;
-let filtroAdmin = 'todos';
-
-// ═══════════════════════════════════════════════════════
-//  LOGIN DOCENTE
-// ═══════════════════════════════════════════════════════
-async function login() {
-  const nombre = document.getElementById('inp-nombre').value.trim();
-  const clave  = document.getElementById('inp-clave').value.trim();
-  const msg    = document.getElementById('msg-login');
-  const btn    = document.getElementById('btn-login');
-
-  if (!nombre || !clave) {
-    msg.textContent = 'Ingresa tu nombre y contraseña.';
-    msg.classList.remove('hidden'); return;
-  }
-
-  btn.disabled = true; btn.textContent = 'Verificando...';
-  msg.classList.add('hidden');
-
-  try {
-    const r = await api('login', { nombre, password: clave });
-    if (!r.ok) {
-      msg.textContent = r.error || 'Nombre o contraseña incorrectos.';
-      msg.classList.remove('hidden');
-      btn.disabled = false; btn.textContent = 'Ingresar →';
-      return;
-    }
-    tokenActual = r.token || r.docId || nombre;
-    show('view-portal');
-    document.getElementById('portal-nombre').textContent = (r.nombre || nombre).split(' ')[0];
-  // Mostrar código nuevo y tipo de servicio
-  const codigoN = r.codigoNuevo || '';
-  const tipoN = r.tipoServicio || '';
-  if (codigoN) {
-    const subtitulo = document.querySelector('#view-portal .portal-header div div:last-child');
-    if (subtitulo) subtitulo.textContent = codigoN + ' · ' + tipoN + ' · Portafolio 2026';
-  }
-    cargarPortal();
-  } catch(e) {
-    msg.textContent = 'Error de conexión. Verifica tu internet e intenta de nuevo.';
-    msg.classList.remove('hidden');
-  }
-  btn.disabled = false; btn.textContent = 'Ingresar →';
+async function login(){
+  const nombre=$('inp-nombre').value.trim(),password=$('inp-clave').value.trim(),msg=$('msg-login');
+  if(!nombre||!password){msg.textContent='Ingresa nombre y contraseña.';msg.classList.remove('hidden');return}
+  $('btn-login').disabled=true;$('btn-login').textContent='Verificando...';msg.classList.add('hidden');
+  try{
+    const r=await api('login',{nombre,password});
+    if(!r.ok)throw new Error(r.error||'Acceso incorrecto');
+    tokenActual=r.token||r.docId; $('portal-nombre').textContent=(r.nombre||nombre).split(' ')[0];
+    $('portal-sub').textContent=(r.codigoNuevo||tokenActual)+' · '+(r.tipoServicio||'')+' · Portafolio 2026';
+    show('view-portal'); await cargarPortal();
+  }catch(e){msg.textContent=e.message;msg.classList.remove('hidden')}
+  $('btn-login').disabled=false;$('btn-login').textContent='Ingresar →';
 }
-
-async function cargarPortal() {
-  const cont = document.getElementById('portal-modulos');
-  cont.innerHTML = '<div class="loading"><div class="spinner"></div><div>Cargando tu información...</div></div>';
-  document.getElementById('portal-drive-wrap').innerHTML = '';
-  document.getElementById('portal-pagos').innerHTML = '';
-
-  try {
-    const [tareas, drive, pagos] = await Promise.all([
-      api('getTareas', { token: tokenActual }),
-      api('getDrive',  { token: tokenActual }),
-      api('getPagos',  { token: tokenActual }),
-    ]);
-
-    // Módulos
-    const mods = (tareas.tareas || tareas.data || []);
-    cont.innerHTML = mods.length ? mods.map(m => {
-      const est = m.estado || 'Pendiente';
-      const cls = 'e-' + est.replace(' ','-');
-      return `<div class="modulo-card">
-        <div class="modulo-name">${m.modulo || m.mod || ''}</div>
-        <div class="modulo-tarea">${m.tarea || m.entregable || ''}</div>
-        ${m.fecha ? `<div class="modulo-fecha">📅 Fecha sugerida: ${m.fecha}</div>` : ''}
-        <span class="estado-badge ${cls}">${est}</span>
-      </div>`;
-    }).join('') : '<p style="font-size:13px;color:var(--text-muted)">Sin módulos registrados aún.</p>';
-
-    // Drive
-    const dUrl = drive.url || drive.link || drive.carpeta;
-    document.getElementById('portal-drive-wrap').innerHTML = dUrl
-      ? `<a href="${dUrl}" target="_blank" class="drive-link"><span style="font-size:28px;">📂</span><div><div class="drive-text">Abrir mi carpeta de Drive</div><div class="drive-sub">M1, M2 y M3</div></div></a>`
-      : '<p style="font-size:13px;color:var(--text-muted)">Tu carpeta de Drive será habilitada pronto.</p>';
-
-    // Pagos
-    const listaPagos = (pagos.pagos || pagos.cuotas || pagos.data || []);
-    document.getElementById('portal-pagos').innerHTML = listaPagos.length
-      ? listaPagos.map(p => {
-          const est = (p.estado || 'Pendiente');
-          const pagado = est.toLowerCase().includes('pagad');
-          return `<div class="pago-row">
-            <div><div class="pago-label">${p.cuota || p.label || 'Cuota'}</div>
-            <div class="pago-fecha">Fecha: ${p.fecha || p.vencimiento || 'Por definir'}</div></div>
-            <div class="pago-right"><span class="pago-monto">${fmt(p.monto)}</span>
-            <span class="${pagado?'tag-pagado':'tag-pendiente'}">${est}</span></div>
-          </div>`;
-        }).join('')
-      : '<p style="font-size:13px;color:var(--text-muted)">Sin registros de pago aún.</p>';
-
-  } catch(e) {
-    cont.innerHTML = '<p style="font-size:13px;color:var(--danger-text)">Error al cargar los datos. Recarga la página.</p>';
-  }
+async function cargarPortal(){
+  $('portal-modulos').innerHTML='<div class="loading"><div class="spinner"></div>Cargando...</div>';
+  try{
+    const [t,d,p]=await Promise.all([api('getTareas',{token:tokenActual}),api('getDrive',{token:tokenActual}),api('getPagos',{token:tokenActual})]);
+    const mods=t.tareas||t.data||[];
+    $('portal-modulos').innerHTML=mods.length?mods.map(x=>`<div class="modulo-card"><div class="modulo-name">${esc(x.modulo||x.mod)}</div><div class="modulo-tarea">${esc(x.tarea||x.entregable)}</div><span class="estado e-${esc((x.estado||'Pendiente').replace(/ /g,'-'))}">${esc(x.estado||'Pendiente')}</span></div>`).join(''):'<div class="msg">Sin módulos registrados.</div>';
+    const url=d.url||d.link||d.carpeta;
+    $('portal-drive').innerHTML=url?`<a class="drive-link" target="_blank" href="${esc(url)}"><span style="font-size:27px">📂</span><div><b>Abrir mi carpeta de Drive</b><div style="font-size:11px;color:var(--muted)">Módulos y materiales</div></div></a>`:'<div class="msg">Carpeta no disponible todavía.</div>';
+    const pagos=p.pagos||p.cuotas||p.data||[];
+    $('portal-pagos').innerHTML=pagos.length?pagos.map(x=>`<div class="pago-row"><div><div class="pago-label">${esc(x.label||x.cuota)}</div><div class="pago-fecha">${esc(x.fecha||'Por definir')}</div></div><div style="text-align:right"><div class="pago-monto">${money(x.monto)}</div><span class="${String(x.estado).toLowerCase().startsWith('pag')?'tag-pagado':'tag-pendiente'}">${esc(x.estado)}</span></div></div>`).join(''):'<div class="msg">Sin cuotas registradas.</div>';
+  }catch(e){$('portal-modulos').innerHTML=`<div class="msg error">${esc(e.message)}</div>`}
 }
+function logout(){tokenActual=null;adminPwd=null;datosAdmin=null;show('view-login')}
 
-function logout() {
-  tokenActual = null; datosAdmin = null;
-  document.getElementById('inp-nombre').value = '';
-  document.getElementById('inp-clave').value = '';
-  document.getElementById('msg-login').classList.add('hidden');
-  show('view-login');
+function abrirLoginSup(){$('inp-sup').value='';$('msg-sup').classList.add('hidden');abrir('modal-sup')}
+async function loginSup(){
+  const pwd=$('inp-sup').value.trim(),m=$('msg-sup');
+  try{const r=await api('admin',{password:pwd});if(!r.ok)throw new Error(r.error||'Clave incorrecta');adminPwd=pwd;datosAdmin=r;cerrar('modal-sup');show('view-admin');renderAdmin()}
+  catch(e){m.textContent=e.message;m.classList.remove('hidden')}
 }
-
-// ═══════════════════════════════════════════════════════
-//  PANEL SUPERVISOR
-// ═══════════════════════════════════════════════════════
-function abrirLoginSup() {
-  document.getElementById('inp-sup').value = '';
-  document.getElementById('msg-sup').classList.add('hidden');
-  document.getElementById('modal-sup').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('inp-sup').focus(),100);
+function renderAdmin(){
+  const r=datosAdmin.resumen||{};
+  $('fin-resumen').innerHTML=`<div class="fin-grid">
+    <div class="fin-stat"><div class="fin-num">${money(r.negocioContratado)}</div><div class="fin-label">Contratado</div></div>
+    <div class="fin-stat"><div class="fin-num">${money(r.negocioPagado)}</div><div class="fin-label">Pagado</div></div>
+    <div class="fin-stat"><div class="fin-num">${money(r.negocioPendiente)}</div><div class="fin-label">Pendiente</div></div>
+    <div class="fin-stat"><div class="fin-num">${r.avanceGlobal||0}%</div><div class="fin-label">Avance global</div></div>
+  </div>`;
+  $('admin-lista').innerHTML=(datosAdmin.docentes||[]).map(d=>`<div class="docente-row" onclick="abrirDetalle('${esc(d.docId)}')"><div><div class="docente-name">${esc(d.nombre||d.docId)}</div><div class="docente-sub">${esc(d.docId)} · ${esc(d.plan||d.tipoServicio||'')} · ${d.pct||0}% avance · ${money(d.pagado)} pagado</div></div><div class="chevron">›</div></div>`).join('');
 }
-function cerrarModalSup(){ document.getElementById('modal-sup').classList.add('hidden'); }
+async function refrescarAdmin(){const r=await api('admin',{password:adminPwd});if(r.ok){datosAdmin=r;renderAdmin()}}
 
-async function loginSup() {
-  const val = document.getElementById('inp-sup').value.trim();
-  const msg = document.getElementById('msg-sup');
-  const btn = document.getElementById('btn-sup');
-  btn.disabled = true; btn.textContent = 'Verificando...';
-
-  try {
-    const r = await api('admin', { password: val });
-    if (!r.ok) {
-      msg.textContent = r.error || 'Contraseña incorrecta.';
-      msg.classList.remove('hidden');
-      btn.disabled = false; btn.textContent = 'Ingresar al panel →';
-      return;
-    }
-    datosAdmin = r;
-    adminPwd = val;
-    cerrarModalSup();
-    show('view-admin');
-    renderResumen(r);
-    renderAdmin();
-  } catch(e) {
-    msg.textContent = 'Error de conexión.';
-    msg.classList.remove('hidden');
-  }
-  btn.disabled = false; btn.textContent = 'Ingresar al panel →';
+async function abrirDetalle(docId){
+  detalleActual=docId;abrir('modal-detalle');$('modal-d-nombre').textContent='Cargando...';$('modal-d-body').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const d=(datosAdmin.docentes||[]).find(x=>x.docId===docId)||{};
+  $('modal-d-nombre').textContent=d.nombre||docId;
+  try{
+    const [t,p,b]=await Promise.all([api('getTareas',{token:docId}),api('getPagos',{token:docId}),api('getBitacora',{password:adminPwd,docId})]);
+    const tareas=t.tareas||[],pagos=p.pagos||[],ses=b.sesiones||[];
+    $('modal-d-body').innerHTML=`
+      <div class="fin-grid"><div class="fin-stat"><div class="fin-num">${d.pct||0}%</div><div class="fin-label">Avance</div></div><div class="fin-stat"><div class="fin-num">${money(d.pagado)}</div><div class="fin-label">Pagado</div></div><div class="fin-stat"><div class="fin-num">${money(d.pendiente)}</div><div class="fin-label">Saldo</div></div></div>
+      <div class="detail-section"><div class="detail-title">Módulos / tareas</div>${tareas.map(x=>`<div class="detail-row detail-flex"><div><b>${esc(x.modulo)}</b><div style="font-size:11px;color:var(--muted)">${esc(x.tarea)}</div></div><select class="select-estado" onchange="cambiarTarea('${esc(x.id)}',this.value)">${['Pendiente','En proceso','Entregado','Atrasado'].map(o=>`<option ${o===x.estado?'selected':''}>${o}</option>`).join('')}</select></div>`).join('')||'Sin tareas'}</div>
+      <div class="detail-section"><div class="detail-title">Pagos</div>${pagos.map(x=>`<div class="detail-row detail-flex"><div><b>${esc(x.cuota||x.label)}</b><div style="font-size:11px;color:var(--muted)">${money(x.monto)}</div></div><select class="select-estado" onchange="cambiarCuota('${esc(x.id)}',this.value)"><option ${x.estado==='Pendiente'?'selected':''}>Pendiente</option><option ${x.estado==='Pagada'?'selected':''}>Pagada</option></select></div>`).join('')||'Sin cuotas'}</div>
+      <div class="detail-section"><div class="detail-title">Bitácora</div><div id="bit-list">${ses.map(s=>`<div class="detail-row"><b>${esc(s.fecha)} · ${esc(s.modulo)}</b><div style="font-size:11px;color:var(--muted)">${esc(s.trabajado||'')}</div><button class="btn btn-outline btn-small" style="margin-top:6px" onclick="borrarSesion('${esc(s.id)}')">Eliminar</button></div>`).join('')||'Sin sesiones'}</div>
+      <div class="grid2" style="margin-top:10px"><div class="field"><label>Fecha</label><input id="bit-fecha" type="date"></div><div class="field"><label>Módulo</label><select id="bit-mod"><option>Módulo 1</option><option>Módulo 2</option><option>Módulo 3</option></select></div></div>
+      <div class="field"><label>Lo trabajado</label><textarea id="bit-trab"></textarea></div><div class="field"><label>Pendiente / próxima tarea</label><textarea id="bit-pend"></textarea></div>
+      <button class="btn btn-primary" onclick="guardarSesion('${esc(docId)}','${esc(d.nombre||'')}')">Guardar sesión</button></div>`;
+  }catch(e){$('modal-d-body').innerHTML=`<div class="msg error">${esc(e.message)}</div>`}
 }
-
-function renderResumen(r) {
-  const docs = r.docentes || [];
-  const s = r.resumen || {};
-
-  // Calcular desde los docentes como respaldo
-  const calcContratado = docs.reduce((a,d)=>a+(+d.contratado||0),0);
-  const calcPagado     = docs.reduce((a,d)=>a+(+d.pagado||0),0);
-  const calcPendiente  = docs.reduce((a,d)=>a+(+d.pendiente||0),0);
-  const calcTareas     = docs.reduce((a,d)=>a+(+d.total||0),0);
-  const calcEntregadas = docs.reduce((a,d)=>a+(+d.entregadas||0),0);
-
-  // Usa el valor del script si existe y es > 0, si no el calculado
-  const v = (k, alt) => (+s[k] > 0 ? +s[k] : alt);
-
-  const negContratado = v('negocioContratado', calcContratado);
-  const negPagado     = v('negocioPagado', calcPagado);
-  const negPendiente  = v('negocioPendiente', calcPendiente);
-  const gastoRedes    = +s.gastoRedes || 0;
-  const utilidad      = v('utilidadNeta', negPagado - gastoRedes);
-
-  const portContratado = v('portafolioContratado', calcContratado);
-  const portPagado     = v('portafolioPagado', calcPagado);
-  const portPendiente  = v('portafolioPendiente', calcPendiente);
-
-  const totTareas   = v('totalTareas', calcTareas);
-  const totEntreg   = (+s.totalEntregadas >= 0 && s.totalEntregadas !== undefined) ? +s.totalEntregadas : calcEntregadas;
-  const avance      = totTareas ? Math.round(totEntreg / totTareas * 100) : 0;
-  const pagosAlDia  = docs.filter(d => (+d.contratado||0) > 0 && (+d.pendiente||0) === 0).length;
-
-  document.getElementById('fin-resumen').innerHTML = `
-    <div style="font-size:11px;font-weight:800;color:var(--text-secondary);margin-bottom:8px;letter-spacing:.05em;">NEGOCIO COMPLETO</div>
-    <div class="fin-grid">
-      <div class="fin-stat blue"><div class="fin-num">${fmt(negContratado)}</div><div class="fin-label">Total cobrado</div></div>
-      <div class="fin-stat green"><div class="fin-num">${fmt(negPagado)}</div><div class="fin-label">Ingreso real</div></div>
-      <div class="fin-stat yellow"><div class="fin-num">${fmt(negPendiente)}</div><div class="fin-label">Por cobrar</div></div>
-      <div class="fin-stat green"><div class="fin-num">${fmt(utilidad)}</div><div class="fin-label">Utilidad neta</div></div>
-    </div>
-
-    <div style="font-size:11px;font-weight:800;color:var(--text-secondary);margin:1.5rem 0 8px;letter-spacing:.05em;">NEGOCIO PORTAFOLIOS</div>
-    <div class="fin-grid">
-      <div class="fin-stat blue"><div class="fin-num">${fmt(portContratado)}</div><div class="fin-label">Contratado</div></div>
-      <div class="fin-stat green"><div class="fin-num">${fmt(portPagado)}</div><div class="fin-label">Recibido</div></div>
-      <div class="fin-stat yellow"><div class="fin-num">${fmt(portPendiente)}</div><div class="fin-label">Por cobrar</div></div>
-      <div class="fin-stat green"><div class="fin-num">${avance}%</div><div class="fin-label">Avance módulos</div></div>
-    </div>
-
-    <div style="display:flex;gap:10px;margin:1.25rem 0;flex-wrap:wrap;">
-      <div style="flex:1;min-width:110px;background:var(--surface2);border:2px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;">
-        <div style="font-size:16px;font-weight:900;">${docs.length}</div>
-        <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;font-weight:700;">Docentes activos</div></div>
-      <div style="flex:1;min-width:110px;background:var(--surface2);border:2px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;">
-        <div style="font-size:16px;font-weight:900;">${totEntreg}/${totTareas}</div>
-        <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;font-weight:700;">Módulos entregados</div></div>
-      <div style="flex:1;min-width:110px;background:var(--surface2);border:2px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;">
-        <div style="font-size:16px;font-weight:900;">${pagosAlDia}</div>
-        <div style="font-size:11px;color:var(--text-secondary);margin-top:3px;font-weight:700;">Pagos al día</div></div>
-    </div>`;
+async function cambiarTarea(id,estado){const r=await api('updateTarea',{password:adminPwd,id,estado});if(!r.ok){toast(r.error||'No se pudo actualizar')}else{toast('Tarea actualizada');await refrescarAdmin()}}
+async function cambiarCuota(id,estado){const r=await api('updateCuota',{password:adminPwd,id,estado});if(!r.ok){toast(r.error||'No se pudo actualizar')}else{toast('Pago actualizado');await refrescarAdmin()}}
+async function guardarSesion(docId,nombre){
+  const body={action:'saveSesion',password:adminPwd,docId,nombre,fecha:$('bit-fecha').value,modulo:$('bit-mod').value,avance:'',trabajado:$('bit-trab').value,pendiente:$('bit-pend').value,tareaProxima:$('bit-pend').value,estadoSesion:'Realizada'};
+  const r=await apiPost(body);if(r.ok){toast('Sesión guardada');await abrirDetalle(docId)}else toast(r.error||'Error')
 }
+async function borrarSesion(id){if(!confirm('¿Eliminar esta sesión?'))return;const r=await api('deleteSesion',{password:adminPwd,id});if(r.ok){toast('Sesión eliminada');await abrirDetalle(detalleActual)}else toast(r.error||'Error')}
 
-function filtrar(f, el) {
-  filtroAdmin = f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderAdmin();
-}
-
-function renderAdmin() {
-  if (!datosAdmin) return;
-  const docs = datosAdmin.docentes || [];
-  const lista = docs.slice().sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||''));
-
-  // Colores por tipo de servicio
-  const BADGE_COLORS = {
-    'A': { bg:'#e3f0ff', color:'#1565c0', label:'Acompañamiento' },
-    'R': { bg:'#e8f5e9', color:'#2e7d32', label:'Revisión' },
-    'C': { bg:'#fffde7', color:'#b45309', label:'Confección' },
-  };
-
-  document.getElementById('admin-lista').innerHTML = lista.length ? lista.map(d => {
-    const total = +d.total || 0;
-    const entregadas = +d.entregadas || 0;
-    const enProceso = +d.enProceso || 0;
-    const pagado = +d.pagado || 0;
-    const pendiente = +d.pendiente || 0;
-    const contratado = +d.contratado || 0;
-    const clsPago = pendiente === 0 ? 'tag-pagado' : 'tag-pendiente';
-
-    // Código nuevo
-    const codigo = CODIGO_NUEVO[d.docId] || d.docId;
-    const tipoLetra = codigo[0] || 'D';
-    const badge = BADGE_COLORS[tipoLetra] || { bg:'#f4f9ff', color:'#4a6fa5', label:'Servicio' };
-
-    return `<div class="docente-row" onclick="abrirDetalle('${d.docId}')">
-      <div style="flex:1;min-width:0;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
-          <span style="background:${badge.bg};color:${badge.color};font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap;">${codigo}</span>
-          <div class="docente-name">${d.nombre||''}</div>
-        </div>
-        <div class="docente-sub">${badge.label} · ${d.plan||''}</div>
-        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
-          <span class="estado-badge e-Entregado" style="font-size:10px;">${entregadas}/${total} entregados</span>
-          ${enProceso ? `<span class="estado-badge e-En-proceso" style="font-size:10px;">${enProceso} en proceso</span>` : ''}
-          <span class="pago-tag ${clsPago}" style="font-size:10px;">${fmt(pagado)} de ${fmt(contratado)}</span>
-        </div>
-      </div>
-      <span class="chevron">›</span>
-    </div>`;
-  }).join('') : '<p style="font-size:13px;color:var(--text-muted)">Sin docentes registrados.</p>';
-}
-
-async function abrirDetalle(docId) {
-  const d = (datosAdmin.docentes||[]).find(x=>x.docId===docId);
-  if (!d) return;
-  document.getElementById('modal-d-nombre').textContent = d.nombre || '';
-  document.getElementById('modal-d-body').innerHTML = '<div class="loading"><div class="spinner"></div><div>Cargando detalle...</div></div>';
-  document.getElementById('modal-detalle').classList.remove('hidden');
-
-  const contratado = +d.contratado||0, pagado = +d.pagado||0, pendiente = +d.pendiente||0;
-  let html = `<p style="font-size:12px;color:var(--text-secondary);margin-bottom:1rem;">${d.docId} · ${d.plan||''}</p>`;
-
-  html += `<div class="section-label" style="margin-top:0">💳 Estado financiero</div>
-    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
-      <div style="flex:1;min-width:100px;background:var(--success-bg);border:1px solid #bbf7d0;border-radius:var(--radius);padding:12px;text-align:center;">
-        <div style="font-size:15px;font-weight:700;">${fmt(pagado)}</div><div style="font-size:11px;color:var(--success-text)">Pagado</div></div>
-      <div style="flex:1;min-width:100px;background:var(--yellow-bg);border:1px solid #fde68a;border-radius:var(--radius);padding:12px;text-align:center;">
-        <div style="font-size:15px;font-weight:700;">${fmt(pendiente)}</div><div style="font-size:11px;color:#b45309">Pendiente</div></div>
-      <div style="flex:1;min-width:100px;background:var(--accent-bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center;">
-        <div style="font-size:15px;font-weight:700;">${fmt(contratado)}</div><div style="font-size:11px;color:var(--accent-text)">Total plan</div></div>
-    </div>`;
-
-  html += `<div class="section-label">📊 Resumen de módulos</div>
-    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
-      <div style="flex:1;min-width:80px;background:var(--success-bg);border-radius:var(--radius);padding:10px;text-align:center;">
-        <div style="font-size:16px;font-weight:700;">${d.entregadas||0}</div><div style="font-size:10px;color:var(--success-text)">Entregados</div></div>
-      <div style="flex:1;min-width:80px;background:var(--accent-bg);border-radius:var(--radius);padding:10px;text-align:center;">
-        <div style="font-size:16px;font-weight:700;">${d.enProceso||0}</div><div style="font-size:10px;color:var(--accent-text)">En proceso</div></div>
-      <div style="flex:1;min-width:80px;background:var(--danger-bg);border-radius:var(--radius);padding:10px;text-align:center;">
-        <div style="font-size:16px;font-weight:700;">${d.atrasadas||0}</div><div style="font-size:10px;color:var(--danger-text)">Atrasados</div></div>
-      <div style="flex:1;min-width:80px;background:var(--yellow-bg);border-radius:var(--radius);padding:10px;text-align:center;">
-        <div style="font-size:16px;font-weight:700;">${(+d.total||0)-(+d.entregadas||0)-(+d.enProceso||0)-(+d.atrasadas||0)}</div><div style="font-size:10px;color:#b45309">Pendientes</div></div>
-    </div>`;
-
-  document.getElementById('modal-d-body').innerHTML = html;
-
-  // Detalle de módulos y cuotas desde el Apps Script
-  try {
-    const [tareas, pagos, drive] = await Promise.all([
-      api('getTareas', { token: docId }),
-      api('getPagos',  { token: docId }),
-      api('getDrive',  { token: docId }),
-    ]);
-
-    const mods = tareas.tareas || tareas.data || [];
-    if (mods.length) {
-      html += `<div class="section-label">📋 Detalle de módulos</div>`;
-      const ESTADOS = ['Pendiente','En proceso','Entregado','Atrasado'];
-      html += mods.map(m => {
-        const est = m.estado || 'Pendiente';
-        return `<div style="border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:8px;background:var(--surface2);">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:13px;font-weight:700;">${m.modulo||m.mod||''}</div>
-              <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;line-height:1.4;">${m.tarea||m.entregable||''}</div>
-              ${m.fecha?`<div style="font-size:10px;color:var(--text-muted);margin-top:3px;">📅 Fecha sugerida: ${m.fecha}</div>`:''}
-            </div>
-            <select class="select-estado" data-id="${m.id||m.idSeg}" onchange="guardarTarea(this,'${docId}')">
-              ${ESTADOS.map(e=>`<option value="${e}" ${e===est?'selected':''}>${e}</option>`).join('')}
-            </select>
-          </div></div>`;
-      }).join('');
-    }
-
-    const cuotas = pagos.pagos || pagos.cuotas || pagos.data || [];
-    if (cuotas.length) {
-      html += `<div class="section-label">🧾 Detalle de cuotas</div>`;
-      html += cuotas.map(p => {
-        const est = p.estado || 'Pendiente';
-        return `<div class="pago-row">
-          <div><div class="pago-label">${p.cuota||p.label||'Cuota'}</div>
-          <div class="pago-fecha">${p.fecha||p.vencimiento||'Sin fecha'} · ${fmt(p.monto)}</div></div>
-          <select class="select-estado" data-id="${p.id||p.idCuota}" onchange="guardarCuota(this,'${docId}')">
-            <option value="Pendiente" ${est==='Pendiente'?'selected':''}>Pendiente</option>
-            <option value="Pagada" ${est.toLowerCase().includes('pagad')?'selected':''}>Pagada</option>
-          </select>
-        </div>`;
-      }).join('');
-    }
-
-    const u = drive.url || drive.link || drive.carpeta;
-    if (u) {
-      html += `<div class="section-label">📁 Drive</div>
-        <a href="${u}" target="_blank" class="drive-link"><span style="font-size:24px;">📂</span>
-        <div><div class="drive-text">Ver carpeta Drive</div><div class="drive-sub">${d.nombre||''}</div></div></a>`;
-    }
-
-    // Bitácora
-    html += `
-      <div class="section-label" style="margin-top:1.25rem;display:flex;align-items:center;justify-content:space-between;">
-        <span>📓 Bitácora de sesiones</span>
-        <button class="btn-resumen" onclick="verResumen('${docId}')">📄 Ver resumen</button>
-      </div>
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;">
-        <div style="font-size:14px;font-weight:700;margin-bottom:1rem;">➕ Registrar sesión</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div><label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">Fecha</label>
-            <input type="date" id="bita-fecha" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;"></div>
-          <div><label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">Estado sesión</label>
-            <select id="bita-estado" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;">
-              <option>Realizada</option><option>Pendiente de tarea</option>
-              <option>Reagendada</option><option>Inasistencia</option>
-            </select></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
-          <div><label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">Módulo trabajado</label>
-            <select id="bita-modulo" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;">
-              <option>Módulo 1</option><option>Módulo 2</option>
-              <option>Módulo 3</option><option>General</option>
-            </select></div>
-          <div><label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">Avance del módulo</label>
-            <select id="bita-avance" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;">
-              <option>Pendiente</option><option>En proceso</option>
-              <option>Entregado</option><option>Atrasado</option>
-            </select></div>
-        </div>
-        <div style="margin-top:10px;">
-          <label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">✅ ¿Qué se trabajó?</label>
-          <textarea id="bita-trabajado" placeholder="Describe lo realizado en la sesión..." style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;font-family:inherit;resize:vertical;min-height:70px;"></textarea>
-        </div>
-        <div style="margin-top:8px;">
-          <label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">⏳ ¿Qué quedó pendiente?</label>
-          <textarea id="bita-pendiente" placeholder="Tareas o temas pendientes..." style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;font-family:inherit;resize:vertical;min-height:70px;"></textarea>
-        </div>
-        <div style="margin-top:8px;">
-          <label style="display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">📋 ¿Qué debe traer a la próxima sesión?</label>
-          <textarea id="bita-proxima" placeholder="Compromisos del docente para la siguiente sesión..." style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--surface);outline:none;font-family:inherit;resize:vertical;min-height:70px;"></textarea>
-        </div>
-        <button class="btn-primary" style="margin-top:12px;" onclick="guardarSesion('${docId}','${(d.nombre||'').replace(/'/g,"\\'")}')">💾 Guardar sesión</button>
-      </div>
-      <div id="bita-lista-${docId}"><div class="loading"><div class="spinner"></div><div>Cargando sesiones...</div></div></div>`;
-
-    document.getElementById('modal-d-body').innerHTML = html;
-    cargarBitacora('${docId}');
-  } catch(e) {
-    document.getElementById('modal-d-body').innerHTML = html +
-      '<p style="font-size:12px;color:var(--text-muted);margin-top:1rem;">No se pudo cargar el detalle ampliado.</p>';
-  }
-}
-
-async function cargarBitacora(docId) {
-  const cont = document.getElementById('bita-lista-' + docId);
-  if (!cont) return;
-  cont.innerHTML = '<div class="loading"><div class="spinner"></div><div>Cargando sesiones...</div></div>';
-  try {
-    const r = await api('getBitacora', { password: adminPwd, docId });
-    const sesiones = r.sesiones || [];
-    if (!sesiones.length) {
-      cont.innerHTML = '<p style="font-size:13px;color:var(--text-muted);padding:8px 0;">Sin sesiones registradas aún.</p>';
-      return;
-    }
-    cont.innerHTML = sesiones.map((s, idx) => `
-      <div style="border:1.5px solid var(--border);border-radius:var(--radius);background:var(--surface);margin-bottom:8px;overflow:hidden;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;gap:8px;background:var(--surface2);"
-             onclick="var b=document.getElementById('bita-body-${docId}-${idx}');b.style.display=b.style.display==='block'?'none':'block'">
-          <div>
-            <div style="font-size:14px;font-weight:800;">📅 ${s.fecha} · ${s.modulo}</div>
-            <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;display:flex;align-items:center;gap:6px;">
-              <span style="background:${s.estadoSesion==='Realizada'?'var(--success-bg)':'var(--yellow-bg)'};color:${s.estadoSesion==='Realizada'?'var(--success-text)':'#b45309'};font-size:10px;padding:3px 10px;border-radius:20px;font-weight:800;border:1px solid ${s.estadoSesion==='Realizada'?'var(--green-border)':'var(--yellow-border)'};">${s.estadoSesion}</span>
-              Avance: <strong>${s.avance}</strong>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:18px;color:var(--text-muted);">›</span>
-            <button onclick="event.stopPropagation();eliminarSesion('${docId}','${s.id}')"
-              style="background:none;border:1.5px solid var(--border);border-radius:7px;padding:4px 10px;font-size:11px;color:var(--text-muted);cursor:pointer;font-family:inherit;font-weight:700;">✕</button>
-          </div>
-        </div>
-        <div id="bita-body-${docId}-${idx}" style="display:none;padding:14px 16px;border-top:1px solid var(--border);">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-            <div>
-              <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">✅ Lo trabajado</div>
-              <div style="font-size:13px;line-height:1.6;color:var(--text);">${s.trabajado||'—'}</div>
-            </div>
-            <div>
-              <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">⏳ Pendiente</div>
-              <div style="font-size:13px;line-height:1.6;color:var(--text);">${s.pendiente||'—'}</div>
-            </div>
-          </div>
-          <div>
-            <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">📋 Tarea próxima sesión</div>
-            <div style="font-size:13px;line-height:1.6;color:var(--text);">${s.tareaProxima||'—'}</div>
-          </div>
-        </div>
-      </div>`).join('');
-  } catch(e) {
-    cont.innerHTML = '<p style="font-size:13px;color:var(--danger-text);">Error al cargar sesiones. Intenta cerrar y abrir el docente.</p>';
-  }
-}
-
-async function guardarSesion(docId, nombre) {
-  const fecha = document.getElementById('bita-fecha').value;
-  if (!fecha) { toast('Selecciona la fecha de la sesión', true); return; }
-  const body = {
-    action:'saveSesion', password: adminPwd,
-    docId, nombre, fecha,
-    modulo: document.getElementById('bita-modulo').value,
-    avance: document.getElementById('bita-avance').value,
-    trabajado: document.getElementById('bita-trabajado').value,
-    pendiente: document.getElementById('bita-pendiente').value,
-    tareaProxima: document.getElementById('bita-proxima').value,
-    estadoSesion: document.getElementById('bita-estado').value
-  };
-  try {
-    const r = await fetch(API, { method:'POST', body: JSON.stringify(body) });
-    const data = await r.json();
-    if (data.ok) {
-      toast('✓ Sesión guardada en la bitácora');
-      ['bita-trabajado','bita-pendiente','bita-proxima'].forEach(id => document.getElementById(id).value='');
-      cargarBitacora(docId);
-    } else toast('Error: '+(data.error||''), true);
-  } catch(e) { toast('Error de conexión', true); }
-}
-
-async function eliminarSesion(docId, sesionId) {
-  if (!confirm('¿Eliminar esta sesión de la bitácora?')) return;
-  try {
-    const r = await api('deleteSesion', { password: adminPwd, id: sesionId });
-    if (r.ok) { toast('Sesión eliminada'); cargarBitacora(docId); }
-    else toast('Error al eliminar', true);
-  } catch(e) { toast('Error de conexión', true); }
-}
-
-async function verResumen(docId) {
-  const d = (datosAdmin.docentes||[]).find(x=>x.docId===docId);
-  const nombre = d ? d.nombre : docId;
-  try {
-    const r = await api('getBitacora', { password: adminPwd, docId });
-    const sesiones = r.sesiones || [];
-    if (!sesiones.length) { toast('Sin sesiones registradas aún', true); return; }
-    let html = `<div style="font-size:17px;font-weight:700;margin-bottom:6px;">📄 ${nombre}</div>
-      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:1.25rem;">${sesiones.length} sesión(es) registrada(s)</div>`;
-    sesiones.forEach((s,i) => {
-      html += `<div style="border-left:3px solid var(--accent);padding-left:12px;margin-bottom:1rem;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
-          <span style="font-size:13px;font-weight:700;">Sesión ${sesiones.length-i} · ${s.fecha}</span>
-          <span style="background:${s.estadoSesion==='Realizada'?'var(--success-bg)':'var(--yellow-bg)'};color:${s.estadoSesion==='Realizada'?'var(--success-text)':'#b45309'};font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;">${s.estadoSesion}</span>
-          <span style="font-size:11px;color:var(--text-muted);">${s.modulo} · ${s.avance}</span>
-        </div>
-        ${s.trabajado?`<div style="margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--text-muted);">LO TRABAJADO</div><div style="font-size:13px;margin-top:2px;line-height:1.5;">${s.trabajado}</div></div>`:''}
-        ${s.pendiente?`<div style="margin-bottom:6px;"><div style="font-size:11px;font-weight:700;color:var(--text-muted);">PENDIENTE</div><div style="font-size:13px;margin-top:2px;line-height:1.5;">${s.pendiente}</div></div>`:''}
-        ${s.tareaProxima?`<div><div style="font-size:11px;font-weight:700;color:var(--text-muted);">TAREA PRÓXIMA SESIÓN</div><div style="font-size:13px;margin-top:2px;line-height:1.5;">${s.tareaProxima}</div></div>`:''}
-      </div>`;
-    });
-    document.getElementById('modal-d-nombre').textContent = nombre + ' — Bitácora completa';
-    document.getElementById('modal-d-body').innerHTML = html;
-  } catch(e) { toast('Error al cargar resumen', true); }
-}
-
-async function guardarTarea(sel, docId) {
-  const id = sel.dataset.id, val = sel.value;
-  sel.disabled = true;
-  const prev = sel.style.borderColor;
-  try {
-    const r = await api('updateTarea', { password: adminPwd, id: id, estado: val });
-    if (r.ok) {
-      sel.style.borderColor = 'var(--green)';
-      toast('✓ Guardado en el Sheet');
-      refrescarAdmin();
-    } else {
-      sel.style.borderColor = 'var(--danger-text)';
-      toast('No se pudo guardar: ' + (r.error||''), true);
-    }
-  } catch(e) {
-    sel.style.borderColor = 'var(--danger-text)';
-    toast('Error de conexión', true);
-  }
-  sel.disabled = false;
-  setTimeout(()=>{ sel.style.borderColor = prev; }, 1800);
-}
-
-async function guardarCuota(sel, docId) {
-  const id = sel.dataset.id, val = sel.value;
-  sel.disabled = true;
-  const prev = sel.style.borderColor;
-  try {
-    const r = await api('updateCuota', { password: adminPwd, id: id, estado: val });
-    if (r.ok) {
-      sel.style.borderColor = 'var(--green)';
-      toast('✓ Pago actualizado en el Sheet');
-      refrescarAdmin();
-    } else {
-      sel.style.borderColor = 'var(--danger-text)';
-      toast('No se pudo guardar: ' + (r.error||''), true);
-    }
-  } catch(e) {
-    sel.style.borderColor = 'var(--danger-text)';
-    toast('Error de conexión', true);
-  }
-  sel.disabled = false;
-  setTimeout(()=>{ sel.style.borderColor = prev; }, 1800);
-}
-
-async function refrescarAdmin() {
-  try {
-    const r = await api('admin', { password: adminPwd });
-    if (r.ok) { datosAdmin = r; renderResumen(r); renderAdmin(); }
-  } catch(e) {}
-}
-
-function toast(msg, error) {
-  let t = document.getElementById('toast');
-  if (!t) {
-    t = document.createElement('div');
-    t.id = 'toast';
-    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:24px;font-size:13px;font-weight:600;z-index:500;box-shadow:0 6px 20px rgba(0,0,0,.18);transition:opacity .25s';
-    document.body.appendChild(t);
-  }
-  t.textContent = msg;
-  t.style.background = error ? '#fef2f2' : '#e8f5e9';
-  t.style.color = error ? '#991b1b' : '#2e7d32';
-  t.style.border = '1px solid ' + (error ? '#fecaca' : '#bbf7d0');
-  t.style.opacity = '1';
-  clearTimeout(window._toastT);
-  window._toastT = setTimeout(()=>{ t.style.opacity = '0'; }, 2600);
-}
-
-function abrirAlta() {
-  ['alta-nombre','alta-cuotas','alta-asignatura','alta-email','alta-telefono','alta-comuna']
-    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  document.getElementById('msg-alta').classList.add('hidden');
-  document.getElementById('alta-form').classList.remove('hidden');
-  document.getElementById('alta-resultado').classList.add('hidden');
-  document.getElementById('modal-alta').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('alta-nombre').focus(), 100);
-}
-
-function cerrarAlta(){ document.getElementById('modal-alta').classList.add('hidden'); }
-
-async function crearDocente() {
-  const nombre = document.getElementById('alta-nombre').value.trim();
-  const msg = document.getElementById('msg-alta');
-  const btn = document.getElementById('btn-alta');
-  if (!nombre) { msg.textContent='Ingresa el nombre completo.'; msg.classList.remove('hidden'); return; }
-
-  msg.classList.add('hidden');
-  btn.disabled = true; btn.textContent = 'Registrando...';
-
-  const body = {
-    action: 'altaDocente',
-    password: adminPwd,
-    nombre,
-    codigoServicio: document.getElementById('alta-plan').value,
-    nCuotas: document.getElementById('alta-cuotas').value || null,
-    tipo: document.getElementById('alta-tipo').value,
-    asignatura: document.getElementById('alta-asignatura').value.trim(),
-    email: document.getElementById('alta-email').value.trim(),
-    telefono: document.getElementById('alta-telefono').value.trim(),
-    comuna: document.getElementById('alta-comuna').value.trim()
-  };
-
-  try {
-    const r = await fetch(API, { method:'POST', body: JSON.stringify(body) });
-    const data = await r.json();
-    if (!data.ok) {
-      msg.textContent = 'Error: ' + (data.error || 'No se pudo registrar');
-      msg.classList.remove('hidden');
-      btn.disabled = false; btn.textContent = '✅ Registrar docente';
-      return;
-    }
-    document.getElementById('alta-form').classList.add('hidden');
-    document.getElementById('alta-resultado').classList.remove('hidden');
-    document.getElementById('alta-resultado').innerHTML = `
-      <div style="text-align:center;padding:1rem 0;">
-        <div style="font-size:44px;margin-bottom:8px;">🎉</div>
-        <div style="font-size:17px;font-weight:900;margin-bottom:6px;">${data.nombre} registrada</div>
-        <div style="font-size:13px;color:var(--text-secondary);font-weight:600;margin-bottom:1.25rem;">${data.plan}</div>
-      </div>
-      <div style="background:var(--surface2);border:2px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:10px;">
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;">
-          <span style="color:var(--text-secondary);font-weight:700;">ID docente</span><strong>${data.docId}</strong></div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--border);">
-          <span style="color:var(--text-secondary);font-weight:700;">Clave de acceso</span><strong style="color:var(--accent);">${data.clave}</strong></div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--border);">
-          <span style="color:var(--text-secondary);font-weight:700;">Monto del plan</span><strong>${fmt(data.monto)}</strong></div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--border);">
-          <span style="color:var(--text-secondary);font-weight:700;">Cuotas creadas</span><strong>${(data.cuotas||[]).length}</strong></div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid var(--border);">
-          <span style="color:var(--text-secondary);font-weight:700;">Módulos creados</span><strong>${(data.tareas||[]).length}</strong></div>
-      </div>
-      ${data.carpeta && data.carpeta.indexOf('http')===0 ? `<a href="${data.carpeta}" target="_blank" class="drive-link" style="margin-bottom:10px;">
-        <span style="font-size:24px;">📂</span><div><div class="drive-text">Carpeta de Drive creada</div><div class="drive-sub">Con M1, M2 y M3</div></div></a>` : ''}
-      <button class="btn-primary" onclick="cerrarAlta();refrescarAdmin()">Listo</button>`;
-    toast('✓ Docente registrada correctamente');
-  } catch(e) {
-    msg.textContent = 'Error de conexión. Intenta de nuevo.';
-    msg.classList.remove('hidden');
-  }
-  btn.disabled = false; btn.textContent = '✅ Registrar docente';
-}
-
-function cerrarDetalle(){ document.getElementById('modal-detalle').classList.add('hidden'); }
-function cerrarDetalleClick(e){ if(e.target===document.getElementById('modal-detalle')) cerrarDetalle(); }
-
-// ═══════════════════════════════════════════════════════
-//  UTILS
-// ═══════════════════════════════════════════════════════
-function fmt(n) {
-  const v = parseFloat(String(n).replace(/[^\d.-]/g,'')) || 0;
-  return '$' + Math.round(v).toLocaleString('es-CL');
-}
-function show(id) {
-  ['view-login','view-portal','view-admin'].forEach(v =>
-    document.getElementById(v).classList.toggle('hidden', v !== id));
+function abrirAlta(){$('msg-alta').className='msg hidden';abrir('modal-alta')}
+async function crearDocente(){
+  const body={action:'altaDocente',password:adminPwd,nombre:$('alta-nombre').value.trim(),codigoServicio:$('alta-plan').value,tipo:$('alta-tipo').value,asignatura:$('alta-asignatura').value,email:$('alta-email').value,telefono:$('alta-telefono').value,comuna:$('alta-comuna').value,clave:$('alta-clave').value,observaciones:$('alta-obs').value};
+  const m=$('msg-alta'); if(!body.nombre){m.textContent='Falta el nombre.';m.className='msg error';return}
+  try{const r=await apiPost(body);if(!r.ok)throw new Error(r.error||'No se pudo crear');m.innerHTML=`Docente creado: <b>${esc(r.docId)}</b> · Clave: <b>${esc(r.clave)}</b>`;m.className='msg ok';await refrescarAdmin()}
+  catch(e){m.textContent=e.message;m.className='msg error'}
 }
 </script>
 </body>
