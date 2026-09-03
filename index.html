@@ -189,6 +189,49 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   margin-right:4px
 }
 
+
+.gestion-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 20px;padding-bottom:4px}
+.gestion-tab{
+  border:1.5px solid var(--line-strong);background:#fff;color:var(--text-soft);
+  border-radius:999px;padding:9px 14px;font:900 12px 'Nunito',sans-serif;cursor:pointer
+}
+.gestion-tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.gestion-view.hidden{display:none!important}
+.gestion-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.kpi-mini{border:1.5px solid var(--line);border-radius:16px;padding:14px;background:#fff;text-align:center}
+.kpi-mini.red{background:#fff2f2;border-color:#f1c3c3}
+.kpi-mini.yellow{background:var(--yellow-soft);border-color:var(--yellow-border)}
+.kpi-mini.green{background:var(--green-soft);border-color:var(--green-border)}
+.kpi-mini.blue{background:var(--blue-soft);border-color:var(--blue-border)}
+.kpi-mini.gray{background:#f5f7fa;border-color:#dce3eb}
+.kpi-mini strong{display:block;font-size:22px;line-height:1;font-weight:900}
+.kpi-mini span{display:block;font-size:11px;color:var(--text-soft);font-weight:900;margin-top:7px}
+.priority-list{display:grid;gap:9px}
+.priority-row{
+  border:1.4px solid var(--line-strong);border-radius:17px;background:#fff;padding:14px 16px;
+  display:flex;justify-content:space-between;gap:14px;align-items:center
+}
+.priority-row.urgent{border-left:5px solid #d85a5a;background:#fffafa}
+.priority-row.soon{border-left:5px solid #e1ad22;background:#fffdf6}
+.priority-row.ok{border-left:5px solid #5aaa64}
+.priority-main{min-width:0}
+.priority-title{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:15px;font-weight:900}
+.priority-meta{font-size:12px;color:var(--text-soft);font-weight:700;margin-top:4px;line-height:1.45}
+.priority-action{font-size:12px;font-weight:900;color:var(--blue);margin-top:7px}
+.priority-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.pill-priority{border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900}
+.pill-priority.urgent{background:#ffe6e6;color:#ad3333}
+.pill-priority.soon{background:#fff3c8;color:#aa7300}
+.pill-priority.ok{background:#eaf7ec;color:#3d8247}
+.empty-box{border:1.5px dashed var(--line-strong);border-radius:17px;padding:26px;text-align:center;color:var(--text-soft);font-weight:800}
+.table-lite{width:100%;border-collapse:separate;border-spacing:0 8px}
+.table-lite td{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:11px 12px;font-size:12px;vertical-align:middle}
+.table-lite td:first-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px}
+.table-lite td:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}
+.gestion-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.search-input{max-width:330px;border:1.5px solid var(--line-strong);border-radius:999px;padding:9px 13px;font:800 12px 'Nunito',sans-serif;outline:none}
+@media(max-width:900px){.gestion-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 @media(max-width:980px){
   .stats-grid-4,.stats-grid-3,.mini-stats,.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -267,31 +310,83 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
     <div class="topbar" style="margin-bottom:12px">
       <div>
         <div class="brand-title" style="font-size:27px">Panel de <span style="color:var(--blue)">supervisión</span> 📋</div>
-        <div style="margin-top:10px"><span class="sync-pill">🔄 Sincronizado con Google Sheets</span></div>
+        <div style="margin-top:10px"><span class="sync-pill">🔄 Sincronizado con Google Sheets y Drive</span></div>
       </div>
       <div class="header-actions">
         <button class="btn btn-outline btn-small" onclick="logout()">Cerrar sesión</button>
       </div>
     </div>
 
-    <div class="section-block">
-      <div class="section-kicker"><span>💰</span><span class="kicker-label">Resumen financiero</span></div>
-
-      <div style="font-size:13px;font-weight:900;color:#5d759a;letter-spacing:.04em;margin:8px 0 12px">NEGOCIO COMPLETO</div>
-      <div id="fin-negocio" class="stats-grid-4"></div>
-
-      <div style="font-size:13px;font-weight:900;color:#5d759a;letter-spacing:.04em;margin:24px 0 12px">NEGOCIO PORTAFOLIOS</div>
-      <div id="fin-portafolio" class="stats-grid-4"></div>
-
-      <div id="fin-extra" class="stats-grid-3" style="margin-top:22px"></div>
+    <div class="gestion-tabs">
+      <button class="gestion-tab active" data-gtab="resumen" onclick="cambiarVistaGestion('resumen',this)">🏠 Resumen</button>
+      <button class="gestion-tab" data-gtab="prioridades" onclick="cambiarVistaGestion('prioridades',this)">🚨 Prioridades</button>
+      <button class="gestion-tab" data-gtab="revisiones" onclick="cambiarVistaGestion('revisiones',this)">📝 Revisiones</button>
+      <button class="gestion-tab" data-gtab="sinactividad" onclick="cambiarVistaGestion('sinactividad',this)">⏳ Sin actividad</button>
+      <button class="gestion-tab" data-gtab="bitacora" onclick="cambiarVistaGestion('bitacora',this)">🧾 Bitácora</button>
     </div>
 
-    <div class="section-block">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-        <div class="section-kicker" style="margin:0"><span>👥</span><span class="kicker-label">Docentes</span></div>
-        <button class="btn btn-yellow btn-small" onclick="abrirAlta()">➕ Nuevo docente</button>
+    <div id="gestion-loading" class="loading hidden"><div class="spinner"></div>Analizando portafolios, revisiones y Drive...</div>
+
+    <div id="gestion-resumen" class="gestion-view">
+      <div id="gestion-kpis" class="gestion-kpis"></div>
+
+      <div class="section-block">
+        <div class="section-kicker"><span>💰</span><span class="kicker-label">Resumen financiero</span></div>
+
+        <div style="font-size:13px;font-weight:900;color:#5d759a;letter-spacing:.04em;margin:8px 0 12px">NEGOCIO COMPLETO</div>
+        <div id="fin-negocio" class="stats-grid-4"></div>
+
+        <div style="font-size:13px;font-weight:900;color:#5d759a;letter-spacing:.04em;margin:24px 0 12px">NEGOCIO PORTAFOLIOS</div>
+        <div id="fin-portafolio" class="stats-grid-4"></div>
+
+        <div id="fin-extra" class="stats-grid-3" style="margin-top:22px"></div>
       </div>
-      <div id="admin-lista" class="docente-list"></div>
+
+      <div class="section-block">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="section-kicker" style="margin:0"><span>👥</span><span class="kicker-label">Docentes</span></div>
+          <button class="btn btn-yellow btn-small" onclick="abrirAlta()">➕ Nuevo docente</button>
+        </div>
+        <div id="admin-lista" class="docente-list"></div>
+      </div>
+    </div>
+
+    <div id="gestion-prioridades" class="gestion-view hidden">
+      <div class="gestion-toolbar">
+        <div>
+          <div class="section-title small">🚨 Priorización automática</div>
+          <div class="helper-text">Ordenada por material nuevo, tareas atrasadas, falta de actividad y tiempo desde la última revisión.</div>
+        </div>
+        <input id="gestion-buscar-prioridad" class="search-input" placeholder="Buscar docente..." oninput="renderPrioridades()">
+      </div>
+      <div id="lista-prioridades" class="priority-list"></div>
+    </div>
+
+    <div id="gestion-revisiones" class="gestion-view hidden">
+      <div class="gestion-toolbar">
+        <div>
+          <div class="section-title small">📝 Cola de revisión</div>
+          <div class="helper-text">Docentes que tienen material nuevo, módulos en proceso o una revisión abierta.</div>
+        </div>
+        <button class="btn btn-primary btn-small" onclick="abrirRevision()">➕ Registrar revisión</button>
+      </div>
+      <div id="cola-revision" class="priority-list"></div>
+
+      <div class="section-block">
+        <div class="section-title small">🕒 Últimas revisiones realizadas</div>
+        <div id="ultimas-revisiones"></div>
+      </div>
+    </div>
+
+    <div id="gestion-sinactividad" class="gestion-view hidden">
+      <div class="section-title small">⏳ Docentes sin actividad</div>
+      <div class="helper-text" style="margin-bottom:12px">Sin archivos detectados en Drive y sin avance registrado en los módulos.</div>
+      <div id="lista-sinactividad" class="priority-list"></div>
+    </div>
+
+    <div id="gestion-bitacora" class="gestion-view hidden">
+      <div class="section-title small">🧾 Últimas sesiones registradas</div>
+      <div id="gestion-bitacora-list"></div>
     </div>
   </section>
 </main>
@@ -360,11 +455,46 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   </div>
 </div>
 
+
+<div id="modal-revision" class="modal-bg hidden" onclick="if(event.target===this)cerrar('modal-revision')">
+  <div class="modal-box" style="max-width:760px">
+    <div class="modal-head">
+      <div class="modal-title" style="font-size:22px">📝 Registrar revisión</div>
+      <button class="modal-close" onclick="cerrar('modal-revision')">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="msg-revision" class="msg hidden"></div>
+      <div class="grid2">
+        <div class="field"><label>Docente</label><select id="rev-docente" onchange="autocompletarRevision()"></select></div>
+        <div class="field"><label>Módulo</label><select id="rev-modulo"><option>Módulo 1</option><option>Módulo 2</option><option>Módulo 3</option></select></div>
+        <div class="field"><label>Fecha recepción del material</label><input id="rev-recepcion" type="date"></div>
+        <div class="field"><label>Fecha de revisión</label><input id="rev-fecha" type="date"></div>
+        <div class="field"><label>Responsable</label><input id="rev-responsable" placeholder="Ej: Romina"></div>
+        <div class="field"><label>Estado de la revisión</label>
+          <select id="rev-estado">
+            <option>Pendiente de revisión</option>
+            <option>En revisión</option>
+            <option>Devuelto con observaciones</option>
+            <option>Esperando corrección docente</option>
+            <option>Corregido para nueva revisión</option>
+            <option>Finalizado</option>
+          </select>
+        </div>
+        <div class="field"><label>Fecha límite / próxima revisión</label><input id="rev-limite" type="date"></div>
+        <div class="field"><label>Prioridad manual</label><select id="rev-prioridad"><option value="">Automática</option><option>Alta</option><option>Media</option><option>Baja</option></select></div>
+      </div>
+      <div class="field"><label>Resultado / observaciones</label><textarea id="rev-resultado" placeholder="Qué se revisó, hallazgos, ajustes solicitados..."></textarea></div>
+      <div class="field"><label>Próxima acción</label><textarea id="rev-accion" placeholder="Qué debe ocurrir a continuación..."></textarea></div>
+      <button class="btn btn-primary" onclick="guardarRevision()">Guardar revisión</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast hidden"></div>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzFznexW2eqD-Uj7UQxBi3hVyDFpRUsmYLknFnL_VjZWZF7gV0986r81yl9hdjiDi7a5w/exec";
-let tokenActual=null, adminPwd=null, datosAdmin=null, detalleActual=null;
+let tokenActual=null, adminPwd=null, datosAdmin=null, datosGestion=null, detalleActual=null;
 
 const $=id=>document.getElementById(id);
 const money=n=>'$'+Number(n||0).toLocaleString('es-CL');
@@ -469,7 +599,7 @@ async function cargarPortal(){
   }
 }
 
-function logout(){tokenActual=null;adminPwd=null;datosAdmin=null;show('view-login')}
+function logout(){tokenActual=null;adminPwd=null;datosAdmin=null;datosGestion=null;show('view-login')}
 
 function abrirLoginSup(){
   $('inp-sup').value='';$('msg-sup').classList.add('hidden');abrir('modal-sup');
@@ -479,7 +609,7 @@ async function loginSup(){
   try{
     const r=await api('admin',{password:pwd});
     if(!r.ok) throw new Error(r.error||'Clave incorrecta');
-    adminPwd=pwd;datosAdmin=r;cerrar('modal-sup');show('view-admin');renderAdmin();
+    adminPwd=pwd;datosAdmin=r;cerrar('modal-sup');show('view-admin');renderAdmin();await cargarGestion();
   }catch(e){
     m.textContent=e.message;m.className='msg error';m.classList.remove('hidden');
   }
@@ -535,7 +665,7 @@ function renderAdmin(){
 
 async function refrescarAdmin(){
   const r=await api('admin',{password:adminPwd});
-  if(r.ok){datosAdmin=r;renderAdmin();}
+  if(r.ok){datosAdmin=r;renderAdmin();await cargarGestion();}
 }
 
 async function abrirDetalle(docId){
@@ -564,6 +694,9 @@ async function abrirDetalle(docId){
         ${statCard((d.pct||0)+'%','Avance','blue')}
         ${statCard(money(d.pagado||0),'Pagado','green')}
         ${statCard(money(d.pendiente||0),'Saldo','yellow')}
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px">
+        <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(docId)}')">📝 Registrar revisión</button>
       </div>
 
       <div class="section-panel">
@@ -681,6 +814,203 @@ async function borrarSesion(id){
   const r=await api('deleteSesion',{password:adminPwd,id});
   if(r.ok){toast('Sesión eliminada');await abrirDetalle(detalleActual);}
   else toast(r.error||'Error al eliminar');
+}
+
+
+function cambiarVistaGestion(tab,btn){
+  document.querySelectorAll('.gestion-view').forEach(x=>x.classList.add('hidden'));
+  const v=$('gestion-'+tab); if(v) v.classList.remove('hidden');
+  document.querySelectorAll('.gestion-tab').forEach(x=>x.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+function priorityClass(p){
+  return p==='Urgente'?'urgent':(p==='Revisar pronto'?'soon':'ok');
+}
+
+async function cargarGestion(){
+  if(!adminPwd) return;
+  $('gestion-loading').classList.remove('hidden');
+  try{
+    const r=await api('gestion',{password:adminPwd});
+    if(!r.ok) throw new Error(r.error||'No se pudo cargar el Centro de Gestión');
+    datosGestion=r;
+    renderGestion();
+  }catch(e){
+    console.error(e);
+    toast('Centro de Gestión: '+e.message);
+  }finally{
+    $('gestion-loading').classList.add('hidden');
+  }
+}
+
+function renderGestion(){
+  if(!datosGestion) return;
+  const r=datosGestion.resumen||{};
+  $('gestion-kpis').innerHTML=`
+    <div class="kpi-mini red"><strong>${r.urgentes||0}</strong><span>URGENTES</span></div>
+    <div class="kpi-mini yellow"><strong>${r.revisarPronto||0}</strong><span>REVISAR PRONTO</span></div>
+    <div class="kpi-mini blue"><strong>${r.esperandoRevision||0}</strong><span>EN COLA DE REVISIÓN</span></div>
+    <div class="kpi-mini gray"><strong>${r.sinActividad||0}</strong><span>SIN ACTIVIDAD</span></div>
+    <div class="kpi-mini green"><strong>${r.alDia||0}</strong><span>AL DÍA</span></div>
+  `;
+  renderPrioridades();
+  renderColaRevision();
+  renderSinActividad();
+  renderUltimasRevisiones();
+  renderGestionBitacora();
+  poblarDocentesRevision();
+}
+
+function renderPrioridades(){
+  if(!datosGestion) return;
+  const q=norm(($('gestion-buscar-prioridad')||{}).value||'');
+  const arr=(datosGestion.docentes||[]).filter(d=>!q || norm(d.nombre).includes(q) || norm(d.docId).includes(q));
+  $('lista-prioridades').innerHTML=arr.length?arr.map(d=>{
+    const cls=priorityClass(d.prioridad);
+    return `<div class="priority-row ${cls}">
+      <div class="priority-main">
+        <div class="priority-title">
+          <span>${esc(d.docId)}</span>
+          <span>${esc(d.nombre)}</span>
+          <span class="pill-priority ${cls}">${esc(d.prioridad)}</span>
+        </div>
+        <div class="priority-meta">
+          ${d.entregadas||0}/${d.total||0} entregados · ${d.enProceso||0} en proceso ·
+          Drive: ${d.archivosDrive||0} archivos · Última subida: ${esc(d.ultimaSubida||'Sin archivos')}
+          · Última revisión: ${esc(d.ultimaRevision||'Sin registro')}
+        </div>
+        <div class="priority-action">→ ${esc(d.accionSugerida||'Seguimiento normal')}</div>
+        ${d.motivos&&d.motivos.length?`<div class="helper-text" style="margin-top:5px">${esc(d.motivos.join(' · '))}</div>`:''}
+      </div>
+      <div class="priority-controls">
+        <button class="btn btn-outline btn-small" onclick="abrirDetalle('${esc(d.docId)}')">Ver ficha</button>
+        <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(d.docId)}')">Registrar revisión</button>
+      </div>
+    </div>`;
+  }).join(''):'<div class="empty-box">No hay docentes que coincidan con la búsqueda.</div>';
+}
+
+function renderColaRevision(){
+  const arr=(datosGestion&&datosGestion.colaRevision)||[];
+  $('cola-revision').innerHTML=arr.length?arr.map(d=>{
+    const cls=priorityClass(d.prioridad);
+    return `<div class="priority-row ${cls}">
+      <div class="priority-main">
+        <div class="priority-title">${esc(d.docId)} · ${esc(d.nombre)} <span class="pill-priority ${cls}">${esc(d.prioridad)}</span></div>
+        <div class="priority-meta">
+          ${d.modulo?esc(d.modulo)+' · ':''}${esc(d.estadoRevision||'')}
+          · Última subida: ${esc(d.ultimaSubida||'Sin registro')}
+          · Última revisión: ${esc(d.ultimaRevision||'Sin revisión')}
+        </div>
+        <div class="priority-action">→ ${esc(d.accion||'Revisar')}</div>
+      </div>
+      <div class="priority-controls">
+        <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(d.docId)}')">Revisar</button>
+      </div>
+    </div>`;
+  }).join(''):'<div class="empty-box">🎉 No hay docentes en cola de revisión.</div>';
+}
+
+function renderSinActividad(){
+  const arr=(datosGestion&&datosGestion.sinActividad)||[];
+  $('lista-sinactividad').innerHTML=arr.length?arr.map(d=>`
+    <div class="priority-row urgent">
+      <div class="priority-main">
+        <div class="priority-title">${esc(d.docId)} · ${esc(d.nombre)} <span class="pill-priority urgent">Sin actividad</span></div>
+        <div class="priority-meta">${esc(d.plan||'')} · ${d.total||0} módulos registrados</div>
+        <div class="priority-action">→ ${esc(d.accion||'Contactar y solicitar material')}</div>
+      </div>
+      <div class="priority-controls"><button class="btn btn-outline btn-small" onclick="abrirDetalle('${esc(d.docId)}')">Ver ficha</button></div>
+    </div>
+  `).join(''):'<div class="empty-box">No hay docentes completamente inactivos.</div>';
+}
+
+function renderUltimasRevisiones(){
+  const arr=(datosGestion&&datosGestion.ultimasRevisiones)||[];
+  $('ultimas-revisiones').innerHTML=arr.length?`<table class="table-lite"><tbody>${arr.map(r=>`
+    <tr>
+      <td><b>${esc(r.fecha||'')}</b></td>
+      <td><b>${esc(r.nombre||r.docId)}</b><div class="helper-text">${esc(r.modulo||'')}</div></td>
+      <td>${esc(r.responsable||'Sin responsable')}</td>
+      <td>${esc(r.estado||'')}</td>
+      <td>${esc(r.proximaAccion||r.resultado||'')}</td>
+    </tr>`).join('')}</tbody></table>`:'<div class="empty-box">Todavía no hay revisiones registradas en el nuevo control.</div>';
+}
+
+function renderGestionBitacora(){
+  const arr=(datosGestion&&datosGestion.ultimasSesiones)||[];
+  $('gestion-bitacora-list').innerHTML=arr.length?`<table class="table-lite"><tbody>${arr.map(s=>`
+    <tr>
+      <td><b>${esc(s.fecha||'')}</b></td>
+      <td><b>${esc(s.nombre||s.docId)}</b><div class="helper-text">${esc(s.modulo||'')}</div></td>
+      <td>${esc(s.trabajado||'')}</td>
+      <td>${esc(s.pendiente||'')}</td>
+    </tr>`).join('')}</tbody></table>`:'<div class="empty-box">No hay sesiones registradas.</div>';
+}
+
+function poblarDocentesRevision(){
+  const sel=$('rev-docente');
+  if(!sel||!datosGestion) return;
+  const actual=sel.value;
+  sel.innerHTML='<option value="">Seleccionar docente...</option>'+(datosGestion.docentes||[])
+    .slice().sort((a,b)=>String(a.nombre).localeCompare(String(b.nombre)))
+    .map(d=>`<option value="${esc(d.docId)}">${esc(d.docId)} · ${esc(d.nombre)}</option>`).join('');
+  if(actual) sel.value=actual;
+}
+
+function autocompletarRevision(){
+  const d=(datosGestion&&datosGestion.docentes||[]).find(x=>x.docId===$('rev-docente').value);
+  if(!d) return;
+  if(d.materialNuevo && d.ultimaSubida){
+    $('rev-accion').value='Revisar material nuevo y registrar retroalimentación.';
+  }else if(d.accionSugerida){
+    $('rev-accion').value=d.accionSugerida;
+  }
+}
+
+function abrirRevision(docId=''){
+  if(!datosGestion){toast('Espera a que cargue el Centro de Gestión');return}
+  poblarDocentesRevision();
+  $('msg-revision').className='msg hidden';
+  ['rev-recepcion','rev-fecha','rev-limite','rev-responsable','rev-resultado','rev-accion'].forEach(id=>{if($(id))$(id).value=''});
+  $('rev-estado').value='Pendiente de revisión';
+  $('rev-prioridad').value='';
+  const hoy=new Date().toISOString().slice(0,10);
+  $('rev-fecha').value=hoy;
+  if(docId){$('rev-docente').value=docId;autocompletarRevision()}
+  abrir('modal-revision');
+}
+
+async function guardarRevision(){
+  const docId=$('rev-docente').value;
+  const d=(datosGestion&&datosGestion.docentes||[]).find(x=>x.docId===docId);
+  const m=$('msg-revision');
+  if(!docId){m.textContent='Selecciona una docente.';m.className='msg error';return}
+  const body={
+    action:'saveRevision',
+    password:adminPwd,
+    docId:docId,
+    nombre:d?d.nombre:'',
+    modulo:$('rev-modulo').value,
+    fechaRecepcion:$('rev-recepcion').value,
+    fechaRevision:$('rev-fecha').value,
+    responsable:$('rev-responsable').value,
+    estado:$('rev-estado').value,
+    resultado:$('rev-resultado').value,
+    proximaAccion:$('rev-accion').value,
+    fechaLimite:$('rev-limite').value,
+    prioridadManual:$('rev-prioridad').value
+  };
+  try{
+    const r=await apiPost(body);
+    if(!r.ok) throw new Error(r.error||'No se pudo guardar');
+    cerrar('modal-revision');
+    toast('Revisión registrada');
+    await cargarGestion();
+  }catch(e){
+    m.textContent=e.message;m.className='msg error';
+  }
 }
 
 function abrirAlta(){
