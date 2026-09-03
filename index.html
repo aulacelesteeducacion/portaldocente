@@ -849,18 +849,7 @@ async function abrirDetalle(docId){
           `).join('') : '<div class="helper-text">Sin registros de gestión.</div>'}
         </div>
 
-        <div style="font-size:18px;font-weight:900;margin-bottom:12px">➕ Registrar seguimiento</div>
-        <div class="grid2">
-          <div class="field"><label>Fecha</label><input id="bit-fecha" type="date"></div>
-          <div class="field"><label>Tipo de registro</label><select id="bit-tipo"><option>Sesión</option><option>Revisión</option><option>Seguimiento</option><option>Contacto</option></select></div>
-          <div class="field"><label>Responsable</label><input id="bit-responsable" placeholder="Ej: Ignacio"></div>
-          <div class="field"><label>Estado</label><select id="bit-estado"><option>Realizada</option><option>En revisión</option><option>Devuelto con observaciones</option><option>Esperando corrección docente</option><option>Finalizado</option><option>Pendiente</option></select></div>
-          <div class="field"><label>Módulo trabajado</label><select id="bit-mod"><option>Módulo 1</option><option>Módulo 2</option><option>Módulo 3</option></select></div>
-          <div class="field"><label>Avance del módulo</label><select id="bit-avance"><option>Pendiente</option><option>En proceso</option><option>Entregado</option></select></div>
-        </div>
-        <div class="field"><label>✅ ¿Qué se trabajó?</label><textarea id="bit-trab" placeholder="Describe lo realizado, revisado o acordado..."></textarea></div>
-        <div class="field"><label>⏳ ¿Qué quedó pendiente?</label><textarea id="bit-pend" placeholder="Pendientes y próxima acción..."></textarea></div>
-        <button class="btn btn-primary" onclick="guardarSesion('${esc(docId)}','${esc(d.nombre||'')}')">Guardar seguimiento</button>
+
       </div>
     `;
   }catch(e){
@@ -877,28 +866,6 @@ async function cambiarCuota(id,estado){
   const r=await api('updateCuota',{password:adminPwd,id,estado});
   if(!r.ok) toast(r.error||'No se pudo actualizar');
   else {toast('Pago actualizado'); await refrescarAdmin();}
-}
-
-async function guardarSesion(docId,nombre){
-  const body={
-    action:'saveSesion',
-    password:adminPwd,
-    docId,nombre,
-    fecha:$('bit-fecha').value,
-    tipoRegistro:$('bit-tipo').value,
-    responsable:$('bit-responsable').value,
-    modulo:$('bit-mod').value,
-    avance:$('bit-avance').value,
-    trabajado:$('bit-trab').value,
-    pendiente:$('bit-pend').value,
-    tareaProxima:$('bit-pend').value,
-    proximaAccion:$('bit-pend').value,
-    estadoSesion:$('bit-estado').value,
-    estadoGestion:$('bit-estado').value
-  };
-  const r=await apiPost(body);
-  if(r.ok){toast('Gestión guardada');await abrirDetalle(docId);}
-  else toast(r.error||'Error al guardar');
 }
 
 async function borrarSesion(id){
