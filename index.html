@@ -111,6 +111,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 .doc-code.a{background:#ebf3ff;color:var(--blue)}
 .doc-code.r{background:#eef8ee;color:var(--green)}
 .doc-code.c{background:#fff4df;color:#bb7a07}
+.doc-code.m{background:#f1edff;color:var(--purple)}
 .doc-name{font-size:16px;font-weight:900;line-height:1.15}
 .doc-sub{font-size:13px;color:var(--text-soft);font-weight:700;margin-top:4px;line-height:1.25}
 .doc-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
@@ -379,7 +380,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
           <div class="focus-phase next"><div class="focus-phase-name">M2 · SIGUIENTE FRENTE</div><div class="focus-phase-desc">Cargando casos de creación...</div></div>
           <div class="focus-phase later"><div class="focus-phase-name">M3 · TERCERA FASE</div><div class="focus-phase-desc">Cargando casos de creación...</div></div>
         </div>
-        <div class="focus-note">Regla de trabajo: primero todo lo que depende de Aula Celeste (CREACIÓN), luego REVISIÓN y finalmente ACOMPAÑAMIENTO. En M1, una propuesta existente debe reutilizarse y convertirse en documento final; no se rehace desde cero si ya existe una base útil.</div>
+        <div class="focus-note">Regla de trabajo: primero todo lo que depende de Aula Celeste: CONFECCIÓN de casos C y de casos MIXTOS M; luego REVISIÓN y finalmente ACOMPAÑAMIENTO. En M1, una propuesta existente debe reutilizarse y convertirse en documento final; no se rehace desde cero si ya existe una base útil.</div>
         <div id="focus-list" class="focus-list"></div>
       </div>
 
@@ -406,8 +407,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
             <select id="admin-clasificacion" class="search-input" style="max-width:190px" onchange="renderAdmin()">
               <option value="">Todas las clasificaciones</option>
               <option value="C">Confección (C)</option>
-              <option value="A">Acompañamiento (A)</option>
+              <option value="M">Mixto (M)</option>
               <option value="R">Revisión (R)</option>
+              <option value="A">Acompañamiento (A)</option>
             </select>
             <select id="admin-orden" class="search-input" style="max-width:210px" onchange="renderAdmin()">
               <option value="foco" selected>Foco operativo</option>
@@ -427,7 +429,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="gestion-toolbar">
         <div>
           <div class="section-title small">🚨 Priorización estratégica</div>
-          <div class="helper-text">Primero CREACIÓN por módulo (M1 → M2 → M3), después REVISIÓN y finalmente ACOMPAÑAMIENTO. Dentro de cada grupo se conserva la urgencia operativa.</div>
+          <div class="helper-text">Primero CONFECCIÓN pendiente de C y M por módulo (M1 → M2 → M3), después REVISIÓN y finalmente ACOMPAÑAMIENTO. Los M mantienen su identidad mixta, pero mientras tengan confección pendiente se priorizan como producción de Aula Celeste.</div>
         </div>
         <input id="gestion-buscar-prioridad" class="search-input" placeholder="Buscar docente..." oninput="renderPrioridades()">
       </div>
@@ -603,7 +605,7 @@ function badgeEstado(estado){
 }
 function codeClass(docId){
   const p=String(docId||'').charAt(0).toLowerCase();
-  return p==='a'?'a':(p==='r'?'r':'c');
+  return p==='a'?'a':(p==='r'?'r':(p==='m'?'m':'c'));
 }
 
 async function login(){
@@ -875,7 +877,7 @@ function renderAdmin(){
               <span class="chip green">${entregadas}/${total} entregados</span>
               <span class="chip blue">${enProceso} en proceso</span>
               <span class="chip yellow">${money(d.pagado)} de ${money(d.contratado)}</span>
-              ${datosFocalizacion.porDoc&&datosFocalizacion.porDoc[d.docId]?`<span class="chip blue">Foco: M${datosFocalizacion.porDoc[d.docId].modulo} creación</span>`:''}
+              ${datosFocalizacion.porDoc&&datosFocalizacion.porDoc[d.docId]?`<span class="chip blue">${String(d.docId||'').startsWith('M-')?'Mixto · ':''}Foco: M${datosFocalizacion.porDoc[d.docId].modulo} confección</span>`:''}
               ${g.actualizadoReciente?'<span class="chip green">Actualizado hoy</span>':''}
             </div>
           </div>
@@ -1116,7 +1118,9 @@ function renderPrioridades(){
   $('lista-prioridades').innerHTML=arr.length?arr.map(d=>{
     const foco=datosFocalizacion.porDoc&&datosFocalizacion.porDoc[d.docId];
     const cls=foco?(foco.modulo===1?'urgent':(foco.modulo===2?'soon':'ok')):priorityClass(d.prioridad);
-    const etiqueta=foco?`CREACIÓN · M${foco.modulo}`:(String(d.docId||'').startsWith('R-')?'REVISIÓN':'ACOMPAÑAMIENTO');
+    const etiqueta=foco?`${String(d.docId||'').startsWith('M-')?'MIXTO · CONFECCIÓN':'CREACIÓN'} · M${foco.modulo}`:
+      (String(d.docId||'').startsWith('R-')?'REVISIÓN':
+      (String(d.docId||'').startsWith('M-')?'MIXTO · ACOMPAÑAMIENTO':'ACOMPAÑAMIENTO'));
     const accion=foco?foco.accion:(d.accionSugerida||'Seguimiento normal');
     return `<div class="priority-row ${cls}">
       <div class="priority-main">
@@ -1131,7 +1135,7 @@ function renderPrioridades(){
           · Última revisión: ${esc(d.ultimaRevision||'Sin registro')} ${d.ultimaActividadPortal?`· Portal: ${esc(d.ultimaActividadPortal)}`:''}
         </div>
         <div class="priority-action">→ ${esc(accion)}</div>
-        ${foco?`<div class="helper-text" style="margin-top:5px">Orden estratégico: CREACIÓN M1 → M2 → M3 → REVISIÓN → ACOMPAÑAMIENTO.</div>`:(d.motivos&&d.motivos.length?`<div class="helper-text" style="margin-top:5px">${esc(d.motivos.join(' · '))}</div>`:'')}
+        ${foco?`<div class="helper-text" style="margin-top:5px">Orden estratégico: CONFECCIÓN (C/M) M1 → M2 → M3 → REVISIÓN → ACOMPAÑAMIENTO.</div>`:(d.motivos&&d.motivos.length?`<div class="helper-text" style="margin-top:5px">${esc(d.motivos.join(' · '))}</div>`:'')}
       </div>
       <div class="priority-controls">
         <button class="btn btn-outline btn-small" onclick="abrirDetalle('${esc(d.docId)}')">Ver ficha</button>
