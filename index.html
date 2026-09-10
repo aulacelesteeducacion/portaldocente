@@ -231,6 +231,39 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 .gestion-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
 .search-input{max-width:330px;border:1.5px solid var(--line-strong);border-radius:999px;padding:9px 13px;font:800 12px 'Nunito',sans-serif;outline:none}
 .sequential-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--blue-soft);border:1.4px solid var(--blue-border);border-radius:15px;padding:10px 12px;margin:10px 0 12px;font-size:12px;font-weight:900}
+
+.focus-board{
+  margin-top:18px;background:linear-gradient(180deg,#f8fbff,#ffffff);
+  border:1.5px solid var(--blue-border);border-radius:20px;padding:18px
+}
+.focus-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.focus-title{font-size:18px;font-weight:900}
+.focus-sub{font-size:12px;color:var(--text-soft);font-weight:800;margin-top:4px;max-width:760px}
+.focus-phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.focus-phase{border:1.4px solid var(--line);border-radius:16px;padding:14px;background:#fff}
+.focus-phase.current{border-color:#f0b8b8;background:#fff8f8}
+.focus-phase.next{border-color:var(--yellow-border);background:#fffdf4}
+.focus-phase.later{border-color:var(--blue-border);background:#f7fbff}
+.focus-phase-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.focus-phase-name{font-size:14px;font-weight:900}
+.focus-phase-count{font-size:22px;font-weight:900}
+.focus-phase-desc{font-size:12px;color:var(--text-soft);font-weight:700;line-height:1.4;margin-top:7px}
+.focus-note{margin-top:12px;padding:10px 12px;border-radius:13px;background:#f7f9fc;border:1px dashed var(--line-strong);font-size:12px;font-weight:800;color:var(--text-soft)}
+.focus-list{display:grid;gap:8px;margin-top:14px}
+.focus-row{border:1.35px solid var(--line-strong);border-radius:15px;padding:12px 14px;background:#fff;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.focus-row.current{border-left:5px solid #d85a5a}
+.focus-row.next{border-left:5px solid #e1ad22}
+.focus-row.later{border-left:5px solid #4f82bd}
+.focus-row-main{min-width:0}
+.focus-row-title{font-size:14px;font-weight:900}
+.focus-row-meta{font-size:11px;color:var(--text-soft);font-weight:800;margin-top:3px;line-height:1.35}
+.focus-row-action{font-size:12px;font-weight:900;color:var(--blue);margin-top:6px}
+.focus-tag{border-radius:999px;padding:5px 9px;font-size:10px;font-weight:900;white-space:nowrap}
+.focus-tag.current{background:#ffe8e8;color:#a73737}
+.focus-tag.next{background:#fff3c8;color:#9f6d00}
+.focus-tag.later{background:#eaf3ff;color:#2e6fb7}
+@media(max-width:900px){.focus-phases{grid-template-columns:1fr}}
+
 @media(max-width:900px){.gestion-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 @media(max-width:980px){
@@ -330,6 +363,26 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
     <div id="gestion-resumen" class="gestion-view">
       <div id="gestion-kpis" class="gestion-kpis"></div>
 
+      <div class="focus-board">
+        <div class="focus-head">
+          <div>
+            <div class="focus-title">🎯 Focalización operativa · CREACIÓN</div>
+            <div class="focus-sub">
+              Orden de producción: <b>M1 → M2 → M3</b>. Hasta el domingo 13/09 el foco principal es avanzar y cerrar la mayor cantidad posible de M1.
+              El domingo es un <b>corte de focalización</b>, no una fecha obligatoria de término para todos.
+            </div>
+          </div>
+          <span class="sync-pill">Cierre oficial: 10/11/2026</span>
+        </div>
+        <div id="focus-phases" class="focus-phases">
+          <div class="focus-phase current"><div class="focus-phase-name">M1 · PRIORIDAD ACTUAL</div><div class="focus-phase-desc">Cargando casos de creación...</div></div>
+          <div class="focus-phase next"><div class="focus-phase-name">M2 · SIGUIENTE FRENTE</div><div class="focus-phase-desc">Cargando casos de creación...</div></div>
+          <div class="focus-phase later"><div class="focus-phase-name">M3 · TERCERA FASE</div><div class="focus-phase-desc">Cargando casos de creación...</div></div>
+        </div>
+        <div class="focus-note">Regla de trabajo: primero todo lo que depende de Aula Celeste (CREACIÓN), luego REVISIÓN y finalmente ACOMPAÑAMIENTO. En M1, una propuesta existente debe reutilizarse y convertirse en documento final; no se rehace desde cero si ya existe una base útil.</div>
+        <div id="focus-list" class="focus-list"></div>
+      </div>
+
       <div class="section-block">
         <div class="section-kicker"><span>💰</span><span class="kicker-label">Resumen financiero</span></div>
 
@@ -357,8 +410,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
               <option value="R">Revisión (R)</option>
             </select>
             <select id="admin-orden" class="search-input" style="max-width:210px" onchange="renderAdmin()">
+              <option value="foco" selected>Foco operativo</option>
               <option value="codigo">Orden secuencial por código</option>
-              <option value="prioridad">Prioridad</option>
+              <option value="prioridad">Prioridad automática</option>
               <option value="actividad">Actividad más reciente</option>
               <option value="nombre">Nombre A–Z</option>
             </select>
@@ -372,8 +426,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
     <div id="gestion-prioridades" class="gestion-view hidden">
       <div class="gestion-toolbar">
         <div>
-          <div class="section-title small">🚨 Priorización automática</div>
-          <div class="helper-text">Ordenada por material nuevo, tareas atrasadas, falta de actividad y tiempo desde la última revisión.</div>
+          <div class="section-title small">🚨 Priorización estratégica</div>
+          <div class="helper-text">Primero CREACIÓN por módulo (M1 → M2 → M3), después REVISIÓN y finalmente ACOMPAÑAMIENTO. Dentro de cada grupo se conserva la urgencia operativa.</div>
         </div>
         <input id="gestion-buscar-prioridad" class="search-input" placeholder="Buscar docente..." oninput="renderPrioridades()">
       </div>
@@ -514,6 +568,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 <script>
 const API = "https://script.google.com/macros/s/AKfycbzFznexW2eqD-Uj7UQxBi3hVyDFpRUsmYLknFnL_VjZWZF7gV0986r81yl9hdjiDi7a5w/exec";
 let tokenActual=null, adminPwd=null, datosAdmin=null, datosGestion=null, detalleActual=null;
+let datosFocalizacion={items:[],porDoc:{},cargado:false};
 let secuenciaRevision=[], indiceSecuencia=-1;
 
 const $=id=>document.getElementById(id);
@@ -639,6 +694,118 @@ function statCard(value,label,cls='blue'){
   return `<div class="stat-card ${cls}"><div class="stat-value">${value}</div><div class="stat-label">${label}</div></div>`;
 }
 
+
+function esEntregado(estado){ return norm(estado)==='entregado'; }
+function esCreacionDoc(d){
+  const s=norm((d&&d.plan)||'')+' '+norm((d&&d.tipoServicio)||'');
+  return String((d&&d.docId)||'').startsWith('C-') || s.includes('confecci');
+}
+function moduloNum(t){
+  const s=norm((t&&t.modulo)||'')+' '+norm((t&&t.tarea)||'');
+  if(s.includes('módulo 1')||s.includes('modulo 1')||/\bm1\b/.test(s)) return 1;
+  if(s.includes('módulo 2')||s.includes('modulo 2')||/\bm2\b/.test(s)) return 2;
+  if(s.includes('módulo 3')||s.includes('modulo 3')||/\bm3\b/.test(s)) return 3;
+  return 99;
+}
+function tareaEsCreacion(t,d){
+  const s=norm((t&&t.tarea)||'')+' '+norm((d&&d.plan)||'')+' '+norm((d&&d.tipoServicio)||'');
+  return s.includes('confecci') || esCreacionDoc(d);
+}
+function accionFoco(item){
+  const estado=norm(item.estado);
+  if(item.modulo===1){
+    if(estado==='en proceso') return 'Revisar la propuesta/base existente, completar brechas y convertirla en versión final.';
+    return 'Revisar carpeta: si existe propuesta, convertirla en final; si no existe base útil, redactar M1.';
+  }
+  if(item.modulo===2){
+    if(estado==='en proceso') return 'Aprovechar el avance existente y cerrar planificación, guion, PPT/material, guías e instrumentos.';
+    return 'Preparar el M2 completo: clase grabada, guion, material, instrumentos y evidencias.';
+  }
+  return estado==='en proceso'
+    ? 'Continuar la redacción existente y llevar M3 a versión final.'
+    : 'Iniciar M3 cuando el frente M2 esté suficientemente cerrado.';
+}
+async function cargarFocalizacionOperativa(){
+  if(!datosAdmin) return;
+  const docentes=(datosAdmin.docentes||[]).filter(d=>{
+    const s=norm(d.plan||'')+' '+norm(d.tipoServicio||'');
+    return esCreacionDoc(d) || s.includes('confecci');
+  });
+  const resultados=await Promise.all(docentes.map(async d=>{
+    try{
+      const r=await api('getTareas',{token:d.docId});
+      return {d,tareas:r.tareas||r.data||[]};
+    }catch(e){ return {d,tareas:[]}; }
+  }));
+  const items=[];
+  resultados.forEach(({d,tareas})=>{
+    tareas.forEach(t=>{
+      const m=moduloNum(t);
+      if(m<=3 && tareaEsCreacion(t,d) && !esEntregado(t.estado)){
+        items.push({
+          docId:d.docId,nombre:d.nombre||d.docId,plan:d.plan||d.tipoServicio||'',
+          modulo:m,estado:t.estado||'Pendiente',tarea:t.tarea||'',accion:''
+        });
+      }
+    });
+  });
+  items.forEach(x=>x.accion=accionFoco(x));
+  items.sort((a,b)=>a.modulo-b.modulo || (norm(a.estado)==='en proceso'?-1:1) || String(a.docId).localeCompare(String(b.docId)));
+
+  const porDoc={};
+  items.forEach(x=>{
+    if(!porDoc[x.docId] || x.modulo<porDoc[x.docId].modulo) porDoc[x.docId]=x;
+  });
+  datosFocalizacion={items,porDoc,cargado:true};
+  renderFocalizacionOperativa();
+  renderAdmin();
+  renderPrioridades();
+}
+function renderFocalizacionOperativa(){
+  const items=datosFocalizacion.items||[];
+  const counts=[1,2,3].map(m=>items.filter(x=>x.modulo===m).length);
+  if($('focus-phases')){
+    $('focus-phases').innerHTML=`
+      <div class="focus-phase current">
+        <div class="focus-phase-top"><div class="focus-phase-name">M1 · PRIORIDAD ACTUAL</div><div class="focus-phase-count">${counts[0]}</div></div>
+        <div class="focus-phase-desc">Avanzar y cerrar la mayor cantidad posible. Las propuestas existentes se transforman en versión final.</div>
+      </div>
+      <div class="focus-phase next">
+        <div class="focus-phase-top"><div class="focus-phase-name">M2 · SIGUIENTE FRENTE</div><div class="focus-phase-count">${counts[1]}</div></div>
+        <div class="focus-phase-desc">Cerrar especialmente los M2 que ya están avanzados antes de abrir nuevos frentes.</div>
+      </div>
+      <div class="focus-phase later">
+        <div class="focus-phase-top"><div class="focus-phase-name">M3 · TERCERA FASE</div><div class="focus-phase-count">${counts[2]}</div></div>
+        <div class="focus-phase-desc">Iniciar y completar después del bloque M2, salvo casos puntuales que ya estén listos para cerrar.</div>
+      </div>`;
+  }
+  if($('focus-list')){
+    const visibles=items.slice(0,18);
+    $('focus-list').innerHTML=visibles.length?visibles.map(x=>{
+      const cls=x.modulo===1?'current':(x.modulo===2?'next':'later');
+      const fase=x.modulo===1?'PRIORIDAD ACTUAL':(x.modulo===2?'SIGUIENTE':'TERCERA FASE');
+      return `<div class="focus-row ${cls}">
+        <div class="focus-row-main">
+          <div class="focus-row-title">${esc(x.docId)} · ${esc(x.nombre)} · Módulo ${x.modulo}</div>
+          <div class="focus-row-meta">${esc(x.estado)} · ${esc(x.plan||'Creación')}</div>
+          <div class="focus-row-action">→ ${esc(x.accion)}</div>
+        </div>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+          <span class="focus-tag ${cls}">${fase}</span>
+          <button class="btn btn-outline btn-small" onclick="abrirDetalle('${esc(x.docId)}')">Ver ficha</button>
+        </div>
+      </div>`;
+    }).join(''):'<div class="empty-box">No hay módulos de creación pendientes detectados.</div>';
+  }
+}
+function rangoFocoDoc(d){
+  const f=datosFocalizacion.porDoc&&datosFocalizacion.porDoc[d.docId];
+  if(f) return f.modulo;
+  if(String(d.docId||'').startsWith('R-')) return 20;
+  if(String(d.docId||'').startsWith('A-')) return 30;
+  return 10;
+}
+
 function renderAdmin(){
   const r=datosAdmin.resumen||{};
   $('fin-negocio').innerHTML = [
@@ -671,6 +838,16 @@ function renderAdmin(){
   const numCodigo=s=>Number(String(s||'').split('-')[1]||9999);
   lista.sort((a,b)=>{
     if(orden==='nombre') return String(a.nombre||'').localeCompare(String(b.nombre||''));
+    if(orden==='foco'){
+      const fa=rangoFocoDoc(a), fb=rangoFocoDoc(b);
+      if(fa!==fb) return fa-fb;
+      const ia=datosFocalizacion.porDoc&&datosFocalizacion.porDoc[a.docId];
+      const ib=datosFocalizacion.porDoc&&datosFocalizacion.porDoc[b.docId];
+      if(ia&&ib){
+        const ea=norm(ia.estado)==='en proceso'?0:1, eb=norm(ib.estado)==='en proceso'?0:1;
+        if(ea!==eb) return ea-eb;
+      }
+    }
     if(orden==='actividad'){
       const ga=gmap[a.docId]||{}, gb=gmap[b.docId]||{};
       return String(gb.ultimaActividad||'').localeCompare(String(ga.ultimaActividad||''));
@@ -698,6 +875,7 @@ function renderAdmin(){
               <span class="chip green">${entregadas}/${total} entregados</span>
               <span class="chip blue">${enProceso} en proceso</span>
               <span class="chip yellow">${money(d.pagado)} de ${money(d.contratado)}</span>
+              ${datosFocalizacion.porDoc&&datosFocalizacion.porDoc[d.docId]?`<span class="chip blue">Foco: M${datosFocalizacion.porDoc[d.docId].modulo} creación</span>`:''}
               ${g.actualizadoReciente?'<span class="chip green">Actualizado hoy</span>':''}
             </div>
           </div>
@@ -895,6 +1073,7 @@ async function cargarGestion(){
     if(!r.ok) throw new Error(r.error||'No se pudo cargar el Centro de Gestión');
     datosGestion=r;
     renderGestion();
+    await cargarFocalizacionOperativa();
   }catch(e){
     console.error(e);
     toast('Centro de Gestión: '+e.message);
@@ -923,23 +1102,36 @@ function renderGestion(){
 function renderPrioridades(){
   if(!datosGestion) return;
   const q=norm(($('gestion-buscar-prioridad')||{}).value||'');
-  const arr=(datosGestion.docentes||[]).filter(d=>!q || norm(d.nombre).includes(q) || norm(d.docId).includes(q));
+  let arr=(datosGestion.docentes||[]).filter(d=>!q || norm(d.nombre).includes(q) || norm(d.docId).includes(q));
+
+  arr.sort((a,b)=>{
+    const fa=datosFocalizacion.porDoc&&datosFocalizacion.porDoc[a.docId];
+    const fb=datosFocalizacion.porDoc&&datosFocalizacion.porDoc[b.docId];
+    const ga=fa?fa.modulo:(String(a.docId||'').startsWith('R-')?20:30);
+    const gb=fb?fb.modulo:(String(b.docId||'').startsWith('R-')?20:30);
+    if(ga!==gb) return ga-gb;
+    return Number(b.score||0)-Number(a.score||0);
+  });
+
   $('lista-prioridades').innerHTML=arr.length?arr.map(d=>{
-    const cls=priorityClass(d.prioridad);
+    const foco=datosFocalizacion.porDoc&&datosFocalizacion.porDoc[d.docId];
+    const cls=foco?(foco.modulo===1?'urgent':(foco.modulo===2?'soon':'ok')):priorityClass(d.prioridad);
+    const etiqueta=foco?`CREACIÓN · M${foco.modulo}`:(String(d.docId||'').startsWith('R-')?'REVISIÓN':'ACOMPAÑAMIENTO');
+    const accion=foco?foco.accion:(d.accionSugerida||'Seguimiento normal');
     return `<div class="priority-row ${cls}">
       <div class="priority-main">
         <div class="priority-title">
           <span>${esc(d.docId)}</span>
           <span>${esc(d.nombre)}</span>
-          <span class="pill-priority ${cls}">${esc(d.prioridad)}</span>
+          <span class="pill-priority ${cls}">${esc(etiqueta)}</span>
         </div>
         <div class="priority-meta">
           ${d.entregadas||0}/${d.total||0} entregados · ${d.enProceso||0} en proceso ·
           Drive: ${d.archivosDrive||0} archivos · Última subida: ${esc(d.ultimaSubida||'Sin archivos')}
           · Última revisión: ${esc(d.ultimaRevision||'Sin registro')} ${d.ultimaActividadPortal?`· Portal: ${esc(d.ultimaActividadPortal)}`:''}
         </div>
-        <div class="priority-action">→ ${esc(d.accionSugerida||'Seguimiento normal')}</div>
-        ${d.motivos&&d.motivos.length?`<div class="helper-text" style="margin-top:5px">${esc(d.motivos.join(' · '))}</div>`:''}
+        <div class="priority-action">→ ${esc(accion)}</div>
+        ${foco?`<div class="helper-text" style="margin-top:5px">Orden estratégico: CREACIÓN M1 → M2 → M3 → REVISIÓN → ACOMPAÑAMIENTO.</div>`:(d.motivos&&d.motivos.length?`<div class="helper-text" style="margin-top:5px">${esc(d.motivos.join(' · '))}</div>`:'')}
       </div>
       <div class="priority-controls">
         <button class="btn btn-outline btn-small" onclick="abrirDetalle('${esc(d.docId)}')">Ver ficha</button>
