@@ -697,7 +697,10 @@ function statCard(value,label,cls='blue'){
 }
 
 
-function esEntregado(estado){ return norm(estado)==='entregado'; }
+function esEntregado(estado){
+  const s=norm(estado);
+  return s==='entregado' || s.startsWith('cerrado') || s.startsWith('finalizado') || s==='en espera';
+}
 function esCreacionDoc(d){
   const s=norm((d&&d.plan)||'')+' '+norm((d&&d.tipoServicio)||'');
   return String((d&&d.docId)||'').startsWith('C-') || s.includes('confecci');
