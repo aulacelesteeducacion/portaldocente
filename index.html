@@ -297,6 +297,22 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 .admin-command{margin:14px 0 18px}.admin-alerts{display:grid;gap:8px;margin:12px 0 18px}.admin-alerts .notice-item{margin:0}.admin-deadline .progress-shell{margin-top:12px}
 @media(max-width:700px){.portal-summary,.finance-summary{grid-template-columns:1fr}.countdown{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-deadline-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+/* === CENTRO DE OPERACIONES SUPERVISOR V6 === */
+.ops-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 18px}
+.ops-card{background:#fff;border:1.4px solid var(--line);border-radius:16px;padding:14px}.ops-card strong{display:block;font-size:22px;font-weight:900}.ops-card span{font-size:11px;color:var(--text-soft);font-weight:900}.ops-card.danger{background:#fff3f3;border-color:#efc1c1}.ops-card.warn{background:var(--yellow-soft);border-color:var(--yellow-border)}.ops-card.good{background:var(--green-soft);border-color:var(--green-border)}
+.smart-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}.smart-toolbar .search-input{max-width:none;min-width:150px}.smart-toolbar .grow{flex:1;min-width:220px}
+.risk-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}.risk-critical{background:#c04c4c}.risk-attn{background:#d9a400}.risk-course{background:#2e6fb7}.risk-ok{background:#4e9c57}
+.kanban{display:grid;grid-template-columns:repeat(5,minmax(210px,1fr));gap:10px;overflow-x:auto;padding-bottom:8px}.kanban-col{background:#f8fbff;border:1.4px solid var(--line);border-radius:16px;padding:10px;min-height:170px}.kanban-head{font-size:12px;font-weight:900;color:var(--text-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px}.kanban-card{background:#fff;border:1.3px solid var(--line);border-radius:13px;padding:10px;margin-bottom:8px;cursor:pointer}.kanban-card b{font-size:12px}.kanban-card div{font-size:11px;color:var(--text-soft);font-weight:700;margin-top:3px}
+.supervisor-table-wrap{overflow:auto}.supervisor-table{width:100%;border-collapse:collapse;min-width:900px}.supervisor-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-soft);text-align:left;padding:9px;border-bottom:1px solid var(--line)}.supervisor-table td{font-size:12px;padding:10px 9px;border-bottom:1px solid #edf2f7;vertical-align:middle}.supervisor-table tr:hover{background:#f8fbff}
+.inline-actions{display:flex;gap:6px;flex-wrap:wrap}.check-doc{width:18px;height:18px}
+.ai-fab{position:fixed;right:18px;bottom:76px;z-index:85;border:0;border-radius:999px;padding:13px 17px;background:linear-gradient(180deg,#3a7ecb,#2f6db5);color:#fff;font:900 13px 'Nunito',sans-serif;box-shadow:0 12px 30px rgba(47,109,181,.28);cursor:pointer}.contact-fab{position:fixed;right:18px;bottom:18px;z-index:85;border-radius:999px;padding:12px 16px;background:#fff;border:1.5px solid var(--green-border);color:#347a40;font:900 13px 'Nunito',sans-serif;text-decoration:none;box-shadow:0 10px 26px rgba(31,58,104,.12)}
+.ai-chat{display:grid;gap:10px}.ai-log{min-height:250px;max-height:52vh;overflow:auto;background:#f8fbff;border:1.3px solid var(--line);border-radius:14px;padding:12px}.ai-msg{padding:10px 12px;border-radius:13px;margin-bottom:8px;font-size:13px;font-weight:700;line-height:1.5}.ai-msg.user{background:#eaf3ff;margin-left:12%}.ai-msg.bot{background:#fff;border:1px solid var(--line);margin-right:8%}.ai-compose{display:flex;gap:8px}.ai-compose textarea{flex:1;border:1.5px solid var(--line-strong);border-radius:13px;padding:10px;font:700 13px 'Nunito',sans-serif;min-height:72px;resize:vertical}
+.private-note{background:#fff8e8;border:1.3px solid var(--yellow-border);border-radius:13px;padding:10px;margin-top:10px}
+.timeline{display:grid;gap:8px}.timeline-item{border-left:3px solid var(--blue-border);padding:5px 0 5px 12px}.timeline-item b{font-size:12px}.timeline-item div{font-size:11px;color:var(--text-soft);font-weight:700;margin-top:2px}
+@media(max-width:900px){.ops-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.kanban{grid-template-columns:repeat(5,260px)}}
+@media(max-width:700px){.ops-grid{grid-template-columns:1fr}.ai-fab,.contact-fab{right:10px}.ai-fab{bottom:70px}.contact-fab{bottom:14px}}
+
 </style>
 </head>
 <body>
@@ -338,7 +354,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
         <div class="brand-title" style="font-size:28px">Hola, <span id="portal-nombre" style="color:var(--blue)"></span> 👋</div>
         <div id="portal-sub" class="brand-sub"></div>
       </div>
-      <button class="btn btn-outline btn-small" onclick="logout()">Cerrar sesión</button>
+      <div class="header-actions"><a class="btn btn-outline btn-small" target="_blank" rel="noopener" href="https://wa.me/56930166077?text=Hola%20Aula%20Celeste%2C%20necesito%20ayuda%20con%20mi%20portafolio%20docente.">💬 Contactar</a><button class="btn btn-outline btn-small" onclick="logout()">Cerrar sesión</button></div>
     </div>
 
     <div id="portal-deadline" class="deadline-card">
@@ -423,6 +439,11 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <button class="gestion-tab" data-gtab="prioridades" onclick="cambiarVistaGestion('prioridades',this)">🚨 Prioridades</button>
       <button class="gestion-tab" data-gtab="historial" onclick="cambiarVistaGestion('historial',this)">🧾 Historial de gestión</button>
       <button class="gestion-tab" data-gtab="sinactividad" onclick="cambiarVistaGestion('sinactividad',this)">⏳ Sin actividad</button>
+      <button class="gestion-tab" data-gtab="operaciones" onclick="cambiarVistaGestion('operaciones',this);renderCentroOperaciones()">🧭 Operaciones</button>
+      <button class="gestion-tab" data-gtab="kanban" onclick="cambiarVistaGestion('kanban',this);renderKanban()">🗂️ Kanban</button>
+      <button class="gestion-tab" data-gtab="pagos" onclick="cambiarVistaGestion('pagos',this);renderCentroPagos()">💳 Pagos</button>
+      <button class="gestion-tab" data-gtab="productividad" onclick="cambiarVistaGestion('productividad',this);renderProductividad()">📈 Productividad</button>
+      <button class="gestion-tab" data-gtab="auditoria" onclick="cambiarVistaGestion('auditoria',this);cargarAuditoria()">🛡️ Auditoría</button>
     </div>
 
     <div id="admin-cierre" class="admin-deadline">
@@ -533,6 +554,48 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="section-title small">⏳ Docentes sin actividad</div>
       <div class="helper-text" style="margin-bottom:12px">Sin archivos detectados en Drive y sin avance registrado en los módulos.</div>
       <div id="lista-sinactividad" class="priority-list"></div>
+
+
+    <div id="gestion-operaciones" class="gestion-view hidden">
+      <div class="section-title small">🧭 Centro de Operaciones · qué hacer hoy</div>
+      <div id="ops-kpis" class="ops-grid"></div>
+      <div class="smart-toolbar">
+        <input id="ops-buscar" class="search-input grow" placeholder="Buscar docente, código, plan..." oninput="renderCentroOperaciones()">
+        <select id="ops-riesgo" class="search-input" onchange="renderCentroOperaciones()"><option value="">Todos los riesgos</option><option>Crítico</option><option>Atención</option><option>En curso</option><option>Al día</option></select>
+        <select id="ops-pago" class="search-input" onchange="renderCentroOperaciones()"><option value="">Todos los pagos</option><option value="pendiente">Con saldo</option><option value="aldia">Pago al día</option></select>
+        <select id="ops-modulo" class="search-input" onchange="renderCentroOperaciones()"><option value="">Todos los avances</option><option value="0">0 entregados</option><option value="1">1 entregado</option><option value="2">2 entregados</option><option value="3">3 entregados</option></select>
+        <button class="btn btn-outline btn-small" onclick="seleccionarVisiblesOps(true)">☑ Seleccionar visibles</button>
+        <button class="btn btn-outline btn-small" onclick="seleccionarVisiblesOps(false)">☐ Limpiar</button>
+        <button class="btn btn-primary btn-small" onclick="accionMasivaResponsable()">👤 Asignar responsable</button>
+        <button class="btn btn-outline btn-small" onclick="exportarReporteCSV()">⬇ Exportar CSV</button>
+      </div>
+      <div id="ops-table" class="supervisor-table-wrap"></div>
+    </div>
+
+    <div id="gestion-kanban" class="gestion-view hidden">
+      <div class="section-title small">🗂️ Kanban de avance</div>
+      <div class="helper-text" style="margin-bottom:12px">Vista de supervisión: ubica automáticamente a cada docente según sus módulos entregados y estado de revisión.</div>
+      <div id="kanban-board" class="kanban"></div>
+    </div>
+
+    <div id="gestion-pagos" class="gestion-view hidden">
+      <div class="section-title small">💳 Centro de pagos</div>
+      <div id="pagos-kpis" class="ops-grid"></div>
+      <div class="smart-toolbar"><input id="pagos-buscar" class="search-input grow" placeholder="Buscar docente..." oninput="renderCentroPagos()"><select id="pagos-filtro" class="search-input" onchange="renderCentroPagos()"><option value="">Todos</option><option value="saldo">Con saldo</option><option value="aldia">Pagado completo</option></select></div>
+      <div id="pagos-table" class="supervisor-table-wrap"></div>
+    </div>
+
+    <div id="gestion-productividad" class="gestion-view hidden">
+      <div class="section-title small">📈 Productividad y seguimiento interno</div>
+      <div id="productividad-kpis" class="ops-grid"></div>
+      <div id="productividad-list"></div>
+    </div>
+
+    <div id="gestion-auditoria" class="gestion-view hidden">
+      <div class="section-title small">🛡️ Auditoría del portal</div>
+      <div class="helper-text" style="margin-bottom:12px">Registra cambios sensibles: módulos, cuotas, revisiones y cargas realizadas desde el portal.</div>
+      <div id="auditoria-list"><div class="loading"><div class="spinner"></div>Cargando auditoría...</div></div>
+    </div>
     </div>
   </section>
 </main>
@@ -637,6 +700,20 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   </div>
 </div>
 
+
+<div id="modal-ia" class="modal-bg hidden" onclick="if(event.target===this)cerrar('modal-ia')">
+  <div class="modal-box" style="max-width:760px">
+    <div class="modal-head"><div class="modal-title">✨ Claude · Asistente privado de supervisión</div><button class="modal-close" onclick="cerrar('modal-ia')">×</button></div>
+    <div class="modal-body ai-chat">
+      <div class="helper-text">Acceso exclusivo de supervisión. Claude recibe solo el contexto administrativo que el portal envía para responder tu consulta. Los docentes no tienen acceso a esta función.</div>
+      <div id="ia-log" class="ai-log"><div class="ai-msg bot">Hola. Puedo ayudarte a priorizar casos, resumir avances, detectar pendientes y organizar la supervisión del Portafolio Docente 2026.</div></div>
+      <div class="ai-compose"><textarea id="ia-pregunta" placeholder="Escribe tu consulta..."></textarea><button id="ia-enviar" class="btn btn-primary" onclick="enviarIA()">Enviar</button></div>
+    </div>
+  </div>
+</div>
+<a class="contact-fab" target="_blank" rel="noopener" href="https://wa.me/56930166077?text=Hola%20Aula%20Celeste%2C%20necesito%20ayuda%20con%20mi%20portafolio%20docente.">💬 WhatsApp Aula Celeste</a>
+<button id="ai-fab-admin" class="ai-fab hidden" onclick="abrirIA()">✨ Claude</button>
+
 <div id="toast" class="toast hidden"></div>
 
 <script>
@@ -649,6 +726,43 @@ const $=id=>document.getElementById(id);
 const money=n=>'$'+Number(n||0).toLocaleString('es-CL');
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 const norm=s=>String(s||'').trim().toLowerCase();
+
+const CONTACTO_AULA_CELESTE='56930166077';
+function abrirIA(){
+  if(!adminPwd){toast('Acceso exclusivo de supervisión');return;}
+  abrir('modal-ia');
+  const q=$('ia-pregunta');
+  if(q) q.focus();
+}
+function agregarMensajeIA(tipo,texto){const log=$('ia-log');if(!log)return;const d=document.createElement('div');d.className='ai-msg '+tipo;d.textContent=texto;log.appendChild(d);log.scrollTop=log.scrollHeight}
+async function enviarIA(){
+  const q=$('ia-pregunta'),b=$('ia-enviar');
+  const pregunta=(q&&q.value||'').trim();
+  if(!pregunta)return;
+  if(!adminPwd){toast('Acceso exclusivo de supervisión');return;}
+  agregarMensajeIA('user',pregunta);q.value='';b.disabled=true;b.textContent='Pensando...';
+  try{
+    const r=await apiPost({action:'chatAI',password:adminPwd,pregunta});
+    if(!r.ok)throw new Error(r.error||'No fue posible consultar a Claude');
+    agregarMensajeIA('bot',r.respuesta||'Sin respuesta');
+  }catch(e){agregarMensajeIA('bot','Error: '+(e.message||e));}
+  finally{b.disabled=false;b.textContent='Enviar'}
+}
+function diasHastaCierre(){return Math.max(0,Math.ceil((FECHA_CIERRE_PORTAFOLIO.getTime()-Date.now())/86400000))}
+function riesgoDoc(d){const g=(datosGestion&&datosGestion.docentes||[]).find(x=>x.docId===d.docId)||{};const entregadas=Number(d.entregadas||0),total=Number(d.total||0),dias=Number(g.diasSinActividad||9999),atras=Number(d.atrasadas||0),score=Number(g.score||0);if(atras>0||score>=7||diasHastaCierre()<=7&&entregadas<total)return 'Crítico';if(score>=4||dias>=7||diasHastaCierre()<=15&&entregadas<total)return 'Atención';if(total>0&&entregadas>=total)return 'Al día';return 'En curso'}
+function riesgoDot(r){return `<span class="risk-dot ${r==='Crítico'?'risk-critical':r==='Atención'?'risk-attn':r==='Al día'?'risk-ok':'risk-course'}"></span>${esc(r)}`}
+function accionDoc(d){const g=(datosGestion&&datosGestion.docentes||[]).find(x=>x.docId===d.docId)||{};return g.accionSugerida||((Number(d.entregadas||0)>=Number(d.total||0)&&Number(d.total||0)>0)?'Confirmar cierre y evidencias':'Continuar seguimiento')}
+function opsFiltrados(){let arr=(datosAdmin&&datosAdmin.docentes||[]).slice();const q=norm(($('ops-buscar')||{}).value||''),riesgo=($('ops-riesgo')||{}).value||'',pago=($('ops-pago')||{}).value||'',mod=($('ops-modulo')||{}).value||'';arr=arr.filter(d=>!q||norm([d.docId,d.nombre,d.plan,d.tipoServicio].join(' ')).includes(q));if(riesgo)arr=arr.filter(d=>riesgoDoc(d)===riesgo);if(pago==='pendiente')arr=arr.filter(d=>Number(d.pendiente||0)>0);if(pago==='aldia')arr=arr.filter(d=>Number(d.pendiente||0)<=0);if(mod!=='')arr=arr.filter(d=>Number(d.entregadas||0)===Number(mod));return arr}
+function renderCentroOperaciones(){if(!datosAdmin)return;const all=datosAdmin.docentes||[],vis=opsFiltrados();const crit=all.filter(d=>riesgoDoc(d)==='Crítico').length,att=all.filter(d=>riesgoDoc(d)==='Atención').length,complete=all.filter(d=>Number(d.total||0)>0&&Number(d.entregadas||0)>=Number(d.total||0)).length,saldo=all.filter(d=>Number(d.pendiente||0)>0).length;$('ops-kpis').innerHTML=`<div class="ops-card danger"><strong>${crit}</strong><span>CRÍTICOS</span></div><div class="ops-card warn"><strong>${att}</strong><span>ATENCIÓN</span></div><div class="ops-card good"><strong>${complete}</strong><span>COMPLETOS</span></div><div class="ops-card"><strong>${saldo}</strong><span>CON SALDO</span></div>`;$('ops-table').innerHTML=`<table class="supervisor-table"><thead><tr><th></th><th>Docente</th><th>Riesgo</th><th>Avance</th><th>Última actividad</th><th>Próxima acción</th><th>Pago</th><th>Acciones</th></tr></thead><tbody>${vis.map(d=>{const g=(datosGestion&&datosGestion.docentes||[]).find(x=>x.docId===d.docId)||{};return `<tr><td><input class="check-doc" data-doc="${esc(d.docId)}" type="checkbox"></td><td><b>${esc(d.docId)} · ${esc(d.nombre||'')}</b><div class="helper-text">${esc(d.plan||d.tipoServicio||'')}</div></td><td>${riesgoDot(riesgoDoc(d))}</td><td>${Number(d.entregadas||0)}/${Number(d.total||0)} · ${Number(d.pct||0)}%</td><td>${esc(g.ultimaActividad||'Sin registro')}</td><td>${esc(accionDoc(d))}</td><td>${money(d.pagado||0)} / ${money(d.contratado||0)}<div class="helper-text">Saldo ${money(d.pendiente||0)}</div></td><td><div class="inline-actions"><button class="btn btn-outline btn-small" onclick="abrirDetalle('${esc(d.docId)}')">Ficha</button><button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(d.docId)}')">Gestión</button></div></td></tr>`}).join('')}</tbody></table>`}
+function seleccionarVisiblesOps(si){document.querySelectorAll('#ops-table .check-doc').forEach(x=>x.checked=!!si)}
+async function accionMasivaResponsable(){const ids=[...document.querySelectorAll('#ops-table .check-doc:checked')].map(x=>x.dataset.doc);if(!ids.length){toast('Selecciona al menos un docente');return}const responsable=prompt('Responsable para los casos seleccionados:');if(!responsable)return;const nota=prompt('Nota interna / acción (opcional):','Seguimiento asignado desde Centro de Operaciones')||'';for(const docId of ids){const d=(datosAdmin.docentes||[]).find(x=>x.docId===docId)||{};await apiPost({action:'saveRevision',password:adminPwd,docId,nombre:d.nombre||'',tipoRegistro:'Seguimiento',modulo:'General',fechaRevision:new Date().toISOString().slice(0,10),responsable,estado:'Seguimiento asignado',resultado:nota,proximaAccion:nota});}toast('Responsable asignado a '+ids.length+' caso(s)');await cargarGestion();renderCentroOperaciones()}
+function exportarReporteCSV(){const arr=opsFiltrados();const rows=[['ID','Docente','Riesgo','Entregados','Total','Avance %','Pagado','Saldo','Próxima acción'],...arr.map(d=>[d.docId,d.nombre,riesgoDoc(d),d.entregadas,d.total,d.pct,d.pagado,d.pendiente,accionDoc(d)])];const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='reporte_supervision_portafolio_2026.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function etapaKanban(d){const e=Number(d.entregadas||0),t=Number(d.total||0);if(t>0&&e>=t)return 'Finalizado';if(e<=0)return 'Sin iniciar';if(e===1)return 'M1 / inicio';if(e===2)return 'M2 / avance';return 'M3 / cierre'}
+function renderKanban(){if(!datosAdmin)return;const etapas=['Sin iniciar','M1 / inicio','M2 / avance','M3 / cierre','Finalizado'];$('kanban-board').innerHTML=etapas.map(et=>{const arr=(datosAdmin.docentes||[]).filter(d=>etapaKanban(d)===et);return `<div class="kanban-col"><div class="kanban-head">${esc(et)} · ${arr.length}</div>${arr.map(d=>`<div class="kanban-card" onclick="abrirDetalle('${esc(d.docId)}')"><b>${esc(d.docId)} · ${esc(d.nombre||'')}</b><div>${riesgoDot(riesgoDoc(d))} · ${Number(d.entregadas||0)}/${Number(d.total||0)}</div><div>${esc(accionDoc(d))}</div></div>`).join('')||'<div class="helper-text">Sin casos</div>'}</div>`}).join('')}
+function renderCentroPagos(){if(!datosAdmin)return;const all=datosAdmin.docentes||[],q=norm(($('pagos-buscar')||{}).value||''),f=($('pagos-filtro')||{}).value||'';let arr=all.filter(d=>!q||norm(d.nombre+' '+d.docId).includes(q));if(f==='saldo')arr=arr.filter(d=>Number(d.pendiente||0)>0);if(f==='aldia')arr=arr.filter(d=>Number(d.pendiente||0)<=0&&Number(d.contratado||0)>0);const pendiente=all.reduce((a,d)=>a+Number(d.pendiente||0),0),pagado=all.reduce((a,d)=>a+Number(d.pagado||0),0);$('pagos-kpis').innerHTML=`<div class="ops-card good"><strong>${money(pagado)}</strong><span>RECIBIDO</span></div><div class="ops-card warn"><strong>${money(pendiente)}</strong><span>PENDIENTE</span></div><div class="ops-card"><strong>${all.filter(d=>Number(d.pendiente||0)>0).length}</strong><span>DOCENTES CON SALDO</span></div><div class="ops-card good"><strong>${all.filter(d=>Number(d.pendiente||0)<=0&&Number(d.contratado||0)>0).length}</strong><span>PAGADOS</span></div>`;$('pagos-table').innerHTML=`<table class="supervisor-table"><thead><tr><th>Docente</th><th>Plan</th><th>Pagado</th><th>Saldo</th><th>Estado</th><th></th></tr></thead><tbody>${arr.map(d=>`<tr><td><b>${esc(d.docId)} · ${esc(d.nombre||'')}</b></td><td>${money(d.contratado||0)}</td><td>${money(d.pagado||0)}</td><td>${money(d.pendiente||0)}</td><td>${Number(d.pendiente||0)>0?'<span class="badge pending">Pendiente</span>':'<span class="badge done">Al día</span>'}</td><td><button class="btn btn-outline btn-small" onclick="abrirDetalle('${esc(d.docId)}')">Ver cuotas</button></td></tr>`).join('')}</tbody></table>`}
+function renderProductividad(){if(!datosGestion)return;const regs=datosGestion.ultimosRegistros||[];const hoy=Date.now(),dias=ms=>Math.floor((hoy-ms)/86400000);const parse=s=>{const m=String(s||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);return m?new Date(+m[3],+m[2]-1,+m[1]).getTime():0};const semana=regs.filter(r=>{const t=parse(r.fecha);return t&&dias(t)<=7}).length;const revisiones=regs.filter(r=>norm(r.tipoRegistro).includes('revision')).length;const responsables={};regs.forEach(r=>{const k=r.responsable||'Sin responsable';responsables[k]=(responsables[k]||0)+1});$('productividad-kpis').innerHTML=`<div class="ops-card"><strong>${regs.length}</strong><span>REGISTROS RECIENTES</span></div><div class="ops-card good"><strong>${semana}</strong><span>ÚLTIMOS 7 DÍAS</span></div><div class="ops-card"><strong>${revisiones}</strong><span>REVISIONES</span></div><div class="ops-card"><strong>${Object.keys(responsables).length}</strong><span>RESPONSABLES</span></div>`;$('productividad-list').innerHTML='<div class="section-panel"><div class="panel-title">Gestiones por responsable</div><div class="detail-list" style="margin-top:10px">'+Object.entries(responsables).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="detail-row"><div class="detail-info"><b>${esc(k)}</b></div><span class="badge progress">${v} registros</span></div>`).join('')+'</div></div>'}
+async function cargarAuditoria(){const c=$('auditoria-list');if(!c)return;c.innerHTML='<div class="loading"><div class="spinner"></div>Cargando auditoría...</div>';try{const r=await api('getAuditoria',{password:adminPwd});if(!r.ok)throw new Error(r.error||'No disponible');const arr=r.items||[];c.innerHTML=arr.length?`<table class="supervisor-table"><thead><tr><th>Fecha</th><th>Actor</th><th>Acción</th><th>Objeto</th><th>Detalle</th></tr></thead><tbody>${arr.map(x=>`<tr><td>${esc(x.fecha||'')}</td><td>${esc(x.actor||'')}</td><td>${esc(x.accion||'')}</td><td>${esc(x.objeto||'')}</td><td>${esc(x.detalle||'')}</td></tr>`).join('')}</tbody></table>`:'<div class="empty-box">Sin eventos de auditoría registrados todavía.</div>'}catch(e){c.innerHTML='<div class="msg error">'+esc(e.message)+'</div>'}}
+
 
 
 const FECHA_CIERRE_PORTAFOLIO = new Date('2026-11-10T23:59:00-03:00');
@@ -912,7 +1026,7 @@ async function loginSup(){
   try{
     const r=await api('admin',{password:pwd});
     if(!r.ok) throw new Error(r.error||'Clave incorrecta');
-    adminPwd=pwd;datosAdmin=r;cerrar('modal-sup');show('view-admin');renderAdmin();iniciarCuentaRegresivaAdmin();renderMejorasAdmin();await cargarGestion();
+    adminPwd=pwd;datosAdmin=r;cerrar('modal-sup');show('view-admin');if($('ai-fab-admin'))$('ai-fab-admin').classList.remove('hidden');renderAdmin();iniciarCuentaRegresivaAdmin();renderMejorasAdmin();await cargarGestion();
   }catch(e){
     m.textContent=e.message;m.className='msg error';m.classList.remove('hidden');
   }
@@ -1203,6 +1317,8 @@ async function abrirDetalle(docId){
         ${statCard(money(d.pagado||0),'Pagado','green')}
         ${statCard(money(d.pendiente||0),'Saldo','yellow')}
       </div>
+      <div class="section-panel" style="margin-top:12px"><div class="panel-title">🧭 Resumen supervisor</div><div class="detail-list" style="margin-top:10px"><div class="detail-row"><div class="detail-info"><b>Riesgo operativo</b><div class="detail-sub">${riesgoDoc(d)}</div></div><span>${riesgoDot(riesgoDoc(d))}</span></div><div class="detail-row"><div class="detail-info"><b>Próxima acción sugerida</b><div class="detail-sub">${esc(accionDoc(d))}</div></div></div></div><div class="private-note"><b>🔒 Nota interna / responsable</b><div class="helper-text">Solo supervisión. Se guarda en Bitácora.</div><div class="grid2" style="margin-top:8px"><input id="nota-responsable" class="search-input" placeholder="Responsable"><input id="nota-interna" class="search-input" placeholder="Nota / próxima acción"></div><button class="btn btn-primary btn-small" style="margin-top:8px" onclick="guardarNotaInterna('${esc(docId)}')">Guardar nota interna</button></div></div>
+
       <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px">
         <div>${indiceSecuencia>=0?`<button class="btn btn-outline btn-small" onclick="moverSecuencia(-1)">← Anterior</button> <button class="btn btn-outline btn-small" onclick="moverSecuencia(1)">Siguiente →</button>`:''}</div>
         <button class="btn btn-primary btn-small" onclick="abrirRevision('${esc(docId)}')">🧾 Registrar gestión</button>
@@ -1280,6 +1396,9 @@ async function abrirDetalle(docId){
     $('modal-d-body').innerHTML=`<div class="msg error">${esc(e.message)}</div>`;
   }
 }
+
+
+async function guardarNotaInterna(docId){const responsable=($('nota-responsable')||{}).value||'';const nota=($('nota-interna')||{}).value||'';if(!responsable&&!nota){toast('Escribe responsable o nota');return}const d=(datosAdmin.docentes||[]).find(x=>x.docId===docId)||{};const r=await apiPost({action:'saveRevision',password:adminPwd,docId,nombre:d.nombre||'',tipoRegistro:'Seguimiento',modulo:'General',fechaRevision:new Date().toISOString().slice(0,10),responsable,estado:'Nota interna',resultado:nota,proximaAccion:nota});if(r.ok){toast('Nota interna guardada');await cargarGestion();}else toast(r.error||'No se pudo guardar')}
 
 async function cambiarTarea(id,estado){
   const r=await api('updateTarea',{password:adminPwd,id,estado});
