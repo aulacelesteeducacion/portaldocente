@@ -294,6 +294,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 .module-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.module-note{margin-top:10px;padding:10px 12px;border-radius:12px;background:#f8fbff;border:1px solid #dbe9f7;font-size:12px;font-weight:800;color:#49678d;line-height:1.45}.file-list{margin-top:9px;display:grid;gap:6px}.file-link{font-size:12px;font-weight:800;color:var(--blue);text-decoration:none}.upload-box{margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.upload-box input[type=file]{max-width:100%;font:700 12px 'Nunito',sans-serif}
 .finance-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
 .admin-deadline{margin:14px 0 18px;padding:16px;border:1.5px solid var(--blue-border);border-radius:18px;background:#f8fbff}.admin-deadline-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:12px}.admin-mini{background:#fff;border:1.3px solid var(--line);border-radius:14px;padding:12px;text-align:center}.admin-mini strong{display:block;font-size:20px;font-weight:900}.admin-mini span{font-size:10px;color:var(--text-soft);font-weight:900}
+.admin-command{margin:14px 0 18px}.admin-alerts{display:grid;gap:8px;margin:12px 0 18px}.admin-alerts .notice-item{margin:0}.admin-deadline .progress-shell{margin-top:12px}
 @media(max-width:700px){.portal-summary,.finance-summary{grid-template-columns:1fr}.countdown{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-deadline-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 </style>
@@ -390,6 +391,31 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="header-actions">
         <button class="btn btn-outline btn-small" onclick="logout()">Cerrar sesión</button>
       </div>
+    </div>
+
+    <div id="admin-command" class="deadline-card admin-command">
+      <div class="deadline-top">
+        <div>
+          <div class="deadline-title">⏳ Cuenta regresiva · Gestión Portafolio 2026</div>
+          <div class="deadline-sub">Cierre oficial: 10 de noviembre de 2026 · 23:59 hrs. · Vista exclusiva de supervisión</div>
+        </div>
+        <span id="admin-deadline-status" class="sync-pill">Plazo vigente</span>
+      </div>
+      <div class="countdown">
+        <div class="countdown-box"><div id="admin-cd-dias" class="countdown-value">--</div><div class="countdown-label">Días</div></div>
+        <div class="countdown-box"><div id="admin-cd-horas" class="countdown-value">--</div><div class="countdown-label">Horas</div></div>
+        <div class="countdown-box"><div id="admin-cd-min" class="countdown-value">--</div><div class="countdown-label">Minutos</div></div>
+        <div class="countdown-box"><div id="admin-cd-seg" class="countdown-value">--</div><div class="countdown-label">Segundos</div></div>
+      </div>
+      <div class="progress-shell"><div id="admin-progress-bar" class="progress-bar"></div></div>
+      <div id="admin-next-step" class="next-step">Cargando prioridad de supervisión...</div>
+    </div>
+
+    <div id="admin-summary-top" class="portal-summary"></div>
+
+    <div class="section-block" style="margin-top:18px">
+      <div class="section-kicker"><span>🔔</span><span class="kicker-label">Centro de avisos de supervisión</span></div>
+      <div id="admin-avisos" class="admin-alerts"></div>
     </div>
 
     <div class="gestion-tabs">
@@ -645,6 +671,62 @@ function iniciarCuentaRegresiva(){
   };
   tick();countdownTimer=setInterval(tick,1000);
 }
+
+let adminCountdownTimer=null;
+function iniciarCuentaRegresivaAdmin(){
+  if(adminCountdownTimer) clearInterval(adminCountdownTimer);
+  const tick=()=>{
+    const diff=FECHA_CIERRE_PORTAFOLIO.getTime()-Date.now();
+    const ids=['admin-cd-dias','admin-cd-horas','admin-cd-min','admin-cd-seg'];
+    if(!ids.every(id=>$(id))) return;
+    const status=$('admin-deadline-status');
+    if(diff<=0){
+      $('admin-cd-dias').textContent='0';$('admin-cd-horas').textContent='0';$('admin-cd-min').textContent='0';$('admin-cd-seg').textContent='0';
+      if(status){status.textContent='Plazo finalizado';status.style.background='#fff1f1';status.style.color='var(--red)';status.style.borderColor='#efc1c1';}
+      return;
+    }
+    const total=Math.floor(diff/1000), dias=Math.floor(total/86400), horas=Math.floor((total%86400)/3600), min=Math.floor((total%3600)/60), seg=total%60;
+    $('admin-cd-dias').textContent=dias;$('admin-cd-horas').textContent=String(horas).padStart(2,'0');$('admin-cd-min').textContent=String(min).padStart(2,'0');$('admin-cd-seg').textContent=String(seg).padStart(2,'0');
+    if(status) status.textContent=dias<=1?'¡Cierre inminente!':(dias<=7?'Últimos días':(dias<=15?'Recta final':'Plazo vigente'));
+  };
+  tick();adminCountdownTimer=setInterval(tick,1000);
+}
+function renderMejorasAdmin(){
+  if(!datosAdmin) return;
+  const r=datosAdmin.resumen||{};
+  const ds=datosAdmin.docentes||[];
+  const avance=Number(r.avanceGlobal||0);
+  const entregadas=Number(r.totalEntregadas||0), totalTareas=Number(r.totalTareas||0);
+  const saldo=Number(r.portafolioPendiente||0);
+  const conSaldo=ds.filter(d=>Number(d.pendiente||0)>0).length;
+  const completos=ds.filter(d=>Number(d.total||0)>0&&Number(d.entregadas||0)>=Number(d.total||0)).length;
+  const sinEntregas=ds.filter(d=>Number(d.total||0)>0&&Number(d.entregadas||0)===0).length;
+  if($('admin-progress-bar')) $('admin-progress-bar').style.width=avance+'%';
+  if($('admin-summary-top')) $('admin-summary-top').innerHTML=[
+    statCard(avance+'%','Avance global','blue'),
+    statCard(entregadas+'/'+totalTareas,'Módulos entregados','green'),
+    statCard(money(saldo),'Saldo por cobrar',saldo>0?'yellow':'green')
+  ].join('');
+
+  const g=(datosGestion&&datosGestion.resumen)||{};
+  let paso='✅ Seguimiento general al día. Mantén revisión de avances, pagos y nuevos archivos.';
+  if(Number(g.urgentes||0)>0) paso=`🚨 Prioridad inmediata: revisar <b>${g.urgentes}</b> caso(s) urgente(s) antes de abrir nuevos frentes.`;
+  else if(Number(g.esperandoRevision||0)>0) paso=`🧾 Próximo paso: atender <b>${g.esperandoRevision}</b> caso(s) en cola de revisión.`;
+  else if(Number(g.sinActividad||0)>0) paso=`📣 Próximo paso: contactar <b>${g.sinActividad}</b> docente(s) sin actividad registrada.`;
+  else if(conSaldo>0) paso=`💳 Próximo paso: hacer seguimiento a <b>${conSaldo}</b> docente(s) con saldo pendiente.`;
+  if($('admin-next-step')) $('admin-next-step').innerHTML=paso;
+
+  const avisos=[];
+  if(Number(g.urgentes||0)>0) avisos.push(`<div class="notice-item danger">🚨 ${g.urgentes} caso(s) están clasificados como urgentes en supervisión.</div>`);
+  if(Number(g.esperandoRevision||0)>0) avisos.push(`<div class="notice-item warn">🧾 ${g.esperandoRevision} caso(s) esperan revisión o acción de seguimiento.</div>`);
+  if(Number(g.sinActividad||0)>0) avisos.push(`<div class="notice-item warn">⏳ ${g.sinActividad} docente(s) no presentan actividad detectada.</div>`);
+  if(sinEntregas>0) avisos.push(`<div class="notice-item warn">📘 ${sinEntregas} docente(s) aún no registran módulos entregados.</div>`);
+  if(conSaldo>0) avisos.push(`<div class="notice-item warn">💳 ${conSaldo} docente(s) mantienen saldo pendiente por un total de ${money(saldo)}.</div>`);
+  if(completos>0) avisos.push(`<div class="notice-item ok">✅ ${completos} docente(s) tienen todos sus módulos registrados como entregados.</div>`);
+  if(!avisos.length) avisos.push('<div class="notice-item ok">✅ No hay alertas críticas de supervisión en este momento.</div>');
+  if($('admin-avisos')) $('admin-avisos').innerHTML=avisos.join('');
+}
+
 function calcularResumenPortal(mods,pagos){
   const total=mods.length, entregados=mods.filter(x=>norm(x.estado)==='entregado').length, enProceso=mods.filter(x=>norm(x.estado)==='en proceso').length;
   const pct=total?Math.round((entregados/total)*100):0;
@@ -820,7 +902,7 @@ async function cargarPortal(){
   }
 }
 
-function logout(){tokenActual=null;adminPwd=null;datosAdmin=null;datosGestion=null;show('view-login')}
+function logout(){tokenActual=null;adminPwd=null;datosAdmin=null;datosGestion=null;if(countdownTimer)clearInterval(countdownTimer);if(adminCountdownTimer)clearInterval(adminCountdownTimer);show('view-login')}
 
 function abrirLoginSup(){
   $('inp-sup').value='';$('msg-sup').classList.add('hidden');abrir('modal-sup');
@@ -830,7 +912,7 @@ async function loginSup(){
   try{
     const r=await api('admin',{password:pwd});
     if(!r.ok) throw new Error(r.error||'Clave incorrecta');
-    adminPwd=pwd;datosAdmin=r;cerrar('modal-sup');show('view-admin');renderAdmin();await cargarGestion();
+    adminPwd=pwd;datosAdmin=r;cerrar('modal-sup');show('view-admin');renderAdmin();iniciarCuentaRegresivaAdmin();renderMejorasAdmin();await cargarGestion();
   }catch(e){
     m.textContent=e.message;m.className='msg error';m.classList.remove('hidden');
   }
@@ -971,6 +1053,7 @@ function renderAdmin(){
       <div class="admin-mini"><strong>${sinEntregas}</strong><span>SIN ENTREGAS</span></div>
       <div class="admin-mini"><strong>${pagosPend}</strong><span>CON SALDO PENDIENTE</span></div>`;
   }
+  renderMejorasAdmin();
   $('fin-negocio').innerHTML = [
     statCard(money(r.negocioContratado||0),'Total cobrado','blue'),
     statCard(money(r.negocioPagado||0),'Ingreso real','green'),
@@ -1260,6 +1343,7 @@ function renderGestion(){
   renderSinActividad();
   renderHistorialGestion();
   poblarDocentesRevision();
+  renderMejorasAdmin();
 }
 
 function renderPrioridades(){
