@@ -281,6 +281,21 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   .pago-row,.detail-row{flex-direction:column;align-items:flex-start}
   .pago-right{text-align:left}
 }
+/* === MEJORAS PORTAL DOCENTE 2026 === */
+.portal-summary{margin-top:18px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.portal-summary .stat-card{min-height:92px}
+.deadline-card{margin-top:18px;padding:18px;border:1.5px solid var(--blue-border);border-radius:18px;background:linear-gradient(180deg,#f7fbff,#fff)}
+.deadline-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.deadline-title{font-size:17px;font-weight:900}.deadline-sub{font-size:12px;color:var(--text-soft);font-weight:800;margin-top:4px}
+.countdown{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}.countdown-box{background:#fff;border:1.4px solid var(--line);border-radius:14px;padding:10px;text-align:center}.countdown-value{font-size:24px;font-weight:900;line-height:1}.countdown-label{font-size:10px;font-weight:900;color:var(--text-soft);margin-top:5px;text-transform:uppercase;letter-spacing:.07em}
+.progress-shell{margin-top:12px;background:#edf3fa;border-radius:999px;height:12px;overflow:hidden}.progress-bar{height:100%;width:0;background:linear-gradient(90deg,#2f6db5,#4e9c57);transition:width .3s ease}
+.next-step{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--yellow-soft);border:1.4px solid var(--yellow-border);font-size:13px;font-weight:800;line-height:1.45}
+.notice-center{display:grid;gap:9px}.notice-item{border:1.4px solid var(--line);background:#fff;border-radius:15px;padding:12px 14px;font-size:13px;font-weight:800}.notice-item.warn{background:#fff9e7;border-color:var(--yellow-border)}.notice-item.danger{background:#fff1f1;border-color:#efc1c1}.notice-item.ok{background:var(--green-soft);border-color:var(--green-border)}
+.module-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.module-note{margin-top:10px;padding:10px 12px;border-radius:12px;background:#f8fbff;border:1px solid #dbe9f7;font-size:12px;font-weight:800;color:#49678d;line-height:1.45}.file-list{margin-top:9px;display:grid;gap:6px}.file-link{font-size:12px;font-weight:800;color:var(--blue);text-decoration:none}.upload-box{margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.upload-box input[type=file]{max-width:100%;font:700 12px 'Nunito',sans-serif}
+.finance-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.admin-deadline{margin:14px 0 18px;padding:16px;border:1.5px solid var(--blue-border);border-radius:18px;background:#f8fbff}.admin-deadline-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:12px}.admin-mini{background:#fff;border:1.3px solid var(--line);border-radius:14px;padding:12px;text-align:center}.admin-mini strong{display:block;font-size:20px;font-weight:900}.admin-mini span{font-size:10px;color:var(--text-soft);font-weight:900}
+@media(max-width:700px){.portal-summary,.finance-summary{grid-template-columns:1fr}.countdown{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-deadline-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 </head>
 <body>
@@ -325,6 +340,31 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <button class="btn btn-outline btn-small" onclick="logout()">Cerrar sesión</button>
     </div>
 
+    <div id="portal-deadline" class="deadline-card">
+      <div class="deadline-top">
+        <div>
+          <div class="deadline-title">⏳ Cuenta regresiva · Portafolio Docente 2026</div>
+          <div class="deadline-sub">Cierre oficial: 10 de noviembre de 2026 · 23:59 hrs.</div>
+        </div>
+        <span id="deadline-status" class="sync-pill">Plazo vigente</span>
+      </div>
+      <div class="countdown">
+        <div class="countdown-box"><div id="cd-dias" class="countdown-value">--</div><div class="countdown-label">Días</div></div>
+        <div class="countdown-box"><div id="cd-horas" class="countdown-value">--</div><div class="countdown-label">Horas</div></div>
+        <div class="countdown-box"><div id="cd-min" class="countdown-value">--</div><div class="countdown-label">Minutos</div></div>
+        <div class="countdown-box"><div id="cd-seg" class="countdown-value">--</div><div class="countdown-label">Segundos</div></div>
+      </div>
+      <div class="progress-shell"><div id="portal-progress-bar" class="progress-bar"></div></div>
+      <div id="portal-next-step" class="next-step">Cargando tu próximo paso...</div>
+    </div>
+
+    <div id="portal-summary" class="portal-summary"></div>
+
+    <div class="section-block">
+      <div class="section-kicker"><span>🔔</span><span class="kicker-label">Centro de avisos</span></div>
+      <div id="portal-avisos" class="notice-center"></div>
+    </div>
+
     <div class="section-block">
       <div class="section-kicker"><span>📘</span><span class="kicker-label">Mis módulos</span></div>
       <div id="portal-modulos" class="module-grid"></div>
@@ -357,6 +397,12 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <button class="gestion-tab" data-gtab="prioridades" onclick="cambiarVistaGestion('prioridades',this)">🚨 Prioridades</button>
       <button class="gestion-tab" data-gtab="historial" onclick="cambiarVistaGestion('historial',this)">🧾 Historial de gestión</button>
       <button class="gestion-tab" data-gtab="sinactividad" onclick="cambiarVistaGestion('sinactividad',this)">⏳ Sin actividad</button>
+    </div>
+
+    <div id="admin-cierre" class="admin-deadline">
+      <div class="section-title small" style="margin-bottom:0">📅 Cierre Portafolio · 10/11/2026</div>
+      <div class="helper-text" style="margin-top:5px">Vista exclusiva de supervisión. Resume avance y pendientes sin mostrarlos a los docentes.</div>
+      <div id="admin-cierre-grid" class="admin-deadline-grid"></div>
     </div>
 
     <div id="gestion-loading" class="loading hidden"><div class="spinner"></div>Analizando portafolios, revisiones y Drive...</div>
@@ -578,6 +624,75 @@ const money=n=>'$'+Number(n||0).toLocaleString('es-CL');
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 const norm=s=>String(s||'').trim().toLowerCase();
 
+
+const FECHA_CIERRE_PORTAFOLIO = new Date('2026-11-10T23:59:00-03:00');
+let countdownTimer=null;
+function iniciarCuentaRegresiva(){
+  if(countdownTimer) clearInterval(countdownTimer);
+  const tick=()=>{
+    const diff=FECHA_CIERRE_PORTAFOLIO.getTime()-Date.now();
+    const ids=['cd-dias','cd-horas','cd-min','cd-seg'];
+    if(!ids.every(id=>$(id))) return;
+    if(diff<=0){
+      $('cd-dias').textContent='0';$('cd-horas').textContent='0';$('cd-min').textContent='0';$('cd-seg').textContent='0';
+      $('deadline-status').textContent='Plazo finalizado';
+      $('deadline-status').style.background='#fff1f1';$('deadline-status').style.color='var(--red)';$('deadline-status').style.borderColor='#efc1c1';
+      return;
+    }
+    const total=Math.floor(diff/1000), dias=Math.floor(total/86400), horas=Math.floor((total%86400)/3600), min=Math.floor((total%3600)/60), seg=total%60;
+    $('cd-dias').textContent=dias;$('cd-horas').textContent=String(horas).padStart(2,'0');$('cd-min').textContent=String(min).padStart(2,'0');$('cd-seg').textContent=String(seg).padStart(2,'0');
+    $('deadline-status').textContent=dias<=1?'¡Cierre inminente!':(dias<=7?'Últimos días':(dias<=15?'Recta final':'Plazo vigente'));
+  };
+  tick();countdownTimer=setInterval(tick,1000);
+}
+function calcularResumenPortal(mods,pagos){
+  const total=mods.length, entregados=mods.filter(x=>norm(x.estado)==='entregado').length, enProceso=mods.filter(x=>norm(x.estado)==='en proceso').length;
+  const pct=total?Math.round((entregados/total)*100):0;
+  const totalPlan=Math.max(0,...pagos.map(x=>Number(x.montoTotal||0)));
+  const pagado=pagos.filter(x=>norm(x.estado).startsWith('pag')).reduce((a,x)=>a+Number(x.monto||0),0);
+  const saldo=Math.max(0,totalPlan-pagado);
+  return {total,entregados,enProceso,pct,totalPlan,pagado,saldo};
+}
+function proximoPasoPortal(mods){
+  const pendiente=mods.find(x=>norm(x.estado)==='en proceso')||mods.find(x=>norm(x.estado)==='pendiente')||mods.find(x=>norm(x.estado)==='atrasado');
+  if(!pendiente) return '✅ Tus módulos registrados están entregados. Revisa tus archivos y confirma que todo esté listo antes del cierre.';
+  const nota=String(pendiente.notas||'').trim();
+  return `🎯 Próximo paso: <b>${esc(pendiente.modulo||'Módulo')}</b> · ${esc(pendiente.tarea||'Continuar avance')}${nota?`<br><span style="font-weight:700;color:#6b7890">Retroalimentación: ${esc(nota)}</span>`:''}`;
+}
+function renderAvisosPortal(mods,pagos,res){
+  const avisos=[];
+  const atrasados=mods.filter(x=>norm(x.estado)==='atrasado').length;
+  const conNotas=mods.filter(x=>String(x.notas||'').trim()).length;
+  const pendientesPago=pagos.filter(x=>!norm(x.estado).startsWith('pag')).length;
+  if(atrasados) avisos.push(`<div class="notice-item danger">🔴 Tienes ${atrasados} módulo(s) marcado(s) como atrasado(s). Prioriza su revisión.</div>`);
+  if(conNotas) avisos.push(`<div class="notice-item warn">📝 Hay retroalimentación disponible en ${conNotas} módulo(s). Revísala antes de enviar una nueva versión.</div>`);
+  if(pendientesPago) avisos.push(`<div class="notice-item warn">💳 Tienes ${pendientesPago} cuota(s) pendiente(s). Revisa la sección de pagos para fechas y montos.</div>`);
+  if(!avisos.length) avisos.push('<div class="notice-item ok">✅ No tienes alertas críticas registradas en este momento.</div>');
+  $('portal-avisos').innerHTML=avisos.join('');
+}
+async function cargarArchivosModulo(modulo,contenedorId){
+  const c=$(contenedorId); if(!c) return; c.innerHTML='<div class="helper-text">Cargando archivos...</div>';
+  try{
+    const r=await api('getDrive',{token:tokenActual,modulo});
+    const arr=r.archivos||[];
+    c.innerHTML=arr.length?arr.map(f=>`<a class="file-link" target="_blank" href="${esc(f.url)}">📄 ${esc(f.nombre)}</a>`).join(''):'<div class="helper-text">Sin archivos enviados todavía.</div>';
+  }catch(e){c.innerHTML='<div class="helper-text">No se pudieron cargar los archivos.</div>'}
+}
+async function subirArchivoModulo(modulo,inputId,btn){
+  const input=$(inputId), file=input&&input.files&&input.files[0];
+  if(!file){toast('Selecciona un archivo');return}
+  if(file.size>12*1024*1024){toast('Archivo demasiado grande. Máximo sugerido: 12 MB');return}
+  btn.disabled=true; const old=btn.textContent; btn.textContent='Subiendo...';
+  try{
+    const contenido=await new Promise((resolve,reject)=>{const fr=new FileReader();fr.onload=()=>resolve(String(fr.result).split(',')[1]||'');fr.onerror=reject;fr.readAsDataURL(file)});
+    const r=await apiPost({action:'uploadFile',token:tokenActual,modulo,nombreArchivo:file.name,mimeType:file.type||'application/octet-stream',contenido});
+    if(!r.ok) throw new Error(r.error||'No se pudo subir');
+    toast('Archivo enviado correctamente'); input.value='';
+    const safe=String(modulo).replace(/[^a-z0-9]/gi,'_'); await cargarArchivosModulo(modulo,'files_'+safe);
+  }catch(e){toast(e.message||'Error al subir archivo')}
+  btn.disabled=false;btn.textContent=old;
+}
+
 function show(id){['view-login','view-portal','view-admin'].forEach(x=>$(x).classList.add('hidden'));$(id).classList.remove('hidden')}
 function abrir(id){$(id).classList.remove('hidden')}
 function cerrar(id){$(id).classList.add('hidden')}
@@ -636,16 +751,29 @@ async function cargarPortal(){
     ]);
 
     const mods=t.tareas||t.data||[];
-    $('portal-modulos').innerHTML=mods.length ? mods.map(x=>`
+    $('portal-modulos').innerHTML=mods.length ? mods.map(x=>{
+      const mod=x.modulo||x.mod||'Módulo';
+      const safe=String(mod).replace(/[^a-z0-9]/gi,'_');
+      const nota=String(x.notas||'').trim();
+      return `
       <div class="module-card">
         <div class="module-top">
-          <div class="module-name">${esc(x.modulo||x.mod)}</div>
+          <div class="module-name">${esc(mod)}</div>
           ${badgeEstado(x.estado||'Pendiente')}
         </div>
         <div class="module-task">${esc(x.tarea||x.entregable||'Sin detalle')}</div>
         <div class="helper-text">${esc(x.fechaEntrega ? 'Entrega: '+x.fechaEntrega : (x.fecha ? 'Fecha sugerida: '+x.fecha : ''))}</div>
-      </div>
-    `).join('') : '<div class="msg ok">No hay módulos registrados todavía.</div>';
+        ${nota?`<div class="module-note">📝 <b>Retroalimentación Aula Celeste:</b><br>${esc(nota)}</div>`:''}
+        <div class="module-actions">
+          <button class="btn btn-outline btn-small" onclick="cargarArchivosModulo('${esc(mod)}','files_${safe}')">📂 Ver archivos</button>
+        </div>
+        <div class="upload-box">
+          <input id="up_${safe}" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png">
+          <button class="btn btn-primary btn-small" onclick="subirArchivoModulo('${esc(mod)}','up_${safe}',this)">⬆️ Subir archivo</button>
+        </div>
+        <div id="files_${safe}" class="file-list"></div>
+      </div>`;
+    }).join('') : '<div class="msg ok">No hay módulos registrados todavía.</div>';
 
     const url=d.url||d.link||d.carpeta;
     $('portal-drive').innerHTML=url ? `
@@ -659,11 +787,26 @@ async function cargarPortal(){
     ` : '<div class="msg ok">Carpeta no disponible todavía.</div>';
 
     const pagos=p.pagos||p.cuotas||p.data||[];
-    $('portal-pagos').innerHTML=pagos.length ? pagos.map(x=>`
+    const resumen=calcularResumenPortal(mods,pagos);
+    $('portal-progress-bar').style.width=resumen.pct+'%';
+    $('portal-next-step').innerHTML=proximoPasoPortal(mods);
+    $('portal-summary').innerHTML=[
+      statCard(resumen.pct+'%','Avance general','blue'),
+      statCard(resumen.entregados+'/'+resumen.total,'Módulos entregados','green'),
+      statCard(money(resumen.saldo),'Saldo pendiente',resumen.saldo>0?'yellow':'green')
+    ].join('');
+    renderAvisosPortal(mods,pagos,resumen);
+    $('portal-pagos').innerHTML=pagos.length ? `
+      <div class="finance-summary">
+        ${statCard(money(resumen.totalPlan),'Plan contratado','blue')}
+        ${statCard(money(resumen.pagado),'Pagado','green')}
+        ${statCard(money(resumen.saldo),'Saldo','yellow')}
+      </div>` + pagos.map(x=>`
       <div class="pago-row">
         <div>
           <div class="pago-title">${esc(x.label||x.cuota||'Cuota')}</div>
-          <div class="pago-sub">${esc(x.fecha||x.vencimiento||'Por definir')}</div>
+          <div class="pago-sub">${esc(x.fecha||x.vencimiento||'Por definir')}${x.fechaPago?` · Pagado: ${esc(x.fechaPago)}`:''}${x.formaPago?` · ${esc(x.formaPago)}`:''}</div>
+          ${x.notas?`<div class="helper-text" style="margin-top:4px">${esc(x.notas)}</div>`:''}
         </div>
         <div class="pago-right">
           <div class="pago-value">${money(x.monto)}</div>
@@ -671,6 +814,7 @@ async function cargarPortal(){
         </div>
       </div>
     `).join('') : '<div class="msg ok">No hay cuotas registradas.</div>';
+    iniciarCuentaRegresiva();
   }catch(e){
     $('portal-modulos').innerHTML=`<div class="msg error">${esc(e.message)}</div>`;
   }
@@ -813,6 +957,20 @@ function rangoFocoDoc(d){
 
 function renderAdmin(){
   const r=datosAdmin.resumen||{};
+  if($('admin-cierre-grid')){
+    const ds=datosAdmin.docentes||[];
+    const completos=ds.filter(d=>Number(d.total||0)>0&&Number(d.entregadas||0)>=Number(d.total||0)).length;
+    const parciales=ds.filter(d=>Number(d.entregadas||0)>0&&Number(d.entregadas||0)<Number(d.total||0)).length;
+    const sinEntregas=ds.filter(d=>Number(d.total||0)>0&&Number(d.entregadas||0)===0).length;
+    const pagosPend=ds.filter(d=>Number(d.pendiente||0)>0).length;
+    const total=ds.length;
+    $('admin-cierre-grid').innerHTML=`
+      <div class="admin-mini"><strong>${total}</strong><span>DOCENTES</span></div>
+      <div class="admin-mini"><strong>${completos}</strong><span>PORTAFOLIO COMPLETO</span></div>
+      <div class="admin-mini"><strong>${parciales}</strong><span>AVANCE PARCIAL</span></div>
+      <div class="admin-mini"><strong>${sinEntregas}</strong><span>SIN ENTREGAS</span></div>
+      <div class="admin-mini"><strong>${pagosPend}</strong><span>CON SALDO PENDIENTE</span></div>`;
+  }
   $('fin-negocio').innerHTML = [
     statCard(money(r.negocioContratado||0),'Total cobrado','blue'),
     statCard(money(r.negocioPagado||0),'Ingreso real','green'),
