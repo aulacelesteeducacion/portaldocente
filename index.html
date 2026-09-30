@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Portal Docente · Aula Celeste 2026</title>
+<title>Portal Docente · Aula Celeste 2026 · V7</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -703,16 +703,21 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 
 <div id="modal-ia" class="modal-bg hidden" onclick="if(event.target===this)cerrar('modal-ia')">
   <div class="modal-box" style="max-width:760px">
-    <div class="modal-head"><div class="modal-title">✨ Claude · Asistente privado de supervisión</div><button class="modal-close" onclick="cerrar('modal-ia')">×</button></div>
+    <div class="modal-head"><div class="modal-title">✨ Asistente IA · Supervisión Aula Celeste</div><button class="modal-close" onclick="cerrar('modal-ia')">×</button></div>
     <div class="modal-body ai-chat">
-      <div class="helper-text">Acceso exclusivo de supervisión. Claude recibe solo el contexto administrativo que el portal envía para responder tu consulta. Los docentes no tienen acceso a esta función.</div>
-      <div id="ia-log" class="ai-log"><div class="ai-msg bot">Hola. Puedo ayudarte a priorizar casos, resumir avances, detectar pendientes y organizar la supervisión del Portafolio Docente 2026.</div></div>
-      <div class="ai-compose"><textarea id="ia-pregunta" placeholder="Escribe tu consulta..."></textarea><button id="ia-enviar" class="btn btn-primary" onclick="enviarIA()">Enviar</button></div>
+      <div class="helper-text">Acceso exclusivo de supervisión. El asistente puede consultar el contexto operativo de Aula Celeste: Drive, seguimiento, pagos, bitácora y actividad. Los docentes no tienen acceso a esta función ni a sus datos.</div>
+      <div id="ia-log" class="ai-log"><div class="ai-msg bot">Hola. Puedo revisar avances, carpetas de Drive, pagos, saldos, actividad y prioridades de Aula Celeste. También puedo detectar inconsistencias y resumir qué conviene revisar hoy.</div></div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-small" onclick="preguntaRapidaIA('¿Qué debo revisar hoy? Prioriza los casos más importantes y explica por qué.')">🎯 Qué revisar hoy</button>
+        <button class="btn btn-outline btn-small" onclick="preguntaRapidaIA('Verifica los pagos y detecta inconsistencias entre Plan de Cuotas, Ingresos y los saldos calculados.')">💳 Verificar pagos</button>
+        <button class="btn btn-outline btn-small" onclick="preguntaRapidaIA('Revisa la actividad de Drive y dime qué docentes tienen material reciente, carpetas sin movimiento o pendientes relevantes.')">📁 Revisar Drive</button>
+      </div>
+      <div class="ai-compose"><textarea id="ia-pregunta" placeholder="Ej.: revisa a Carla Flores completa, incluyendo Drive y pagos..."></textarea><button id="ia-enviar" class="btn btn-primary" onclick="enviarIA()">Enviar</button></div>
     </div>
   </div>
 </div>
 <a class="contact-fab" target="_blank" rel="noopener" href="https://wa.me/56930166077?text=Hola%20Aula%20Celeste%2C%20necesito%20ayuda%20con%20mi%20portafolio%20docente.">💬 WhatsApp Aula Celeste</a>
-<button id="ai-fab-admin" class="ai-fab hidden" onclick="abrirIA()">✨ Claude</button>
+<button id="ai-fab-admin" class="ai-fab hidden" onclick="abrirIA()">✨ Asistente IA</button>
 
 <div id="toast" class="toast hidden"></div>
 
@@ -743,10 +748,19 @@ async function enviarIA(){
   agregarMensajeIA('user',pregunta);q.value='';b.disabled=true;b.textContent='Pensando...';
   try{
     const r=await apiPost({action:'chatAI',password:adminPwd,pregunta});
-    if(!r.ok)throw new Error(r.error||'No fue posible consultar a Claude');
+    if(!r.ok)throw new Error(r.error||'No fue posible consultar al asistente');
     agregarMensajeIA('bot',r.respuesta||'Sin respuesta');
-  }catch(e){agregarMensajeIA('bot','Error: '+(e.message||e));}
+  }catch(e){
+    const msg=String((e&&e.message)||e||'No fue posible completar la consulta');
+    agregarMensajeIA('bot','No pude completar la consulta. '+msg.replace(/^Error:\s*/i,''));
+  }
   finally{b.disabled=false;b.textContent='Enviar'}
+}
+function preguntaRapidaIA(texto){
+  if(!adminPwd){toast('Acceso exclusivo de supervisión');return;}
+  abrirIA();
+  const q=$('ia-pregunta'); if(!q)return;
+  q.value=texto; enviarIA();
 }
 function diasHastaCierre(){return Math.max(0,Math.ceil((FECHA_CIERRE_PORTAFOLIO.getTime()-Date.now())/86400000))}
 function riesgoDoc(d){const g=(datosGestion&&datosGestion.docentes||[]).find(x=>x.docId===d.docId)||{};const entregadas=Number(d.entregadas||0),total=Number(d.total||0),dias=Number(g.diasSinActividad||9999),atras=Number(d.atrasadas||0),score=Number(g.score||0);if(atras>0||score>=7||diasHastaCierre()<=7&&entregadas<total)return 'Crítico';if(score>=4||dias>=7||diasHastaCierre()<=15&&entregadas<total)return 'Atención';if(total>0&&entregadas>=total)return 'Al día';return 'En curso'}
