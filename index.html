@@ -430,8 +430,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
     <div id="admin-summary-top" class="portal-summary"></div>
 
     <div class="section-block" style="margin-top:18px">
-      <div class="section-kicker"><span>🔔</span><span class="kicker-label">Centro de avisos de supervisión</span></div>
-      <div id="admin-avisos" class="admin-alerts"></div>
+      <div class="notice-item ok"><b>✅ Trabajo de Aula Celeste finalizado.</b> La producción y revisión comprometidas para este ciclo están cerradas. El panel queda disponible para consultar entregas registradas, archivos y pagos.</div>
     </div>
 
     <div class="gestion-tabs">
@@ -448,7 +447,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 
     <div id="admin-cierre" class="admin-deadline">
       <div class="section-title small" style="margin-bottom:0">📅 Cierre Portafolio · 10/11/2026</div>
-      <div class="helper-text" style="margin-top:5px">Vista exclusiva de supervisión. Resume avance y pendientes sin mostrarlos a los docentes.</div>
+      <div class="helper-text" style="margin-top:5px">Vista exclusiva de supervisión para consultar el estado registrado de los portafolios.</div>
       <div id="admin-cierre-grid" class="admin-deadline-grid"></div>
     </div>
 
@@ -460,10 +459,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="focus-board">
         <div class="focus-head">
           <div>
-            <div class="focus-title">🎯 Focalización operativa · CREACIÓN</div>
+            <div class="focus-title">✅ Producción de Aula Celeste finalizada</div>
             <div class="focus-sub">
-              Orden de producción: <b>M1 → M2 → M3</b>. Hasta el domingo 13/09 el foco principal es avanzar y cerrar la mayor cantidad posible de M1.
-              El domingo es un <b>corte de focalización</b>, no una fecha obligatoria de término para todos.
+              Se cierra la focalización de confección y revisión M1, M2 y M3. El panel mantiene los registros individuales para consultar entregas, archivos y pagos.
             </div>
           </div>
           <span class="sync-pill">Cierre oficial: 10/11/2026</span>
@@ -473,7 +471,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
           <div class="focus-phase next"><div class="focus-phase-name">M2 · SIGUIENTE FRENTE</div><div class="focus-phase-desc">Cargando casos de creación...</div></div>
           <div class="focus-phase later"><div class="focus-phase-name">M3 · TERCERA FASE</div><div class="focus-phase-desc">Cargando casos de creación...</div></div>
         </div>
-        <div class="focus-note">Regla de trabajo: primero todo lo que depende de Aula Celeste: CONFECCIÓN de casos C y de casos MIXTOS M; luego REVISIÓN y finalmente ACOMPAÑAMIENTO. En M1, una propuesta existente debe reutilizarse y convertirse en documento final; no se rehace desde cero si ya existe una base útil.</div>
+        <div class="focus-note">Ciclo de trabajo cerrado. Los estados individuales del portal se conservan para distinguir el trabajo de Aula Celeste de las entregas y gestiones pendientes de cada portafolio.</div>
         <div id="focus-list" class="focus-list"></div>
       </div>
 
@@ -852,37 +850,18 @@ function iniciarCuentaRegresivaAdmin(){
 function renderMejorasAdmin(){
   if(!datosAdmin) return;
   const r=datosAdmin.resumen||{};
-  const ds=datosAdmin.docentes||[];
   const avance=Number(r.avanceGlobal||0);
   const entregadas=Number(r.totalEntregadas||0), totalTareas=Number(r.totalTareas||0);
   const saldo=Number(r.portafolioPendiente||0);
-  const conSaldo=ds.filter(d=>Number(d.pendiente||0)>0).length;
-  const completos=ds.filter(d=>Number(d.total||0)>0&&Number(d.entregadas||0)>=Number(d.total||0)).length;
-  const sinEntregas=ds.filter(d=>Number(d.total||0)>0&&Number(d.entregadas||0)===0).length;
   if($('admin-progress-bar')) $('admin-progress-bar').style.width=avance+'%';
   if($('admin-summary-top')) $('admin-summary-top').innerHTML=[
     statCard(avance+'%','Avance global','blue'),
     statCard(entregadas+'/'+totalTareas,'Módulos entregados','green'),
     statCard(money(saldo),'Saldo por cobrar',saldo>0?'yellow':'green')
   ].join('');
-
-  const g=(datosGestion&&datosGestion.resumen)||{};
-  let paso='✅ Seguimiento general al día. Mantén revisión de avances, pagos y nuevos archivos.';
-  if(Number(g.urgentes||0)>0) paso=`🚨 Prioridad inmediata: revisar <b>${g.urgentes}</b> caso(s) urgente(s) antes de abrir nuevos frentes.`;
-  else if(Number(g.esperandoRevision||0)>0) paso=`🧾 Próximo paso: atender <b>${g.esperandoRevision}</b> caso(s) en cola de revisión.`;
-  else if(Number(g.sinActividad||0)>0) paso=`📣 Próximo paso: contactar <b>${g.sinActividad}</b> docente(s) sin actividad registrada.`;
-  else if(conSaldo>0) paso=`💳 Próximo paso: hacer seguimiento a <b>${conSaldo}</b> docente(s) con saldo pendiente.`;
-  if($('admin-next-step')) $('admin-next-step').innerHTML=paso;
-
-  const avisos=[];
-  if(Number(g.urgentes||0)>0) avisos.push(`<div class="notice-item danger">🚨 ${g.urgentes} caso(s) están clasificados como urgentes en supervisión.</div>`);
-  if(Number(g.esperandoRevision||0)>0) avisos.push(`<div class="notice-item warn">🧾 ${g.esperandoRevision} caso(s) esperan revisión o acción de seguimiento.</div>`);
-  if(Number(g.sinActividad||0)>0) avisos.push(`<div class="notice-item warn">⏳ ${g.sinActividad} docente(s) no presentan actividad detectada.</div>`);
-  if(sinEntregas>0) avisos.push(`<div class="notice-item warn">📘 ${sinEntregas} docente(s) aún no registran módulos entregados.</div>`);
-  if(conSaldo>0) avisos.push(`<div class="notice-item warn">💳 ${conSaldo} docente(s) mantienen saldo pendiente por un total de ${money(saldo)}.</div>`);
-  if(completos>0) avisos.push(`<div class="notice-item ok">✅ ${completos} docente(s) tienen todos sus módulos registrados como entregados.</div>`);
-  if(!avisos.length) avisos.push('<div class="notice-item ok">✅ No hay alertas críticas de supervisión en este momento.</div>');
-  if($('admin-avisos')) $('admin-avisos').innerHTML=avisos.join('');
+  if($('admin-next-step')) $('admin-next-step').innerHTML='✅ Trabajo de Aula Celeste finalizado. Consulta aquí el estado registrado de portafolios, entregas, archivos y pagos.';
+  const avisos=$('admin-avisos');
+  if(avisos) avisos.innerHTML='';
 }
 
 function calcularResumenPortal(mods,pagos){
@@ -1118,80 +1097,16 @@ function accionFoco(item){
 }
 async function cargarFocalizacionOperativa(){
   if(!datosAdmin) return;
-  const docentes=(datosAdmin.docentes||[]).filter(d=>{
-    if(esCasoCerrado2026(d.docId))return false;
-    const s=norm(d.plan||'')+' '+norm(d.tipoServicio||'');
-    return esCreacionDoc(d) || s.includes('confecci');
-  });
-  const resultados=await Promise.all(docentes.map(async d=>{
-    try{
-      const r=await api('getTareas',{token:d.docId});
-      return {d,tareas:r.tareas||r.data||[]};
-    }catch(e){ return {d,tareas:[]}; }
-  }));
-  const items=[];
-  resultados.forEach(({d,tareas})=>{
-    tareas.forEach(t=>{
-      const m=moduloNum(t);
-      // M-003: M1 confeccionado y validado el 01/11/2026; no es una tarea crítica pendiente.
-      if(d.docId==='M-003' && m===1) return;
-      if(m<=3 && tareaEsCreacion(t,d) && !esEntregado(t.estado)){
-        items.push({
-          docId:d.docId,nombre:d.nombre||d.docId,plan:d.plan||d.tipoServicio||'',
-          modulo:m,estado:t.estado||'Pendiente',tarea:t.tarea||'',accion:''
-        });
-      }
-    });
-  });
-  items.forEach(x=>x.accion=accionFoco(x));
-  items.sort((a,b)=>a.modulo-b.modulo || (norm(a.estado)==='en proceso'?-1:1) || String(a.docId).localeCompare(String(b.docId)));
-
-  const porDoc={};
-  items.forEach(x=>{
-    if(!porDoc[x.docId] || x.modulo<porDoc[x.docId].modulo) porDoc[x.docId]=x;
-  });
-  datosFocalizacion={items,porDoc,cargado:true};
+  datosFocalizacion={items:[],porDoc:{},cargado:true};
   renderFocalizacionOperativa();
   renderAdmin();
   renderPrioridades();
 }
 function renderFocalizacionOperativa(){
-  const items=datosFocalizacion.items||[];
-  const counts=[1,2,3].map(m=>items.filter(x=>x.modulo===m).length);
-  if($('focus-phases')){
-    $('focus-phases').innerHTML=`
-      <div class="focus-phase current">
-        <div class="focus-phase-top"><div class="focus-phase-name">M1 · PRIORIDAD ACTUAL</div><div class="focus-phase-count">${counts[0]}</div></div>
-        <div class="focus-phase-desc">Avanzar y cerrar la mayor cantidad posible. Las propuestas existentes se transforman en versión final.</div>
-      </div>
-      <div class="focus-phase next">
-        <div class="focus-phase-top"><div class="focus-phase-name">M2 · SIGUIENTE FRENTE</div><div class="focus-phase-count">${counts[1]}</div></div>
-        <div class="focus-phase-desc">Cerrar especialmente los M2 que ya están avanzados antes de abrir nuevos frentes.</div>
-      </div>
-      <div class="focus-phase later">
-        <div class="focus-phase-top"><div class="focus-phase-name">M3 · TERCERA FASE</div><div class="focus-phase-count">${counts[2]}</div></div>
-        <div class="focus-phase-desc">Iniciar y completar después del bloque M2, salvo casos puntuales que ya estén listos para cerrar.</div>
-      </div>`;
-  }
-  if($('focus-list')){
-    const visibles=items.slice(0,18);
-    $('focus-list').innerHTML=visibles.length?visibles.map(x=>{
-      const cls=x.modulo===1?'current':(x.modulo===2?'next':'later');
-      const fase=x.modulo===1?'PRIORIDAD ACTUAL':(x.modulo===2?'SIGUIENTE':'TERCERA FASE');
-      return `<div class="focus-row ${cls}">
-        <div class="focus-row-main">
-          <div class="focus-row-title">${esc(x.docId)} · ${esc(x.nombre)} · Módulo ${x.modulo}</div>
-          <div class="focus-row-meta">${esc(x.estado)} · ${esc(x.plan||'Creación')}</div>
-          <div class="focus-row-action">→ ${esc(x.accion)}</div>
-        </div>
-        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
-          <span class="focus-tag ${cls}">${fase}</span>
-          <button class="btn btn-outline btn-small" onclick="abrirDetalle('${esc(x.docId)}')">Ver ficha</button>
-        </div>
-      </div>`;
-    }).join(''):'<div class="empty-box">No hay módulos de creación pendientes detectados.</div>';
-  }
+  if($('focus-phases')) $('focus-phases').innerHTML='<div class="focus-phase" style="grid-column:1/-1;border-color:var(--green-border);background:var(--green-soft)"><div class="focus-phase-name">✅ Producción concluida</div><div class="focus-phase-desc">No hay una cola de producción de Aula Celeste que priorizar. Los registros originales de cada docente siguen disponibles en su ficha.</div></div>';
+  if($('focus-list')) $('focus-list').innerHTML='<div class="empty-box">Cierre de producción registrado.</div>';
 }
+
 function rangoFocoDoc(d){
   const f=datosFocalizacion.porDoc&&datosFocalizacion.porDoc[d.docId];
   if(f) return f.modulo;
