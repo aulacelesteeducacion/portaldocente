@@ -378,11 +378,6 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
     <div id="portal-summary" class="portal-summary"></div>
 
     <div class="section-block">
-      <div class="section-kicker"><span>🔔</span><span class="kicker-label">Centro de avisos</span></div>
-      <div id="portal-avisos" class="notice-center"></div>
-    </div>
-
-    <div class="section-block">
       <div class="section-kicker"><span>📘</span><span class="kicker-label">Mis módulos</span></div>
       <div id="portal-modulos" class="module-grid"></div>
     </div>
@@ -879,16 +874,10 @@ function proximoPasoPortal(mods){
   return `🎯 Próximo paso: <b>${esc(pendiente.modulo||'Módulo')}</b> · ${esc(pendiente.tarea||'Continuar avance')}${nota?`<br><span style="font-weight:700;color:#6b7890">Retroalimentación: ${esc(nota)}</span>`:''}`;
 }
 function renderAvisosPortal(mods,pagos,res){
-  const avisos=[];
-  const atrasados=mods.filter(x=>norm(x.estado)==='atrasado').length;
-  const conNotas=mods.filter(x=>String(x.notas||'').trim()).length;
-  const pendientesPago=pagos.filter(x=>!norm(x.estado).startsWith('pag')).length;
-  if(atrasados) avisos.push(`<div class="notice-item danger">🔴 Tienes ${atrasados} módulo(s) marcado(s) como atrasado(s). Prioriza su revisión.</div>`);
-  if(conNotas) avisos.push(`<div class="notice-item warn">📝 Hay retroalimentación disponible en ${conNotas} módulo(s). Revísala antes de enviar una nueva versión.</div>`);
-  if(pendientesPago) avisos.push(`<div class="notice-item warn">💳 Tienes ${pendientesPago} cuota(s) pendiente(s). Revisa la sección de pagos para fechas y montos.</div>`);
-  if(!avisos.length) avisos.push('<div class="notice-item ok">✅ No tienes alertas críticas registradas en este momento.</div>');
-  $('portal-avisos').innerHTML=avisos.join('');
+  // El centro de avisos fue retirado al cerrar el trabajo de Aula Celeste.
+  // Los estados de módulos y pagos siguen visibles en sus secciones correspondientes.
 }
+
 async function cargarArchivosModulo(modulo,contenedorId){
   const c=$(contenedorId); if(!c) return; c.innerHTML='<div class="helper-text">Cargando archivos...</div>';
   try{
